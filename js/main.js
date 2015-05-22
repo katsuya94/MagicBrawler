@@ -105,6 +105,7 @@ function Player() {
 
     this.px = 0;
     this.py = 0;
+    this.pz = 0;
 
     var _this = this;
 
@@ -209,8 +210,8 @@ Player.prototype.updatePosition = function(dt) {
     if (!this.attacking && this.moving) {
         this.px += dt * dx[this.direction] / 750;
         this.py += dt * dy[this.direction] / 750;
-        this.x = this.px * 64 + this.py * -64 + 400 - 64;
-        this.y = this.px * -32 + this.py * -32 + 300 - 112;
+        this.x = this.px * 64 + this.py * -64 + this.pz * -32 + 400 - 64;
+        this.y = this.px * -32 + this.py * -32 + this.pz * -32 + 300 - 112;
     }
 }
 
@@ -220,7 +221,6 @@ document.getElementById('wrapper').appendChild(renderer.view);
 var ticker = PIXI.ticker.shared;
 
 function tickFor(callback, n) {
-    console.log(n);
     if (n === 0) {
         ticker.addOnce(callback);
     } else {
@@ -237,20 +237,30 @@ function scheduler(callback) {
 }
 
 var stage = new PIXI.Container();
+var bg;
 var player;
+var debug;
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').load(onAssetsLoaded);
 
 function onAssetsLoaded() {
-    var bg = new PIXI.Container();
+    bg = new PIXI.Container();
     var tile;
     tile = PIXI.Sprite.fromFrame('terrain1.png');
     tile.x = 400 - 32 + 0;
     tile.y = 300 - 32 - 32;
     bg.addChild(tile);
     tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 0;
+    tile.y = 300 - 32 - 32 - 32;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
     tile.x = 400 - 32 + 32;
     tile.y = 300 - 32 - 16;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain46.png');
+    tile.x = 400 - 32 + 32;
+    tile.y = 300 - 32 - 16 - 32;
     bg.addChild(tile);
     tile = PIXI.Sprite.fromFrame('terrain1.png');
     tile.x = 400 - 32 - 32;
@@ -284,8 +294,14 @@ function onAssetsLoaded() {
 
     player = new Player();
     player.play();
-
     stage.addChild(player);
+
+    debug = new PIXI.Text('');
+    stage.addChild(debug);
+
+    window.setInterval(function() {
+        debug.text = 'FPS = ' + ticker.FPS.toFixed(0) + '; p = (' + player.px.toFixed(2) + ', ' + player.py.toFixed(2) + ', ' + player.pz.toFixed(2) + ')';
+    }, 1000);
 
     ticker.add(function () {
         var dt = ticker.elapsedMS;
