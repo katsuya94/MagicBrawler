@@ -103,8 +103,8 @@ function Player() {
     this.attacking = false;
     this.attackingAnimation = false;
 
-    this.px = 0;
-    this.py = 0;
+    this.px = 0.5;
+    this.py = 0.5;
     this.pz = 0;
 
     var _this = this;
@@ -206,12 +206,72 @@ invsqrt2 = 1 / Math.sqrt(2);
 var dx = [-invsqrt2, 0, invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1];
 var dy = [invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1, -invsqrt2, 0];
 
+var heightMap = [[ 0,  0,  0],
+                 [ 0,  0, -2],
+                 [ 0,  0,  1]];
+
+function heightRef(x, y) {
+    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+        return 0
+    else
+        return heightMap[y][x];
+}
+
+function heightAt(x, y, floorX, floorY) {
+    var val = heightRef(floorX, floorY);
+    if (val < 0) {
+        switch (val) {
+            case -1: return (x - floorX) * heightRef(floorX + 1, floorY) + (1 - x + floorX) * heightRef(floorX - 1, floorY);
+            case -2: return (y - floorY) * heightRef(floorX, floorY + 1) + (1 - y + floorY) * heightRef(floorX, floorY - 1);
+            case -3: return (x - floorX) * heightRef(floorX - 1, floorY) + (1 - x + floorX) * heightRef(floorX + 1, floorY);
+            case -4: return (y - floorY) * heightRef(floorX, floorY - 1) + (1 - y + floorY) * heightRef(floorX, floorY + 1);
+        }
+    } else {
+        return val;
+    }
+}
+
+function passableFrom(x, y, floorX, floorY, z, direction) {
+    var val = heightRef(floorX, floorY);
+    if (val < 0) {
+        return true;
+    } else {
+        switch (direction) {
+            case 0: return heightAt(x + 1, y, floorX + 1, floorY) <= z;
+            case 1: return heightAt(x, y + 1, floorX, floorY + 1) <= z;
+            case 2: return heightAt(x - 1, y, floorX - 1, floorY) <= z;
+            case 3: return heightAt(x, y - 1, floorX, floorY - 1) <= z;
+        }
+    }
+}
+
 Player.prototype.updatePosition = function(dt) {
     if (!this.attacking && this.moving) {
-        this.px += dt * dx[this.direction] / 750;
-        this.py += dt * dy[this.direction] / 750;
-        this.x = this.px * 64 + this.py * -64 + this.pz * -32 + 400 - 64;
-        this.y = this.px * -32 + this.py * -32 + this.pz * -32 + 300 - 112;
+        var pxFloor = Math.floor(this.px);
+        var pyFloor = Math.floor(this.py);
+        var _px = this.px + dt * dx[this.direction] / 250;
+        var _py = this.py + dt * dy[this.direction] / 250;
+        var _pxFloor = Math.floor(_px);
+        var _pyFloor = Math.floor(_py);
+        if (_pxFloor !== pxFloor || _pyFloor !== pyFloor) {
+            if (_pxFloor > pxFloor)
+                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 0))
+                    _px = this.px;
+            else if (_pxFloor < pxFloor)
+                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 2))
+                    _px = this.px;
+            if (_pyFloor > pyFloor)
+                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 1))
+                    _py = this.py;
+            else if (_pxFloor < pxFloor)
+                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 3))
+                    _py = this.py;
+        }
+        this.px = _px;
+        this.py = _py;
+        this.pz = heightAt(this.px, this.py, pxFloor, pyFloor);
+        this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
+        this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
     }
 }
 
