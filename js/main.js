@@ -16,9 +16,21 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage = new PIXI.Container();
 
-PIXI.loader.add('./img/player.json').load(onAssetsLoaded);
+PIXI.loader.add('./img/player.json').add('./img/terrain.json').load(onAssetsLoaded);
 
 function onAssetsLoaded() {
+    var tiles = [];
+    for (var id = 0; id < 150; id++)
+        tiles.push(PIXI.Texture.fromFrame('terrain' + id + '.png'));
+    var bg = new PIXI.Container();
+    for (var id = 0; id < 150; id++) {
+        var tile = PIXI.Sprite.fromFrame('terrain' + id + '.png');
+        tile.x = (id * 32) % 800;
+        tile.y = Math.floor(id / 16) * 32;
+        bg.addChild(tile);
+    }
+    stage.addChild(bg);
+
     var frames = [];
     for (var id = 0; id < 256; id++)
         frames.push(PIXI.Texture.fromFrame('player' + id + '.png'));
@@ -34,6 +46,7 @@ function onAssetsLoaded() {
     player.animationSpeed = 0.15;
     player.play();
     stage.addChild(player);
+
     tick();
 }
 
