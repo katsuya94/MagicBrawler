@@ -54,9 +54,42 @@ PIXI.loader.add('./img/player.json').add('./img/terrain.json').load(onAssetsLoad
 
 function onAssetsLoaded() {
     var bg = new PIXI.Container();
-    var tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32;
-    tile.y = 300 - 32;
+    var tile;
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 0;
+    tile.y = 300 - 32 - 32;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 32;
+    tile.y = 300 - 32 - 16;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 - 32;
+    tile.y = 300 - 32 - 16;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 64;
+    tile.y = 300 - 32 + 0;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 0;
+    tile.y = 300 - 32 + 0;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 - 64;
+    tile.y = 300 - 32 + 0;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 32;
+    tile.y = 300 - 32 + 16;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 - 32;
+    tile.y = 300 - 32 + 16;
+    bg.addChild(tile);
+    tile = PIXI.Sprite.fromFrame('terrain1.png');
+    tile.x = 400 - 32 + 0;
+    tile.y = 300 - 32 + 32;
     bg.addChild(tile);
     stage.addChild(bg);
 
@@ -108,7 +141,9 @@ function onAssetsLoaded() {
 
     player.direction = 0;
     player.moving = false;
+    player.movingAnimation = false;
     player.attacking = false;
+    player.attackingAnimation = false;
 
     player.px = 0;
     player.py = 0;
@@ -156,10 +191,22 @@ function onAssetsLoaded() {
         player.moving = !(x === 0 && y === 0);
 
         if (player.attacking) {
-            player.playAnimation(5 * player.direction + 2, 0);
+            player.movingAnimation = false;
+            if (player.attackingAnimation)
+                player.playAnimation(5 * player.direction + 2);
+            else
+                player.playAnimation(5 * player.direction + 2, 0);
+            player.attackingAnimation = true;
         } else if (player.moving) {
-            player.playAnimation(5 * player.direction + 1, 0);
+            player.attackingAnimation = false;
+            if (player.movingAnimation)
+                player.playAnimation(5 * player.direction + 1);
+            else
+                player.playAnimation(5 * player.direction + 1, 0);
+            player.movingAnimation = true;
         } else {
+            player.movingAnimation = false;
+            player.attackingAnimation = false;
             player.playAnimation(5 * player.direction, 0);
         }
     }
@@ -183,12 +230,12 @@ function onAssetsLoaded() {
         if (!player.attacking) {
             player.attacking = true;
             player.loop = false;
-            player.playAnimation(5 * player.direction + 2, 0);
+            movementUpdate();
             window.setTimeout(function() {
                 player.attacking = false;
                 player.loop = true;
                 movementUpdate();
-            }, 500);
+            }, 350);
         }
     }
 
@@ -196,21 +243,21 @@ function onAssetsLoaded() {
 
     stage.addChild(player);
 
+    invsqrt2 = 1 / Math.sqrt(2);
+
+    var dx = [-invsqrt2, 0, invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1];
+    var dy = [invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1, -invsqrt2, 0];
+
     ticker.add(function () {
-    var dt = ticker.elapsedMS;
+        var dt = ticker.elapsedMS;
 
-    if (!player.attacking && player.moving) {
-        player.px += dt * dx[player.direction] / 750;
-        player.py += dt * dy[player.direction] / 750;
-        player.x = player.px * 64 + player.py * -64 + 400 - 64;
-        player.y = player.px * -32 + player.py * -32 + 300 - 112;
-    }
+        if (!player.attacking && player.moving) {
+            player.px += dt * dx[player.direction] / 750;
+            player.py += dt * dy[player.direction] / 750;
+            player.x = player.px * 64 + player.py * -64 + 400 - 64;
+            player.y = player.px * -32 + player.py * -32 + 300 - 112;
+        }
 
-    renderer.render(stage);
-});
+        renderer.render(stage);
+    });
 }
-
-invsqrt2 = 1 / Math.sqrt(2);
-
-dx = [-invsqrt2, 0, invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1];
-dy = [invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1, -invsqrt2, 0];
