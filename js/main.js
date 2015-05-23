@@ -104,8 +104,11 @@ function Player() {
     this.attackingAnimation = false;
 
     this.px = 0.5;
+    this.pxFloor = 0;
     this.py = 0.5;
+    this.pyFloor = 0;
     this.pz = 0;
+    this.pzMin = 0
 
     var _this = this;
 
@@ -206,73 +209,130 @@ invsqrt2 = 1 / Math.sqrt(2);
 var dx = [-invsqrt2, 0, invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1];
 var dy = [invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1, -invsqrt2, 0];
 
-var heightMap = [[ 0,  0,  0],
-                 [ 0,  0, -2],
-                 [ 0,  0,  1]];
+var heightMap = [[0, 0, 0],
+                 [0, 0, 0],
+                 [0, 0, 1]];
+var rampMap = [[-1, -1, -1],
+               [-1, -1,  1],
+               [-1, -1, -1]];
 
 function heightRef(x, y) {
     if (x < 0 || x >= 3 || y < 0 || y >= 3)
-        return 0
+        return 0;
     else
         return heightMap[y][x];
 }
 
+function rampRef(x, y) {
+    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+        return undefined;
+    else
+        return rampMap[y][x];
+}
+
 function heightAt(x, y, floorX, floorY) {
-    var val = heightRef(floorX, floorY);
-    if (val < 0) {
-        switch (val) {
-            case -1: return (x - floorX) * heightRef(floorX + 1, floorY) + (1 - x + floorX) * heightRef(floorX - 1, floorY);
-            case -2: return (y - floorY) * heightRef(floorX, floorY + 1) + (1 - y + floorY) * heightRef(floorX, floorY - 1);
-            case -3: return (x - floorX) * heightRef(floorX - 1, floorY) + (1 - x + floorX) * heightRef(floorX + 1, floorY);
-            case -4: return (y - floorY) * heightRef(floorX, floorY - 1) + (1 - y + floorY) * heightRef(floorX, floorY + 1);
-        }
+    var height = heightRef(floorX, floorY);
+    var ramp = rampRef(floorX, floorY);
+    if (ramp < 0) {
+        return height;
     } else {
-        return val;
+        switch (ramp) {
+            case 0: return height + (x - floorX);
+            case 1: return height + (y - floorY);
+            case 2: return height + (1 - x + floorX);
+            case 3: return height + (1 - y + floorY);
+            default: return height;
+        }
     }
 }
 
-function passableFrom(x, y, floorX, floorY, z, direction) {
-    var val = heightRef(floorX, floorY);
-    if (val < 0) {
-        return true;
-    } else {
-        switch (direction) {
-            case 0: return heightAt(x + 1, y, floorX + 1, floorY) <= z;
-            case 1: return heightAt(x, y + 1, floorX, floorY + 1) <= z;
-            case 2: return heightAt(x - 1, y, floorX - 1, floorY) <= z;
-            case 3: return heightAt(x, y - 1, floorX, floorY - 1) <= z;
-        }
+var passMap = [[null, null, null],
+               [null, null, null],
+               [null, null, null]];
+
+function passRef(x, y) {
+    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+        return undefined;
+    else
+        return passMap[y][x];
+}
+
+for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+        var height = heightRef(i, j);
+        var ramp = rampRef(i, j);
+        var pass = [null, null, null, null];
+        var r;
+        var h;
+
+        r = rampRef(i + 1, j);
+        h = heightRef(i + 1, j);
+        pass[0] = (r !== undefined) &&
+                  ((h < height) ||
+                   (r < 0 && h === height) ||
+                   (r === 0 && h === height) ||
+                   (ramp === 0 && h - 1 === height));
+
+        r = rampRef(i, j + 1);
+        h = heightRef(i, j + 1);
+        pass[1] = (r !== undefined) &&
+                  ((h < height) ||
+                   (r < 0 && h === height) ||
+                   (r === 1 && h === height) ||
+                   (ramp === 1 && h - 1 === height));
+
+        r = rampRef(i - 1, j);
+        h = heightRef(i - 1, j);
+        pass[2] = (r !== undefined) &&
+                  ((h < height) ||
+                   (r < 0 && h === height) ||
+                   (r === 2 && h === height) ||
+                   (ramp === 2 && h - 1 === height));
+
+        r = rampRef(i, j - 1);
+        h = heightRef(i, j - 1);
+        pass[3] = (r !== undefined) &&
+                  ((h < height) ||
+                   (r < 0 && h === height) ||
+                   (r === 3 && h === height) ||
+                   (ramp === 3 && h - 1 === height));
+        
+        passMap[j][i] = pass;
     }
 }
+
+console.log(passMap);
 
 Player.prototype.updatePosition = function(dt) {
     if (!this.attacking && this.moving) {
-        var pxFloor = Math.floor(this.px);
-        var pyFloor = Math.floor(this.py);
         var _px = this.px + dt * dx[this.direction] / 250;
         var _py = this.py + dt * dy[this.direction] / 250;
         var _pxFloor = Math.floor(_px);
         var _pyFloor = Math.floor(_py);
-        if (_pxFloor !== pxFloor || _pyFloor !== pyFloor) {
-            if (_pxFloor > pxFloor)
-                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 0))
-                    _px = this.px;
-            else if (_pxFloor < pxFloor)
-                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 2))
-                    _px = this.px;
-            if (_pyFloor > pyFloor)
-                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 1))
-                    _py = this.py;
-            else if (_pxFloor < pxFloor)
-                if (!passableFrom(this.px, this.py, pxFloor, pyFloor, this.pz, 3))
-                    _py = this.py;
+        if (_px > this.pxFloor + 0.8) {
+            if (!passRef(this.pxFloor, this.pyFloor)[0])
+                _px = this.pxFloor + 0.8;
+        } else if (_px < this.pxFloor + 0.2) {
+            if (!passRef(this.pxFloor, this.pyFloor)[2])
+                _px = this.pxFloor + 0.2;
+        }
+        if (_py > this.pyFloor + 0.8) {
+            if (!passRef(this.pxFloor, this.pyFloor)[1])
+                _py = this.pyFloor + 0.8;
+        } else if (_py < this.pyFloor + 0.2) {
+            if (!passRef(this.pxFloor, this.pyFloor)[3])
+                _py = this.pyFloor + 0.2;
         }
         this.px = _px;
         this.py = _py;
-        this.pz = heightAt(this.px, this.py, pxFloor, pyFloor);
-        this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
-        this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
+        this.pxFloor = Math.floor(this.px);
+        this.pyFloor = Math.floor(this.py);
+        this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
     }
+    this.pz -= dt / 100;
+    this.pz = Math.max(this.pzMin, this.pz);
+    this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
+    this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
 }
 
 var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor : 0x1099bb});
