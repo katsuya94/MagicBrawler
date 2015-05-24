@@ -11,7 +11,7 @@ function Actor(frame) {
         for (var j = 0; j < 4; j++) {
             animation.push(frames[i * 32 + 0 + j]);
         }
-        for (var j = 1; j < 3; j++) {
+        for (var j = 0; j < 4; j++) {
             animation.push(frames[i * 32 + 0 + (3 - j)]);
         }
         animations.push(animation);
@@ -67,40 +67,6 @@ Actor.prototype = Object.create(CustomAnimation.prototype);
 Actor.prototype.constructor = Actor;
 
 Actor.prototype.movementUpdate = function() {
-    var x = 0;
-    var y = 0;
-
-    if (klLeft.isDown) x -= 1;
-    if (klUp.isDown) y += 1;
-    if (klRight.isDown) x += 1;
-    if (klDown.isDown) y -= 1;
-
-    if (x === -1) {
-        if (y === -1) {
-            this.direction = 7;
-        } else if (y === 0) {
-            this.direction = 0;
-        } else if (y === 1) {
-            this.direction = 1;
-        }
-    } else if (x === 0) {
-        if (y === -1) {
-            this.direction = 6;
-        }else if (y === 1) {
-            player.direction = 2;
-        }
-    } else if (x === 1) {
-        if (y === -1) {
-            this.direction = 5;
-        } else if (y === 0) {
-            this.direction = 4;
-        } else if (y === 1) {
-            this.direction = 3;          
-        }
-    }
-
-    this.moving = !(x === 0 && y === 0);
-
     if (this.attacking) {
         this.movingAnimation = false;
         if (this.attackingAnimation)

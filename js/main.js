@@ -14,7 +14,8 @@ var klRight = new keyListener(39);
 var klDown = new keyListener(40);
 var klX = new keyListener(88);
 
-var playerMovementUpdateScheduler = scheduler(function() {player.movementUpdate.call(player);});
+var playerMovementUpdateScheduled = false;
+var playerMovementUpdateScheduler = function() { playerMovementUpdateScheduled = true; };
 
 klLeft.press = playerMovementUpdateScheduler;
 klLeft.release = playerMovementUpdateScheduler;
@@ -25,9 +26,46 @@ klRight.release = playerMovementUpdateScheduler;
 klDown.press = playerMovementUpdateScheduler;
 klDown.release = playerMovementUpdateScheduler;
 
-var attackScheduler = scheduler(function() {player.attack.call(player);});
+function controlMovement() {
+    var x = 0;
+    var y = 0;
 
-klX.press = attackScheduler;
+    if (klLeft.isDown) x -= 1;
+    if (klUp.isDown) y += 1;
+    if (klRight.isDown) x += 1;
+    if (klDown.isDown) y -= 1;
+
+    if (x === -1) {
+        if (y === -1) {
+            player.direction = 7;
+        } else if (y === 0) {
+            player.direction = 0;
+        } else if (y === 1) {
+            player.direction = 1;
+        }
+    } else if (x === 0) {
+        if (y === -1) {
+            player.direction = 6;
+        }else if (y === 1) {
+            player.direction = 2;
+        }
+    } else if (x === 1) {
+        if (y === -1) {
+            player.direction = 5;
+        } else if (y === 0) {
+            player.direction = 4;
+        } else if (y === 1) {
+            player.direction = 3;
+        }
+    }
+
+    player.moving = !(x === 0 && y === 0);
+}
+
+var playerAttackScheduled = false;
+var playerAttackScheduler = function() { playerAttackScheduled = true; };
+
+klX.press = playerAttackScheduler;
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(onAssetsLoaded);
 
@@ -102,11 +140,24 @@ function onAssetsLoaded() {
     }, 1000);
 
     ticker.add(function () {
+        if (playerMovementUpdateScheduled) {
+            playerMovementUpdateScheduled = false;
+            controlMovement();
+            player.movementUpdate();
+        }
+        if (playerAttackScheduled) {
+            playerAttackScheduled = false;
+            player.attack();
+        }
+
         var dt = ticker.elapsedMS;
+
         player.updatePosition(dt);
         for (var i = 0; i < orcs.length; i++)
             orcs[i].updatePosition(dt);
+
         world.children.sort(function(a, b) {return a.depth < b.depth;});
+
         renderer.render(stage);
     });
 }
