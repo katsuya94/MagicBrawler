@@ -140,6 +140,8 @@ function onAssetsLoaded() {
     }, 1000);
 
     ticker.add(function () {
+        var dt = ticker.elapsedMS;
+
         if (playerMovementUpdateScheduled) {
             playerMovementUpdateScheduled = false;
             controlMovement();
@@ -150,7 +152,16 @@ function onAssetsLoaded() {
             player.attack();
         }
 
-        var dt = ticker.elapsedMS;
+        for (var i = 0; i < hitboxes.length; i++) {
+            if (hitboxes[i].update(dt)) {
+                hitboxes[i].hit(player);
+                for (var j = 0; j < orcs.length; j++)
+                    hitboxes[i].hit(orcs[j]);
+            } else {
+                hitboxes.splice(i, 1);
+                i--;
+            }
+        }
 
         player.updatePosition(dt);
         for (var i = 0; i < orcs.length; i++)
