@@ -127,7 +127,7 @@ function onAssetsLoaded() {
     player.play();
     world.addChild(player);
 
-    var orc = new Actor('orc');
+    var orc = new Orc();
     orc.play();
     world.addChild(orc);
     orcs.push(orc);
@@ -151,6 +151,8 @@ function onAssetsLoaded() {
             playerAttackScheduled = false;
             player.attack();
         }
+
+        orcs[0].setDest(player.px, player.py);
 
         for (var i = 0; i < hitboxes.length; i++) {
             if (hitboxes[i].update(dt)) {

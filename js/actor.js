@@ -116,7 +116,6 @@ Actor.prototype.hurt = function(damage) {
         if (this.health <= 0) {
             this.dying = true;
             this.loop = false;
-            this.tint = 0xFFFFFF;
             this.movementUpdate();
         }
     }
@@ -145,10 +144,15 @@ Actor.prototype.updatePosition = function(dt) {
             }
             this.px = _px;
             this.py = _py;
-            this.pxFloor = Math.floor(this.px);
-            this.pyFloor = Math.floor(this.py);
-            this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
             this.depth = this.px + this.py;
+            var pxFloor = Math.floor(this.px);
+            var pyFloor = Math.floor(this.py);
+            if (pxFloor !== this.pxFloor || pyFloor !== this.pyFloor) {
+                this.pxFloor = pxFloor;
+                this.pyFloor = pyFloor;
+                if (this.pathFind) this.pathFind();
+            }
+            this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
         }
 
         if (this.attacking) {
@@ -160,17 +164,17 @@ Actor.prototype.updatePosition = function(dt) {
             }
         }
 
-        if (this.tint !== 0xFFFFFF) {
-            this.tintTime -= dt;
-            if (this.tintTime <= 0)
-                this.tint = 0xFFFFFF;
-        }
-
         if (this.invulnerable) {
             this.invulnerableTime -= dt;
             if (this.invulnerableTime <= 0)
                 this.invulnerable = false;
         }
+    }
+
+    if (this.tint !== 0xFFFFFF) {
+        this.tintTime -= dt;
+        if (this.tintTime <= 0)
+            this.tint = 0xFFFFFF;
     }
 
     this.pz -= dt / 200;
