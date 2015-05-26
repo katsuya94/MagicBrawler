@@ -88,6 +88,11 @@ function onAssetsLoaded() {
     world.addChild(orc);
     orcs.push(orc);
 
+    player.pathFind = function() {
+        if (orcs[0])
+            orcs[0].setDest(player.px, player.py);
+    };
+
     debug = new PIXI.Text('');
     stage.addChild(debug);
 
@@ -107,8 +112,6 @@ function onAssetsLoaded() {
             playerAttackScheduled = false;
             player.attack();
         }
-
-        // orcs[0].setDest(player.px, player.py);
 
         for (var i = 0; i < hitboxes.length; i++) {
             if (hitboxes[i].update(dt)) {
@@ -133,7 +136,7 @@ function onAssetsLoaded() {
         }
 
 
-        world.children.sort(function(a, b) {return a.depth < b.depth;});
+        world.children.sort(function(a, b) {return b.depth - a.depth;});
 
         renderer.render(stage);
     });

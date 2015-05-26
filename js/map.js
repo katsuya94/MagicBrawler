@@ -1,6 +1,14 @@
-var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
-                [[ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1]],
-                [[ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1]]];
+var DIM = 9;
+
+var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1]]];
 
 function mapLayers() {
     var layers = [];
@@ -20,32 +28,44 @@ function mapLayers() {
         layer.depth = i + j + 1.6;
         layers.push(layer);
     }
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < DIM; i++) {
         across(i, 0);
     }
-    for (var j = 1; j < 3; j++) {
-        across(2, j);
+    for (var j = 1; j < DIM; j++) {
+        across(DIM - 1, j);
     }
     return layers;
 }
 
-var heightMap = [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 1, 0]];
+var heightMap = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 1, 0, 0, 1, 0, 0, 1, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 1, 0, 0, 1, 0, 0, 1, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 1, 0, 0, 1, 0, 0, 1, 0]];
 
 function heightRef(x, y) {
-    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
         return 0;
     else
         return heightMap[y][x];
 }
 
-var rampMap = [[-1, -1, -1],
-               [-1,  1, -1],
-               [-1, -1, -1]];
+var rampMap = [[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+               [-1,  1, -1, -1,  1, -1, -1,  1, -1],
+               [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+               [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+               [-1,  1, -1, -1,  1, -1, -1,  1, -1],
+               [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+               [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+               [-1,  1, -1, -1,  1, -1, -1,  1, -1],
+               [-1, -1, -1, -1, -1, -1, -1, -1, -1]];
 
 function rampRef(x, y) {
-    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
         return undefined;
     else
         return rampMap[y][x];
@@ -67,12 +87,18 @@ function heightAt(x, y, floorX, floorY) {
     }
 }
 
-var passMap = [[undefined, undefined, undefined],
-               [undefined, undefined, undefined],
-               [undefined, undefined, undefined]];
+var passMap = [[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+               [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]];
 
-for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
+for (var i = 0; i < DIM; i++) {
+    for (var j = 0; j < DIM; j++) {
         var height = heightRef(i, j);
         var ramp = rampRef(i, j);
         var pass = [undefined, undefined, undefined, undefined];
@@ -116,25 +142,31 @@ for (var i = 0; i < 3; i++) {
 }
 
 function passRef(x, y) {
-    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
         return undefined;
     else
         return passMap[y][x];
 }
 
-var pass8Map = [[undefined, undefined, undefined],
-                [undefined, undefined, undefined],
-                [undefined, undefined, undefined]];
+var pass8Map = [[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+                [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]];
 
 function pass8Ref(x, y) {
-    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
         return undefined;
     else
         return pass8Map[y][x];
 }
 
-for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
+for (var i = 0; i < DIM; i++) {
+    for (var j = 0; j < DIM; j++) {
         var pass = passRef(i, j);
         var passAdjacent = [passRef(i + 1, j), passRef(i, j + 1), passRef(i - 1, j), passRef(i, j - 1)];
         pass8Map[j][i] = [pass[1] && pass[2] && passAdjacent[1][2] && passAdjacent[2][1],
@@ -152,13 +184,13 @@ for (var i = 0; i < 3; i++) {
 
 var pathMap = [];
 
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < DIM; i++) {
     var sRow = [];
-    for (var j = 0; j < 3; j++) {
+    for (var j = 0; j < DIM; j++) {
         var sCell = []
-        for (var k = 0; k < 3; k++) {
+        for (var k = 0; k < DIM; k++) {
             var dRow = []
-            for (var l = 0; l < 3; l++) {
+            for (var l = 0; l < DIM; l++) {
                 dRow.push({ distance: Infinity, next: undefined });
             }
             sCell.push(dRow);
@@ -168,15 +200,15 @@ for (var i = 0; i < 3; i++) {
     pathMap.push(sRow);
 }
 
-for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
+for (var i = 0; i < DIM; i++) {
+    for (var j = 0; j < DIM; j++) {
         pathMap[j][i][j][i].distance = 0;
         pathMap[j][i][j][i].next = null;
     }
 }
 
-for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
+for (var i = 0; i < DIM; i++) {
+    for (var j = 0; j < DIM; j++) {
         var pass8 = pass8Ref(i, j);
         if (pass8[0]) {
             pathMap[j][i][j + 1][i - 1].distance = invsqrt2;
@@ -213,12 +245,12 @@ for (var i = 0; i < 3; i++) {
     }
 }
 
-for (var ki = 0; ki < 3; ki++) {
-    for (var kj = 0; kj < 3; kj++) {
-        for (var ii = 0; ii < 3; ii++) {
-            for (var ij = 0; ij < 3; ij++) {
-                for (var ji = 0; ji < 3; ji++) {
-                    for (var jj = 0; jj < 3; jj++) {
+for (var ki = 0; ki < DIM; ki++) {
+    for (var kj = 0; kj < DIM; kj++) {
+        for (var ii = 0; ii < DIM; ii++) {
+            for (var ij = 0; ij < DIM; ij++) {
+                for (var ji = 0; ji < DIM; ji++) {
+                    for (var jj = 0; jj < DIM; jj++) {
                         if (pathMap[ij][ii][kj][ki].distance + pathMap[kj][ki][jj][ji].distance < pathMap[ij][ii][jj][ji].distance) {
                             pathMap[ij][ii][jj][ji].distance = pathMap[ij][ii][kj][ki].distance + pathMap[kj][ki][jj][ji].distance;
                             pathMap[ij][ii][jj][ji].next = pathMap[ij][ii][kj][ki].next;
@@ -231,7 +263,7 @@ for (var ki = 0; ki < 3; ki++) {
 }
 
 function pathRef(sx, sy, dx, dy) {
-    if (sx < 0 || sx >= 3 || sy < 0 || sy >= 3 || dx < 0 || dx >= 3 || dy < 0 || dy >= 3)
+    if (sx < 0 || sx >= DIM || sy < 0 || sy >= DIM || dx < 0 || dx >= DIM || dy < 0 || dy >= DIM)
         return undefined;
     else
         return pathMap[sy][sx][dy][dx];
