@@ -21,7 +21,7 @@ Orc.prototype.pathFind = function() {
     var xDestFloor = Math.floor(this.xDest);
     var yDestFloor = Math.floor(this.yDest);
     if (xDestFloor === this.pxFloor && yDestFloor === this.pyFloor)
-        this.moving = false
+        this.moving = false;
     else
         this.direction = pathRef(this.pxFloor, this.pyFloor, xDestFloor, yDestFloor).next;
     this.movementUpdate();

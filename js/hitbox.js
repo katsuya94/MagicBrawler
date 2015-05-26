@@ -19,12 +19,12 @@ HitBox.prototype.hit = function(actor) {
               (this.yl < actor.py) && (actor.py < this.yh) &&
               (this.zl < actor.pz) && (actor.pz < this.zh);
     if (hit) actor.hurt(this.damage);
-}
+};
 
 HitBox.prototype.update = function(dt) {
     this.delay -= dt;
     this.ttl -= dt;
-    return this.ttl > 0
-}
+    return this.ttl > 0;
+};
 
 var hitboxes = [];

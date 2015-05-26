@@ -63,7 +63,9 @@ function controlMovement() {
 }
 
 var playerAttackScheduled = false;
+var orcAttackScheduled = false;
 var playerAttackScheduler = function() { playerAttackScheduled = true; };
+var orcAttackScheduler = function() { orcAttackScheduled = true; }
 
 klX.press = playerAttackScheduler;
 
@@ -96,8 +98,8 @@ function onAssetsLoaded() {
     }, 1000);
 
     ticker.add(function () {
-        var dt = ticker.elapsedMS;
-
+        var dt = ticker.elapsedMS,
+            currentTime = Date.now();
         if (playerMovementUpdateScheduled) {
             playerMovementUpdateScheduled = false;
             controlMovement();
@@ -107,8 +109,14 @@ function onAssetsLoaded() {
             playerAttackScheduled = false;
             player.attack();
         }
+        if (orcAttackScheduled) {
+            orcAttackScheduled = false;
+            orcs[0].attack();
+        }
+
 
         // orcs[0].setDest(player.px, player.py);
+
 
         for (var i = 0; i < hitboxes.length; i++) {
             if (hitboxes[i].update(dt)) {
@@ -123,13 +131,18 @@ function onAssetsLoaded() {
 
         player.updatePosition(dt);
 
-        if (player.dying && Date.now() - player.timeDead >= 5000)
+        if (player.dying && currentTime - player.timeDead >= 5000)
             world.removeChild(player);
 
         for (var i = 0; i < orcs.length; i++){
             orcs[i].updatePosition(dt);
-            if(orcs[i].dying && Date.now() - orcs[i].timeDead >= 3000)
+            if(orcs[i].dying && currentTime - orcs[i].timeDead >= 3000)
                 world.removeChild(orcs[i]);
+            if (player.dying == false && distance(orcs[i].x, orcs[i].y, player.x, player.y) <= 40){
+                orcs[i].faceObject(player.x, player.y);
+                orcAttackScheduler();
+            }
+
         }
 
 
