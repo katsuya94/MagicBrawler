@@ -54,6 +54,7 @@ function Actor(frame) {
     this.attackingAnimation = false;
 
     this.dying = false;
+    this.timeDead = 0;
 
     this.px = 0.5;
     this.pxFloor = 0;
@@ -114,6 +115,7 @@ Actor.prototype.hurt = function(damage) {
         this.tintTime = 200;
         this.health -= damage;
         if (this.health <= 0) {
+            this.timeDead = Date.now();
             this.dying = true;
             this.loop = false;
             this.movementUpdate();

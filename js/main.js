@@ -2,7 +2,7 @@ var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor : 0x1099bb});
 document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
-var world; 
+var world;
 var bg;
 var player;
 var orcs = [];
@@ -166,8 +166,16 @@ function onAssetsLoaded() {
         }
 
         player.updatePosition(dt);
-        for (var i = 0; i < orcs.length; i++)
+
+        if (player.dying && Date.now() - player.timeDead >= 5000)
+            world.removeChild(player);
+
+        for (var i = 0; i < orcs.length; i++){
             orcs[i].updatePosition(dt);
+            if(orcs[i].dying && Date.now() - orcs[i].timeDead >= 3000)
+                world.removeChild(orcs[i]);
+        }
+
 
         world.children.sort(function(a, b) {return a.depth < b.depth;});
 
