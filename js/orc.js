@@ -3,6 +3,9 @@ function Orc() {
 
     this.xDest = 0;
     this.yDest = 0;
+
+    this.animationSpeed = 0.15;
+    this.attackCooldown = 600;
 }
 
 Orc.prototype = Object.create(Actor.prototype);

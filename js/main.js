@@ -63,11 +63,18 @@ function controlMovement() {
 }
 
 var playerAttackScheduled = false;
-var orcAttackScheduled = false;
 var playerAttackScheduler = function() { playerAttackScheduled = true; };
-var orcAttackScheduler = function() { orcAttackScheduled = true; }
+
+var spawnScheduled = false;
 
 klX.press = playerAttackScheduler;
+
+function spawn() {
+    var orc = new Orc();
+    orc.play();
+    world.addChild(orc);
+    orcs.push(orc);
+}
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(onAssetsLoaded);
 
@@ -85,26 +92,38 @@ function onAssetsLoaded() {
     player.play();
     world.addChild(player);
 
-    var orc = new Orc();
-    orc.play();
-    world.addChild(orc);
-    orcs.push(orc);
-
     player.pathFind = function() {
-        if (orcs[0])
-            orcs[0].setDest(player.px, player.py);
+        for (var i = 0; i < orcs.length; i++)
+            orcs[i].setDest(player.px, player.py);
     };
+
+    window.setInterval(function() { spawnScheduled = true; }, 10000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
 
     window.setInterval(function() {
-        debug.text = 'FPS = ' + ticker.FPS.toFixed(0) + '; p = (' + player.px.toFixed(2) + ', ' + player.py.toFixed(2) + ', ' + player.pz.toFixed(2) + ')';
+        debug.text = 'FPS = ' + ticker.FPS.toFixed(0) + '; ' +
+                     'p = (' + player.px.toFixed(2) + ', ' + player.py.toFixed(2) + ', ' + player.pz.toFixed(2) + '); ' +
+                     'health = ' + player.health;
     }, 1000);
 
     ticker.add(function () {
-        var dt = ticker.elapsedMS,
-            currentTime = Date.now();
+        var dt = ticker.elapsedMS;
+
+        if (player.dying) {
+            player.fadeTime -= dt;
+            if (player.fadeTime <= 0)
+                world.removeChild(player);
+        }
+        for (var i = 0; i < orcs.length; i++) {
+            if (orcs[i].dying) {
+                orcs[i].fadeTime -= dt;
+                if (orcs[i].fadeTime <= 0)
+                    world.removeChild(orcs[i]);
+            }
+        }
+
         if (playerMovementUpdateScheduled) {
             playerMovementUpdateScheduled = false;
             controlMovement();
@@ -114,9 +133,18 @@ function onAssetsLoaded() {
             playerAttackScheduled = false;
             player.attack();
         }
-        if (orcAttackScheduled) {
-            orcAttackScheduled = false;
-            orcs[0].attack();
+
+        if (spawnScheduled) {
+            spawnScheduled = false;
+            spawn();
+        }
+
+        for (var i = 0; i < orcs.length; i++) {
+            if (!orcs[i].attacking && !player.dying && distance(orcs[i].px, orcs[i].py, player.px, player.py) <= 1){
+                orcs[i].faceObject(player.px, player.py);
+                orcs[i].attack();
+            }
+
         }
 
         for (var i = 0; i < hitboxes.length; i++) {
@@ -131,19 +159,8 @@ function onAssetsLoaded() {
         }
 
         player.updatePosition(dt);
-
-        if (player.dying && currentTime - player.timeDead >= 5000)
-            world.removeChild(player);
-
-        for (var i = 0; i < orcs.length; i++){
+        for (var i = 0; i < orcs.length; i++) {
             orcs[i].updatePosition(dt);
-            if(orcs[i].dying && currentTime - orcs[i].timeDead >= 3000)
-                world.removeChild(orcs[i]);
-            if (player.dying == false && distance(orcs[i].x, orcs[i].y, player.x, player.y) <= 40){
-                orcs[i].faceObject(player.x, player.y);
-                orcAttackScheduler();
-            }
-
         }
 
 

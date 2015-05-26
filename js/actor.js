@@ -68,6 +68,8 @@ function Actor(frame) {
     this.health = 100;
 
     this.invulnerable = false;
+
+    this.attackCooldown = 400;
 }
 
 Actor.prototype = Object.create(CustomAnimation.prototype);
@@ -100,7 +102,7 @@ Actor.prototype.movementUpdate = function() {
 Actor.prototype.attack = function() {
     if (!this.dying && !this.attacking) {
         this.attacking = true;
-        this.attackTime = 400;
+        this.attackTime = this.attackCooldown;
         hitboxes.push(new HitBox(this.px + dx[this.direction], this.py + dy[this.direction], this.pz + 0.5, 1, 1, 2, 200, 400, 10));
         this.loop = false;
         this.movementUpdate();
@@ -115,7 +117,7 @@ Actor.prototype.hurt = function(damage) {
         this.tintTime = 200;
         this.health -= damage;
         if (this.health <= 0) {
-            this.timeDead = Date.now();
+            this.fadeTime = 5000;
             this.dying = true;
             this.loop = false;
             this.movementUpdate();
@@ -128,8 +130,8 @@ Actor.prototype.updatePosition = function(dt) {
         if (!this.attacking && this.moving) {
             /* Calculate proposed position */
 
-            var _px = this.px + dt * dx[this.direction] / 250;
-            var _py = this.py + dt * dy[this.direction] / 250;
+            var _px = this.px + dt * (this.animationSpeed / 0.2) * dx[this.direction] / 250;
+            var _py = this.py + dt * (this.animationSpeed / 0.2) * dy[this.direction] / 250;
             var _pxFloor = Math.floor(_px);
             var _pyFloor = Math.floor(_py);
 
@@ -198,25 +200,23 @@ Actor.prototype.updatePosition = function(dt) {
     this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
 };
 
-Actor.prototype.faceObject = function(targetX, targetY){
-    var angle = calcAngle(this.x, this.y, targetX, targetY);
+Actor.prototype.faceObject = function(x, y){
+    var angle = (Math.atan2(y - this.py, x - this.px) + 2 * Math.PI) % (2 * Math.PI);
 
-    if(angle > 337.5 || angle < 22.5)
-        this.direction = 2;
-    if(angle > 22.5 && angle < 67.5)
+    if (angle < 1 * Math.PI / 8 || angle >= 15 * Math.PI / 8)
         this.direction = 3;
-    if(angle > 67.5 && angle < 112.5)
-        this.direction = 4;
-    if(angle > 112.5 && angle < 157.5)
-        this.direction = 5;
-    if(angle > 157.5  && angle < 202.5)
-        this.direction = 6;
-    if(angle > 202.5 && angle < 247.5)
-        this.direction = 7;
-    if(angle > 247.5 && angle < 292.5)
-        this.direction = 0;
-    if(angle > 292.5 && angle < 337.5)
+    else if (angle >= 1 * Math.PI / 8 && angle < 3 * Math.PI / 8)
+        this.direction = 2;
+    else if (angle >= 3 * Math.PI / 8 && angle < 5 * Math.PI / 8)
         this.direction = 1;
-    this.movementUpdate();
-    return angle;
+    else if (angle >= 5 * Math.PI / 8 && angle < 7 * Math.PI / 8)
+        this.direction = 0;
+    else if (angle >= 7 * Math.PI / 8 && angle < 9 * Math.PI / 8)
+        this.direction = 7;
+    else if (angle >= 9 * Math.PI / 8 && angle < 11 * Math.PI / 8)
+        this.direction = 6;
+    else if (angle >= 11 * Math.PI / 8 && angle < 13 * Math.PI / 8)
+        this.direction = 5;
+    else if (angle >= 13 * Math.PI / 8 && angle < 15 * Math.PI / 8)
+        this.direction = 4;
 };
