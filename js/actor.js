@@ -126,10 +126,15 @@ Actor.prototype.hurt = function(damage) {
 Actor.prototype.updatePosition = function(dt) {
     if (!this.dying) {
         if (!this.attacking && this.moving) {
+            /* Calculate proposed position */
+
             var _px = this.px + dt * dx[this.direction] / 250;
             var _py = this.py + dt * dy[this.direction] / 250;
             var _pxFloor = Math.floor(_px);
             var _pyFloor = Math.floor(_py);
+
+            /* Correct if prevented by terrain */
+
             if (_px > this.pxFloor + 0.8) {
                 if (!passRef(this.pxFloor, this.pyFloor)[0])
                     _px = this.pxFloor + 0.8;
@@ -144,6 +149,9 @@ Actor.prototype.updatePosition = function(dt) {
                 if (!passRef(this.pxFloor, this.pyFloor)[3])
                     _py = this.pyFloor + 0.2;
             }
+
+            /* Update */
+
             this.px = _px;
             this.py = _py;
             this.depth = this.px + this.py;
@@ -179,8 +187,13 @@ Actor.prototype.updatePosition = function(dt) {
             this.tint = 0xFFFFFF;
     }
 
+    /* Gravity */
+
     this.pz -= dt / 200;
     this.pz = Math.max(this.pzMin, this.pz);
+
+    /* Calculate pixel coordinates */
+
     this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
     this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
 }

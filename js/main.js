@@ -3,7 +3,7 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
 var world;
-var bg;
+var layers;
 var player;
 var orcs = [];
 var debug;
@@ -72,56 +72,12 @@ PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.js
 function onAssetsLoaded() {
     stage = new PIXI.Container();
 
-    bg = new PIXI.Container();
-    var tile;
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 0;
-    tile.y = 300 - 32 - 32;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 0;
-    tile.y = 300 - 32 - 32 - 32;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 32;
-    tile.y = 300 - 32 - 16;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain46.png');
-    tile.x = 400 - 32 + 32;
-    tile.y = 300 - 32 - 16 - 32;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 - 32;
-    tile.y = 300 - 32 - 16;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 64;
-    tile.y = 300 - 32 + 0;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 0;
-    tile.y = 300 - 32 + 0;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 - 64;
-    tile.y = 300 - 32 + 0;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 32;
-    tile.y = 300 - 32 + 16;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 - 32;
-    tile.y = 300 - 32 + 16;
-    bg.addChild(tile);
-    tile = PIXI.Sprite.fromFrame('terrain1.png');
-    tile.x = 400 - 32 + 0;
-    tile.y = 300 - 32 + 32;
-    bg.addChild(tile);
-    stage.addChild(bg);
-
     world = new PIXI.Container();
     stage.addChild(world);
+
+    layers = mapLayers();
+    for (var i = 0; i < layers.length; i++)
+        world.addChild(layers[i]);
 
     player = new Actor('player');
     player.play();
@@ -152,7 +108,7 @@ function onAssetsLoaded() {
             player.attack();
         }
 
-        orcs[0].setDest(player.px, player.py);
+        // orcs[0].setDest(player.px, player.py);
 
         for (var i = 0; i < hitboxes.length; i++) {
             if (hitboxes[i].update(dt)) {

@@ -1,6 +1,37 @@
+var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, 46, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1,  1, -1], [ 1, -1, -1]]];
+
+function mapLayers() {
+    var layers = [];
+    function across(i, j) {
+        var layer = new PIXI.Container();
+        for (var l = 0; l < i - j + 1; l++) {
+            for (var k = 0; k < 3; k++) {
+                var id = tileMap[j + l][i - l][k];
+                if (id >= 0) {
+                    var tile = PIXI.Sprite.fromFrame('terrain' + id + '.png');
+                    tile.x = 400 - 32 + (i - l) * 32 + (j + l) * -32;
+                    tile.y = 300 - 32 + (i - l) * -16 + (j + l) * -16 + k * -32 + 32;
+                    layer.addChild(tile);
+                }
+            }
+        }
+        layer.depth = i + j + 1.6;
+        layers.push(layer);
+    }
+    for (var i = 0; i < 3; i++) {
+        across(i, 0);
+    }
+    for (var j = 1; j < 3; j++) {
+        across(2, j);
+    }
+    return layers;
+}
+
 var heightMap = [[0, 0, 0],
                  [0, 0, 0],
-                 [0, 0, 1]];
+                 [0, 1, 0]];
 
 function heightRef(x, y) {
     if (x < 0 || x >= 3 || y < 0 || y >= 3)
@@ -10,7 +41,7 @@ function heightRef(x, y) {
 }
 
 var rampMap = [[-1, -1, -1],
-               [-1, -1,  1],
+               [-1,  1, -1],
                [-1, -1, -1]];
 
 function rampRef(x, y) {

@@ -4,6 +4,142 @@
 		"selected_items":
 		[
 			[
+				"yD",
+				"yDestFloor"
+			],
+			[
+				"y",
+				"yDestFloor"
+			],
+			[
+				"xDe",
+				"xDestFloor"
+			],
+			[
+				"x",
+				"xDest"
+			],
+			[
+				"pass",
+				"passAdjacent"
+			],
+			[
+				"in",
+				"invulnerable"
+			],
+			[
+				"i",
+				"invulnerable"
+			],
+			[
+				"0xF",
+				"0xFFFFFF"
+			],
+			[
+				"pla",
+				"playAnimation"
+			],
+			[
+				"tint",
+				"tintTime"
+			],
+			[
+				"atta",
+				"attackTime"
+			],
+			[
+				"mov",
+				"movementUpdate"
+			],
+			[
+				"att",
+				"attackDuration"
+			],
+			[
+				"play",
+				"playerMovementUpdateScheduled"
+			],
+			[
+				"add",
+				"addChild"
+			],
+			[
+				"floo",
+				"floor"
+			],
+			[
+				"py",
+				"pyFloor"
+			],
+			[
+				"_px",
+				"_pxFloor"
+			],
+			[
+				"ramp",
+				"rampMap"
+			],
+			[
+				"fl",
+				"floorY"
+			],
+			[
+				"floor",
+				"floorX"
+			],
+			[
+				"height",
+				"heightMap"
+			],
+			[
+				"_p",
+				"_pxFloor"
+			],
+			[
+				"px",
+				"pxFloor"
+			],
+			[
+				"_py",
+				"_pyFloor"
+			],
+			[
+				"heig",
+				"heightMap"
+			],
+			[
+				"attack",
+				"attackScheduler"
+			],
+			[
+				"movi",
+				"movingAnimation"
+			],
+			[
+				"attac",
+				"attackingAnimation"
+			],
+			[
+				"mo",
+				"movingAnimation"
+			],
+			[
+				"moveme",
+				"movementUpdate"
+			],
+			[
+				"fram",
+				"frameNumber"
+			],
+			[
+				"re",
+				"release"
+			],
+			[
+				"kl",
+				"klLeft"
+			],
+			[
 				"clas",
 				"classification	forstmt"
 			],
@@ -18,10 +154,6 @@
 			[
 				"homo",
 				"homogeneous_distributions	statement"
-			],
-			[
-				"fl",
-				"flat_distribution	statement"
 			],
 			[
 				"cache",
@@ -116,20 +248,12 @@
 				"child_indices	statement"
 			],
 			[
-				"in",
-				"indices	param"
-			],
-			[
 				"tree",
 				"treecopy	statement"
 			],
 			[
 				"ass",
 				"assert_allclose	function"
-			],
-			[
-				"add",
-				"add_argument	function"
 			],
 			[
 				"train",
@@ -324,10 +448,6 @@
 				"report_types	statement"
 			],
 			[
-				"re",
-				"report_types	statement"
-			],
-			[
 				"rep",
 				"report_type	statement"
 			],
@@ -394,150 +514,80 @@
 			[
 				"adj",
 				"adjX"
-			],
-			[
-				"next",
-				"nextMove"
-			],
-			[
-				"sw",
-				"switchTurn"
-			],
-			[
-				"pro",
-				"prototype"
-			],
-			[
-				"tie",
-				"tileWidth"
-			],
-			[
-				"goal",
-				"goal"
-			],
-			[
-				"w",
-				"tileWidth"
-			],
-			[
-				"partial",
-				"partialY"
-			],
-			[
-				"par",
-				"partialY"
-			],
-			[
-				"parti",
-				"partialX"
-			],
-			[
-				"hig",
-				"highlightX"
-			],
-			[
-				"high",
-				"highlightY"
-			],
-			[
-				"ren",
-				"renderLayer"
-			],
-			[
-				"sprit",
-				"spriteLoaded"
-			],
-			[
-				"peopl",
-				"peopleReady"
-			],
-			[
-				"ti",
-				"tileSize"
-			],
-			[
-				"tiles",
-				"tilesPerRow"
-			],
-			[
-				"render",
-				"rendererReady"
-			],
-			[
-				"margin",
-				"margin-top"
-			],
-			[
-				"marg",
-				"margin-left"
-			],
-			[
-				"padd",
-				"padding-right"
-			],
-			[
-				"paddin",
-				"padding-left"
-			],
-			[
-				"backgroun",
-				"background-color"
-			],
-			[
-				"quad",
-				"quad_vbo"
-			],
-			[
-				"glBind",
-				"glBindBuffer"
-			],
-			[
-				"tex",
-				"texCoord"
-			],
-			[
-				"u_",
-				"u_texture"
-			],
-			[
-				"hue",
-				"hue_location"
-			],
-			[
-				"FPS",
-				"FPS_CAP"
-			],
-			[
-				"perr",
-				"per_document_topic_distributions"
-			],
-			[
-				"per",
-				"per_class_word_distributions"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"contents": "",
-			"file": "main.js",
-			"file_size": 0,
-			"file_write_time": 130767066840000000,
+			"file": "js/main.js",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 5015,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "<!DOCTYPE html>\n<html>\n<head>\n    <title>EECS 370 - Final Project</title>\n    <style>\n        body {\n            margin: 0;\n            padding: 0;\n            background-color: #000000;\n        }\n    </style>\n    <script src=\"./pixi.js\"></script>\n</head>\n<body>\n<script src=\"./main.js\"></script>\n<script>\n</script>\n</body>\n</html>\n",
-			"file": "index.html",
-			"file_size": 313,
-			"file_write_time": 130767066770000000,
+			"file": "js/hitbox.js",
 			"settings":
 			{
-				"buffer_size": 332,
+				"buffer_size": 801,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/ticker.js",
+			"settings":
+			{
+				"buffer_size": 324,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/map.js",
+			"settings":
+			{
+				"buffer_size": 6350,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 658,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/customanimation.js",
+			"settings":
+			{
+				"buffer_size": 461,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/actor.js",
+			"settings":
+			{
+				"buffer_size": 5514,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/orc.js",
+			"settings":
+			{
+				"buffer_size": 699,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/defines.js",
+			"settings":
+			{
+				"buffer_size": 162,
 				"line_ending": "Unix"
 			}
 		}
@@ -549,10 +599,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 307.0,
-		"last_filter": "inst",
+		"height": 167.0,
+		"last_filter": "rem",
 		"selected_items":
 		[
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
 			[
 				"inst",
 				"Package Control: Install Package"
@@ -638,12 +692,23 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/katsuya94/Desktop/Active/EECS_370/project"
+		"/Users/katsuya94/Desktop/Active/EECS_370/project",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/css",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/img",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/js"
 	],
 	"file_history":
 	[
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/js/key.js",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/css/index.css",
 		"/Users/katsuya94/Desktop/Active/EECS_370/project/index.html",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/js/pixi.js",
 		"/Users/katsuya94/Desktop/Active/EECS_370/project/main.js",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/.codeintel/config",
+		"/Users/katsuya94/Library/Application Support/Sublime Text 3/Packages/User/SublimeCodeIntel.sublime-settings",
+		"/Users/katsuya94/Library/Application Support/Sublime Text 3/Packages/SublimeCodeIntel/SublimeCodeIntel.sublime-settings",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/config",
+		"/Users/katsuya94/Desktop/Active/EECS_370/project/.codeintel",
 		"/Users/katsuya94/Desktop/Active/EECS_322/4/L4c",
 		"/Users/katsuya94/Desktop/Active/EECS_370/hw6/totemiclifebind.txt",
 		"/Users/katsuya94/Desktop/Active/EECS_370/hw6/thewumpuscurse.txt",
@@ -761,19 +826,11 @@
 		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/callwithspilledvar.sres",
 		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/cjumpwithspilledvar.sres",
 		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/assignvarfromconstant.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/cjumpwithspilledvar.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/arithmeticoperationwithspilledvar.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/shiftoperationwithspilledvar.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/shiftoperationwithspilledvar.sres",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/comparisonwithspilledvar.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/comparisonwithspilledvar.sres",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/assignvarfromcomparison.sres",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/assignvarfromcomparison.L2f",
-		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/arithmeticoperationwithspilledvar.sres"
+		"/Users/katsuya94/Desktop/Active/EECS_322/tests/spill-test/cjumpwithspilledvar.L2f"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -794,6 +851,20 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"path\\[",
+			"null",
+			"hitboxes",
+			"rampMap\\[([^\\]]+)\\]\\[([^\\]]+)\\]",
+			"heightMap\\[([^\\]]+)\\]\\[([^\\]]+)\\]",
+			"_this",
+			"call",
+			"updateDirection",
+			"movie",
+			"key",
+			"movieclip",
+			"spritesheet",
+			"\\.js\\.map",
+			"\\.map",
 			"tail-call",
 			"coln",
 			"popular",
@@ -907,21 +978,7 @@
 			"per.*second",
 			"udyr",
 			"for\\s+\\d+\\ssecond",
-			"per.*second",
-			"per(\\s+\\w+)+\\s+second",
-			"per\\s+second",
-			"per\\s+\\d+\\s+seconds?",
-			"per\\s+%d+\\s+seconds?",
-			"after",
-			"w",
-			"-1",
-			"duration",
-			"palette",
-			"clean",
-			"model",
-			"blas",
-			"browncorpus",
-			"^\\s+"
+			"per.*second"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -929,6 +986,12 @@
 		"regex": true,
 		"replace_history":
 		[
+			"pathMap[",
+			"undefined",
+			"rampRef(\\1, \\2)",
+			"heightRef(\\1, \\2)",
+			"heightRef(\\2, \\1)",
+			"movementUpdate",
 			"np.float64",
 			"\"./elderhall",
 			"\"./penguinshoes",
@@ -963,33 +1026,32 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 7,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "main.js",
+					"file": "js/main.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 5015,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								4434,
+								4434
 							]
 						],
 						"settings":
 						{
-							"auto_complete": true,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1683.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -997,31 +1059,232 @@
 				},
 				{
 					"buffer": 1,
-					"file": "index.html",
+					"file": "js/hitbox.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 332,
+						"buffer_size": 801,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								305,
-								305
+								171,
+								171
 							]
 						],
 						"settings":
 						{
-							"auto_complete": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "js/ticker.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 324,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								324,
+								324
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "js/map.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6350,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6349,
+								6349
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2277.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 658,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								214,
+								214
+							]
+						],
+						"settings":
+						{
 							"syntax": "Packages/HTML/HTML.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "js/customanimation.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 461,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								452,
+								452
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "js/actor.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5514,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4619,
+								4619
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1820.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "js/orc.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 699,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								345,
+								345
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "js/defines.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 162,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								162,
+								162
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -1066,7 +1329,7 @@
 	"project": "project.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
