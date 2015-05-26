@@ -196,4 +196,27 @@ Actor.prototype.updatePosition = function(dt) {
 
     this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
     this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
-}
+};
+
+Actor.prototype.faceObject = function(targetX, targetY){
+    var angle = calcAngle(this.x, this.y, targetX, targetY);
+
+    if(angle > 337.5 || angle < 22.5)
+        this.direction = 2;
+    if(angle > 22.5 && angle < 67.5)
+        this.direction = 3;
+    if(angle > 67.5 && angle < 112.5)
+        this.direction = 4;
+    if(angle > 112.5 && angle < 157.5)
+        this.direction = 5;
+    if(angle > 157.5  && angle < 202.5)
+        this.direction = 6;
+    if(angle > 202.5 && angle < 247.5)
+        this.direction = 7;
+    if(angle > 247.5 && angle < 292.5)
+        this.direction = 0;
+    if(angle > 292.5 && angle < 337.5)
+        this.direction = 1;
+    this.movementUpdate();
+    return angle;
+};
