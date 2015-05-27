@@ -39,10 +39,18 @@ for(i = 0; i < DIM; i++) {
           heightMap[i][j] = k;
           break;
         case 45:
+          rampMap[i][j] = 0;
+          break;
         case 46:
-        case 38:
-        case 37:
           rampMap[i][j] = 1;
+          break;
+        case 38:
+          rampMap[i][j] = 3;
+          break;
+        case 37:
+          rampMap[i][j] = 2;
+          break;
+
       }
     }
   }
@@ -149,7 +157,8 @@ for (var i = 0; i < DIM; i++) {
                   ((h < height) ||
                    (r < 0 && h === height) ||
                    (r === 0 && h === height) ||
-                   (ramp === 0 && h - 1 === height));
+                   (ramp === 0 && h - 1 === height) ||
+                   (ramp >= 0 && r >= 0));
 
         r = rampRef(i, j + 1);
         h = heightRef(i, j + 1);
@@ -157,7 +166,8 @@ for (var i = 0; i < DIM; i++) {
                   ((h < height) ||
                    (r < 0 && h === height) ||
                    (r === 1 && h === height) ||
-                   (ramp === 1 && h - 1 === height));
+                   (ramp === 1 && h - 1 === height)||
+                   (ramp >= 0 && r >= 0));
 
         r = rampRef(i - 1, j);
         h = heightRef(i - 1, j);
@@ -165,7 +175,8 @@ for (var i = 0; i < DIM; i++) {
                   ((h < height) ||
                    (r < 0 && h === height) ||
                    (r === 2 && h === height) ||
-                   (ramp === 2 && h - 1 === height));
+                   (ramp === 2 && h - 1 === height)||
+                   (ramp >= 0 && r >= 0));
 
         r = rampRef(i, j - 1);
         h = heightRef(i, j - 1);
@@ -173,7 +184,8 @@ for (var i = 0; i < DIM; i++) {
                   ((h < height) ||
                    (r < 0 && h === height) ||
                    (r === 3 && h === height) ||
-                   (ramp === 3 && h - 1 === height));
+                   (ramp === 3 && h - 1 === height)||
+                   (ramp >= 0 && r >= 0));
 
         passMap[j][i] = pass;
     }
