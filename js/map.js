@@ -13,8 +13,8 @@ var HEIGHT = 3;
 
 //TileList
 //1 : basic grass,
-//45: ramp up right, 46: ramp up left, 36: ramp down right, ramp down left,
-//Corners: 45 -> 44 <- 46, 46 -> 35 <- 37, 36 -> 38 <- 37, 45 -> 47 <- 46
+//45: ramp up right, 46: ramp up left, 36: ramp down right,37: ramp down left,
+//Corners: 45 -> 44 <- 46 (up), 46 -> 35 <- 37(left), 36 -> 38 <- 37(down), 45 -> 47 <- 36 (right)
 
 //Plateu Chunk
 var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1]],
@@ -26,7 +26,7 @@ var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1
                 [[ 1, -1, -1], [ 1, 45, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 37, -1], [ 1, -1, -1]],
                 [[ 1, -1, -1], [ 1, 47, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 48, -1], [ 1, -1, -1]],
                 [[ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1]]];
-var blah = 0;
+
 var heightMap = [];
 var rampMap = [];
 for (var i = 0; i < DIM; i++) {
@@ -44,6 +44,7 @@ for(i = 0; i < DIM; i++) {
         case 1:
           heightMap[i][j] = k;
           break;
+        //One-directional ramps
         case 45:
           rampMap[i][j] = 0;
           break;
@@ -56,7 +57,19 @@ for(i = 0; i < DIM; i++) {
         case 37:
           rampMap[i][j] = 2;
           break;
-
+        //Bidirectional ramps
+        case 35:
+          rampMap[i][j] = 4;
+          break;
+        case 38:
+          rampMap[i][j] = 5;
+          break;
+        case 44:
+          rampMap[i][j] = 6;
+          break;
+        case 47:
+          rampMap[i][j] = 7;
+          break;
       }
     }
   }
@@ -164,7 +177,7 @@ for (var i = 0; i < DIM; i++) {
                    (r < 0 && h === height) ||
                    (r === 0 && h === height) ||
                    (ramp === 0 && h - 1 === height) ||
-                   (ramp >= 0 && r >= 0));
+                   (ramp >= 0 && r >= 0 && h === height));
 
         r = rampRef(i, j + 1);
         h = heightRef(i, j + 1);
@@ -173,7 +186,7 @@ for (var i = 0; i < DIM; i++) {
                    (r < 0 && h === height) ||
                    (r === 1 && h === height) ||
                    (ramp === 1 && h - 1 === height)||
-                   (ramp >= 0 && r >= 0));
+                   (ramp >= 0 && r >= 0 && h === height));
 
         r = rampRef(i - 1, j);
         h = heightRef(i - 1, j);
@@ -182,7 +195,7 @@ for (var i = 0; i < DIM; i++) {
                    (r < 0 && h === height) ||
                    (r === 2 && h === height) ||
                    (ramp === 2 && h - 1 === height)||
-                   (ramp >= 0 && r >= 0));
+                   (ramp >= 0 && r >= 0 && h === height));
 
         r = rampRef(i, j - 1);
         h = heightRef(i, j - 1);
@@ -191,7 +204,7 @@ for (var i = 0; i < DIM; i++) {
                    (r < 0 && h === height) ||
                    (r === 3 && h === height) ||
                    (ramp === 3 && h - 1 === height)||
-                   (ramp >= 0 && r >= 0));
+                   (ramp >= 0 && r >= 0 && h === height));
 
         passMap[j][i] = pass;
     }
