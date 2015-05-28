@@ -24,7 +24,7 @@ var tileMap  = [[[ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1, -1
                 [[ 1, -1, -1], [ 1, 45, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 37, -1], [ 1, -1, -1]],
                 [[ 1, -1, -1], [ 1,  45, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1,  1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1,  37, -1], [ 1, -1, -1]],
                 [[ 1, -1, -1], [ 1, 45, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 1, -1], [ 1, 37, -1], [ 1, -1, -1]],
-                [[ 1, -1, -1], [ 1, 47, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 48, -1], [ 1, -1, -1]],
+                [[ 1, -1, -1], [ 1, 47, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 36, -1], [ 1, 38, -1], [ 1, -1, -1]],
                 [[ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1], [ 1, -1, -1], [ 1,  -1, -1], [ 1, -1, -1]]];
 
 var heightMap = [];
@@ -41,9 +41,6 @@ for(i = 0; i < DIM; i++) {
     for (var k = 0; k < HEIGHT; k++){
       var currTile = tileMap[i][j][k];
       switch(currTile){
-        case 1:
-          heightMap[i][j] = k;
-          break;
         //One-directional ramps
         case 45:
           rampMap[i][j] = 0;
@@ -70,6 +67,9 @@ for(i = 0; i < DIM; i++) {
         case 47:
           rampMap[i][j] = 7;
           break;
+        default:
+          if (currTile >= 0)
+            heightMap[i][j] = k;
       }
     }
   }
@@ -147,7 +147,10 @@ function heightAt(x, y, floorX, floorY) {
             case 1: return height + (y - floorY);
             case 2: return height + (1 - x + floorX);
             case 3: return height + (1 - y + floorY);
-            default: return height;
+            case 4: return height + Math.min(1 - x + floorX, y - floorY);
+            case 5: return height + Math.min(1 - x + floorX, 1 - y + floorY);
+            case 6: return height + Math.min(x - floorX, y - floorY);
+            case 7: return height + Math.min(x - floorX, 1 - y + floorY);
         }
     }
 }
@@ -175,7 +178,7 @@ for (var i = 0; i < DIM; i++) {
         pass[0] = (r !== undefined) &&
                   ((h < height) ||
                    (r < 0 && h === height) ||
-                   (r === 0 && h === height) ||
+                   (((r === 0) || (r === 6) || (r === 7)) && h === height) ||
                    (ramp === 0 && h - 1 === height) ||
                    (ramp >= 0 && r >= 0 && h === height));
 
@@ -184,8 +187,8 @@ for (var i = 0; i < DIM; i++) {
         pass[1] = (r !== undefined) &&
                   ((h < height) ||
                    (r < 0 && h === height) ||
-                   (r === 1 && h === height) ||
-                   (ramp === 1 && h - 1 === height)||
+                   (((r === 1) || (r === 4) || (r === 6)) && h === height) ||
+                   (ramp === 1 && h - 1 === height) ||
                    (ramp >= 0 && r >= 0 && h === height));
 
         r = rampRef(i - 1, j);
@@ -193,8 +196,8 @@ for (var i = 0; i < DIM; i++) {
         pass[2] = (r !== undefined) &&
                   ((h < height) ||
                    (r < 0 && h === height) ||
-                   (r === 2 && h === height) ||
-                   (ramp === 2 && h - 1 === height)||
+                   (((r === 2) || (r === 4) || (r === 5)) && h === height) ||
+                   (ramp === 2 && h - 1 === height) ||
                    (ramp >= 0 && r >= 0 && h === height));
 
         r = rampRef(i, j - 1);
@@ -202,8 +205,8 @@ for (var i = 0; i < DIM; i++) {
         pass[3] = (r !== undefined) &&
                   ((h < height) ||
                    (r < 0 && h === height) ||
-                   (r === 3 && h === height) ||
-                   (ramp === 3 && h - 1 === height)||
+                   (((r === 3) || (r === 5) || (r === 7)) && h === height) ||
+                   (ramp === 3 && h - 1 === height) ||
                    (ramp >= 0 && r >= 0 && h === height));
 
         passMap[j][i] = pass;
