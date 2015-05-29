@@ -135,25 +135,89 @@ Actor.prototype.updatePosition = function(dt) {
 
             /* Correct if prevented by terrain */
 
-            if (_px > this.pxFloor + 0.8) {
-                if (!passRef(this.pxFloor, this.pyFloor)[0])
-                    _px = this.pxFloor + 0.8;
-            } else if (_px < this.pxFloor + 0.2) {
-                if (!passRef(this.pxFloor, this.pyFloor)[2])
+            var xPass;
+            var yPass;
+            var xyPass;
+
+            switch (this.direction) {
+            case 0:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[0];
+                if (_px < this.pxFloor + 0.2 && !xPass)
                     _px = this.pxFloor + 0.2;
-            }
-            if (_py > this.pyFloor + 0.8) {
-                if (!passRef(this.pxFloor, this.pyFloor)[1])
+                if (_py > this.pyFloor + 0.8 && !yPass)
                     _py = this.pyFloor + 0.8;
-            } else if (_py < this.pyFloor + 0.2) {
-                if (!passRef(this.pxFloor, this.pyFloor)[3])
+                if (_px < this.pxFloor + 0.2 && _py > this.pyFloor + 0.8 && !xyPass) {
+                    _px = this.pxFloor + 0.2;
+                    _py = this.pyFloor + 0.8;
+                }
+                break;
+            case 1:
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                if (_py > this.pyFloor + 0.8 && !yPass)
+                    _py = this.pyFloor + 0.8;
+                break;
+            case 2:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[2];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                if (_py > this.pyFloor + 0.8 && !yPass)
+                    _py = this.pyFloor + 0.8;
+                if (_px > this.pxFloor + 0.8 && _py > this.pyFloor + 0.8 && !xyPass) {
+                    _px = this.pxFloor + 0.8;
+                    _py = this.pyFloor + 0.8;
+                }
+                break;
+            case 3:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                break;
+            case 4:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[4];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                if (_py < this.pyFloor + 0.2 && !yPass)
                     _py = this.pyFloor + 0.2;
+                if (_px > this.pxFloor + 0.8 && _py < this.pyFloor + 0.2 && !xyPass) {
+                    _px = this.pxFloor + 0.8;
+                    _py = this.pyFloor + 0.2;
+                }
+                break;
+            case 5:
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                if (_py < this.pyFloor + 0.2 && !yPass)
+                    _py = this.pyFloor + 0.2;
+                break;
+            case 6:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[6];
+                if (_px < this.pxFloor + 0.2 && !xPass)
+                    _px = this.pxFloor + 0.2;
+                if (_py < this.pyFloor + 0.2 && !yPass)
+                    _py = this.pyFloor + 0.2;
+                if (_px < this.pxFloor + 0.2 && _py < this.pyFloor + 0.2 && !xyPass) {
+                    _px = this.pxFloor + 0.2;
+                    _py = this.pyFloor + 0.2;
+                }
+                break;
+            case 7:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                if (_px < this.pxFloor + 0.2 && !xPass)
+                    _px = this.pxFloor + 0.2;
+                break;
             }
 
             /* Update */
 
-            this.px = _px;
-            this.py = _py;
+            this.px = Math.min(this.pxFloor + 1.5, Math.max(this.pxFloor - 0.5, _px));
+            this.py = Math.min(this.pyFloor + 1.5, Math.max(this.pyFloor - 0.5, _py));
             var pxFloor = Math.floor(this.px);
             var pyFloor = Math.floor(this.py);
             if (pxFloor !== this.pxFloor || pyFloor !== this.pyFloor) {

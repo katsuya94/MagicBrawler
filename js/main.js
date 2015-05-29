@@ -99,7 +99,7 @@ function onAssetsLoaded() {
             orcs[i].setDest(player.px, player.py);
     };
 
-    window.setInterval(function() { spawnScheduled = true; }, 1000);
+    // window.setInterval(function() { spawnScheduled = true; }, 10000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
@@ -178,7 +178,7 @@ function onAssetsLoaded() {
         function actorDepth(actor) {
             var i = actor.pxFloor;
             var j = actor.pyFloor;
-            var h = heightMap[j][i] + (rampMap[j][i] >= 0);
+            var h = tiles[j][i].length - 1;
 
             actor.ahead = [];
             actor.numBehind = 0;
@@ -190,23 +190,32 @@ function onAssetsLoaded() {
 
             function splitColumnDiagonal(i, j) {
                 if (valid(i, j)) {
-                    for (var k = 0; k < tiles[j][i].length; k++) {
-                        if (k > h && behindDiagonal)
-                            add(actor, tiles[j][i][k]);
-                        else
-                            add(tiles[j][i][k], actor);
+                    if (tiles[j][i][h])
+                        add(tiles[j][i][h], actor);
+                    if (behindDiagonal) {
+                        if (tiles[j][i][h + 1])
+                            add(actor, tiles[j][i][h + 1]);
+                    } else {
+                        add(tiles[j][i][tiles[j][i].length - 1], actor);
                     }
                 }
             }
 
             function splitColumn(i, j) {
                 if (valid(i, j)) {
-                    for (var k = 0; k < tiles[j][i].length; k++) {
-                        if (k > h && behindDiagonal)
-                            add(actor, tiles[j][i][k]);
-                        else
-                            add(tiles[j][i][k], actor);
+                    if (tiles[j][i][h])
+                        add(tiles[j][i][h], actor);
+                    function recur(i, j) {
+                        if (valid(i, j)) {
+                            if (tiles[j][i][h + 1])
+                                add(actor, tiles[j][i][h + 1]);
+                            else {
+                                recur(i - 1, j);
+                                recur(i, j - 1);
+                            }
+                        }
                     }
+                    recur(i, j);
                 }
             }
 
@@ -222,6 +231,23 @@ function onAssetsLoaded() {
         }
 
         var roots = [tiles[DIM - 1][DIM - 1][0]];
+
+        // function dfs(node, path) {
+        //     var newpath = path.slice(0);
+        //     newpath.push(node);
+        //     if (path.indexOf(node) >= 0) {
+        //         result = newpath;
+        //         console.log('cycle');
+        //         return true;
+        //     }
+        //     for (var i = 0; i < node.ahead.length; i++) {
+        //         if (dfs(node.ahead[i], newpath))
+        //             return true;
+        //     }
+        //     return false;
+        // }
+
+        // dfs(roots[0], []);
 
         var depth = 0;
 
