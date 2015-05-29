@@ -3,7 +3,6 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
 var world;
-var layers;
 var player;
 var orcs = [];
 var debug;
@@ -84,9 +83,12 @@ function onAssetsLoaded() {
     world = new PIXI.Container();
     stage.addChild(world);
 
-    layers = mapLayers();
-    for (var i = 0; i < layers.length; i++)
-        world.addChild(layers[i]);
+    mapLayers();
+    for (var i = 0; i < DIM; i++)
+        for (var j = 0; j < DIM; j++)
+            for (var k = 0; k < HEIGHT; k++)
+                if (tiles[j][i][k])
+                    world.addChild(tiles[j][i][k]);
 
     player = new Actor('player');
     player.play();
@@ -97,7 +99,7 @@ function onAssetsLoaded() {
             orcs[i].setDest(player.px, player.py);
     };
 
-    window.setInterval(function() { spawnScheduled = true; }, 10000);
+    window.setInterval(function() { spawnScheduled = true; }, 1000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
@@ -163,8 +165,81 @@ function onAssetsLoaded() {
             orcs[i].updatePosition(dt);
         }
 
+        for (var i = 0; i < DIM; i++) {
+            for (var j = 0; j < DIM; j++) {
+                for (var k = 0; k < tiles[j][i].length; k++) {
+                    tiles[j][i][k].numBehind = tiles[j][i][k].permNumBehind;
+                    tiles[j][i][k].ahead = tiles[j][i][k].permAhead.slice(0);
+                    tiles[j][i][k].visited = false;
+                }
+            }
+        }
 
-        world.children.sort(function(a, b) {return b.depth - a.depth;});
+        function actorDepth(actor) {
+            var i = actor.pxFloor;
+            var j = actor.pyFloor;
+            var h = heightMap[j][i] + (rampMap[j][i] >= 0);
+
+            actor.ahead = [];
+            actor.numBehind = 0;
+            actor.visited = false;
+
+            add(tiles[j][i][h], actor);
+
+            var behindDiagonal = actor.px + actor.py > i + j + 1;
+
+            function splitColumnDiagonal(i, j) {
+                if (valid(i, j)) {
+                    for (var k = 0; k < tiles[j][i].length; k++) {
+                        if (k > h && behindDiagonal)
+                            add(actor, tiles[j][i][k]);
+                        else
+                            add(tiles[j][i][k], actor);
+                    }
+                }
+            }
+
+            function splitColumn(i, j) {
+                if (valid(i, j)) {
+                    for (var k = 0; k < tiles[j][i].length; k++) {
+                        if (k > h && behindDiagonal)
+                            add(actor, tiles[j][i][k]);
+                        else
+                            add(tiles[j][i][k], actor);
+                    }
+                }
+            }
+
+            splitColumnDiagonal(i - 1, j + 1);
+            splitColumnDiagonal(i + 1, j - 1);
+            splitColumn(i - 1, j);
+            splitColumn(i, j - 1);
+        }
+
+        actorDepth(player);
+        for (var i = 0; i < orcs.length; i++) {
+            actorDepth(orcs[i]);
+        }
+
+        var roots = [tiles[DIM - 1][DIM - 1][0]];
+
+        var depth = 0;
+
+        while (roots.length) {
+            var root = roots.pop();
+            if (!root.visited) {
+                root.visited = true;
+                root.depth = depth++;
+                for (var i = 0; i < root.ahead.length; i++) {
+                    var child = root.ahead[i];
+                    child.numBehind--;
+                    if (child.numBehind <= 0)
+                        roots.push(child);
+                }
+            }
+        }
+
+        world.children.sort(function(a, b) { return a.depth - b.depth; });
 
         renderer.render(stage);
     });

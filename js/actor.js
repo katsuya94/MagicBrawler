@@ -63,8 +63,6 @@ function Actor(frame) {
     this.pz = 0;
     this.pzMin = 0;
 
-    this.depth = 1;
-
     this.health = 100;
 
     this.invulnerable = false;
@@ -156,7 +154,6 @@ Actor.prototype.updatePosition = function(dt) {
 
             this.px = _px;
             this.py = _py;
-            this.depth = this.px + this.py;
             var pxFloor = Math.floor(this.px);
             var pyFloor = Math.floor(this.py);
             if (pxFloor !== this.pxFloor || pyFloor !== this.pyFloor) {
