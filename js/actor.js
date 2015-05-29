@@ -101,7 +101,7 @@ Actor.prototype.attack = function() {
     if (!this.dying && !this.attacking) {
         this.attacking = true;
         this.attackTime = this.attackCooldown;
-        hitboxes.push(new HitBox(this.px + dx[this.direction], this.py + dy[this.direction], this.pz + 0.5, 1, 1, 2, 200, 400, 10));
+        new HitArc({delay: 200, ttl: 400, damage: 10}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
         this.loop = false;
         this.movementUpdate();
     }
