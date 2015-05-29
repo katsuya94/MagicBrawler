@@ -218,13 +218,8 @@ Actor.prototype.updatePosition = function(dt) {
 
             this.px = Math.min(this.pxFloor + 1.5, Math.max(this.pxFloor - 0.5, _px));
             this.py = Math.min(this.pyFloor + 1.5, Math.max(this.pyFloor - 0.5, _py));
-            var pxFloor = Math.floor(this.px);
-            var pyFloor = Math.floor(this.py);
-            if (pxFloor !== this.pxFloor || pyFloor !== this.pyFloor) {
-                this.pxFloor = pxFloor;
-                this.pyFloor = pyFloor;
-                if (this.pathFind) this.pathFind();
-            }
+            this.pxFloor = Math.floor(this.px);
+            this.pyFloor = Math.floor(this.py);
             this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
         }
 
@@ -281,3 +276,7 @@ Actor.prototype.faceObject = function(x, y){
     else if (angle >= 13 * Math.PI / 8 && angle < 15 * Math.PI / 8)
         this.direction = 4;
 };
+
+Actor.prototype.think = function() {
+    throw new Error('Not Implemented');
+}

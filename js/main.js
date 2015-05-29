@@ -7,66 +7,7 @@ var player;
 var orcs = [];
 var debug;
 
-var klLeft = new keyListener(37);
-var klUp = new keyListener(38);
-var klRight = new keyListener(39);
-var klDown = new keyListener(40);
-var klX = new keyListener(88);
-
-var playerMovementUpdateScheduled = false;
-var playerMovementUpdateScheduler = function() { playerMovementUpdateScheduled = true; };
-
-klLeft.press = playerMovementUpdateScheduler;
-klLeft.release = playerMovementUpdateScheduler;
-klUp.press = playerMovementUpdateScheduler;
-klUp.release = playerMovementUpdateScheduler;
-klRight.press = playerMovementUpdateScheduler;
-klRight.release = playerMovementUpdateScheduler;
-klDown.press = playerMovementUpdateScheduler;
-klDown.release = playerMovementUpdateScheduler;
-
-function controlMovement() {
-    var x = 0;
-    var y = 0;
-
-    if (klLeft.isDown) x -= 1;
-    if (klUp.isDown) y += 1;
-    if (klRight.isDown) x += 1;
-    if (klDown.isDown) y -= 1;
-
-    if (x === -1) {
-        if (y === -1) {
-            player.direction = 7;
-        } else if (y === 0) {
-            player.direction = 0;
-        } else if (y === 1) {
-            player.direction = 1;
-        }
-    } else if (x === 0) {
-        if (y === -1) {
-            player.direction = 6;
-        }else if (y === 1) {
-            player.direction = 2;
-        }
-    } else if (x === 1) {
-        if (y === -1) {
-            player.direction = 5;
-        } else if (y === 0) {
-            player.direction = 4;
-        } else if (y === 1) {
-            player.direction = 3;
-        }
-    }
-
-    player.moving = !(x === 0 && y === 0);
-}
-
-var playerAttackScheduled = false;
-var playerAttackScheduler = function() { playerAttackScheduled = true; };
-
 var spawnScheduled = false;
-
-klX.press = playerAttackScheduler;
 
 function spawn() {
     var orc = new Orc();
@@ -90,16 +31,11 @@ function onAssetsLoaded() {
                 if (tiles[j][i][k])
                     world.addChild(tiles[j][i][k]);
 
-    player = new Actor('player');
+    player = new Player();
     player.play();
     world.addChild(player);
 
-    player.pathFind = function() {
-        for (var i = 0; i < orcs.length; i++)
-            orcs[i].setDest(player.px, player.py);
-    };
-
-    // window.setInterval(function() { spawnScheduled = true; }, 10000);
+    window.setInterval(function() { spawnScheduled = true; }, 10000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
@@ -112,6 +48,8 @@ function onAssetsLoaded() {
 
     ticker.add(function () {
         var dt = ticker.elapsedMS;
+
+        /* Remove dead */
 
         if (player.dying) {
             player.fadeTime -= dt;
@@ -126,28 +64,21 @@ function onAssetsLoaded() {
             }
         }
 
-        if (playerMovementUpdateScheduled) {
-            playerMovementUpdateScheduled = false;
-            controlMovement();
-            player.movementUpdate();
-        }
-        if (playerAttackScheduled) {
-            playerAttackScheduled = false;
-            player.attack();
-        }
+        /* Spawn */
 
         if (spawnScheduled) {
             spawnScheduled = false;
             spawn();
         }
 
-        for (var i = 0; i < orcs.length; i++) {
-            if (!orcs[i].attacking && !player.dying && distance(orcs[i].px, orcs[i].py, player.px, player.py) <= 1){
-                orcs[i].faceObject(player.px, player.py);
-                orcs[i].attack();
-            }
+        /* Think */
 
-        }
+        player.think();
+
+        for (var i = 0; i < orcs.length; i++)
+            orcs[i].think();
+
+        /* Hitboxes */
 
         for (var i = 0; i < hitboxes.length; i++) {
             if (hitboxes[i].update(dt)) {
@@ -160,10 +91,14 @@ function onAssetsLoaded() {
             }
         }
 
+        /* Update position */
+
         player.updatePosition(dt);
         for (var i = 0; i < orcs.length; i++) {
             orcs[i].updatePosition(dt);
         }
+
+        /* Create scene graph */
 
         for (var i = 0; i < DIM; i++) {
             for (var j = 0; j < DIM; j++) {
@@ -226,11 +161,22 @@ function onAssetsLoaded() {
         }
 
         actorDepth(player);
-        for (var i = 0; i < orcs.length; i++) {
+        for (var i = 0; i < orcs.length; i++)
             actorDepth(orcs[i]);
+
+        function actorActor(a, b) {
+            if (a.px + a.py > b.px + b.py)
+                add(a, b);
+            else
+                add(b, a);
         }
 
-        var roots = [tiles[DIM - 1][DIM - 1][0]];
+        for (var i = 0; i < orcs.length; i++)
+            actorActor(player, orcs[i]);
+        for (var i = 0; i < orcs.length; i++) {
+            for (var j = i + 1; j < orcs.length; j++)
+                actorActor(orcs[i], orcs[j]);
+        }
 
         // function dfs(node, path) {
         //     var newpath = path.slice(0);
@@ -247,8 +193,11 @@ function onAssetsLoaded() {
         //     return false;
         // }
 
-        // dfs(roots[0], []);
+        // dfs(tiles[DIM - 1][DIM - 1][0], []);
 
+        /* Topsort scene graph */
+
+        var roots = [tiles[DIM - 1][DIM - 1][0]];
         var depth = 0;
 
         while (roots.length) {
@@ -266,6 +215,8 @@ function onAssetsLoaded() {
         }
 
         world.children.sort(function(a, b) { return a.depth - b.depth; });
+
+        /* render */
 
         renderer.render(stage);
     });

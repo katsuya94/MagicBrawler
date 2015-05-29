@@ -29,3 +29,7 @@ Orc.prototype.pathFind = function() {
         this.direction = pathRef(this.pxFloor, this.pyFloor, xDestFloor, yDestFloor).next;
     this.movementUpdate();
 };
+
+Orc.prototype.think = function() {
+    
+}
