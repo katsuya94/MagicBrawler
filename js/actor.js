@@ -63,8 +63,6 @@ function Actor(frame) {
     this.pz = 0;
     this.pzMin = 0;
 
-    this.depth = 1;
-
     this.health = 100;
 
     this.invulnerable = false;
@@ -103,7 +101,7 @@ Actor.prototype.attack = function() {
     if (!this.dying && !this.attacking) {
         this.attacking = true;
         this.attackTime = this.attackCooldown;
-        hitboxes.push(new HitBox(this.px + dx[this.direction], this.py + dy[this.direction], this.pz + 0.5, 1, 1, 2, 200, 400, 10));
+        new HitArc({delay: 200, ttl: 400, damage: 10}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
         this.loop = false;
         this.movementUpdate();
     }
@@ -137,33 +135,91 @@ Actor.prototype.updatePosition = function(dt) {
 
             /* Correct if prevented by terrain */
 
-            if (_px > this.pxFloor + 0.8) {
-                if (!passRef(this.pxFloor, this.pyFloor)[0])
-                    _px = this.pxFloor + 0.8;
-            } else if (_px < this.pxFloor + 0.2) {
-                if (!passRef(this.pxFloor, this.pyFloor)[2])
+            var xPass;
+            var yPass;
+            var xyPass;
+
+            switch (this.direction) {
+            case 0:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[0];
+                if (_px < this.pxFloor + 0.2 && !xPass)
                     _px = this.pxFloor + 0.2;
-            }
-            if (_py > this.pyFloor + 0.8) {
-                if (!passRef(this.pxFloor, this.pyFloor)[1])
+                if (_py > this.pyFloor + 0.8 && !yPass)
                     _py = this.pyFloor + 0.8;
-            } else if (_py < this.pyFloor + 0.2) {
-                if (!passRef(this.pxFloor, this.pyFloor)[3])
+                if (_px < this.pxFloor + 0.2 && _py > this.pyFloor + 0.8 && !xyPass) {
+                    _px = this.pxFloor + 0.2;
+                    _py = this.pyFloor + 0.8;
+                }
+                break;
+            case 1:
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                if (_py > this.pyFloor + 0.8 && !yPass)
+                    _py = this.pyFloor + 0.8;
+                break;
+            case 2:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[1];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[2];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                if (_py > this.pyFloor + 0.8 && !yPass)
+                    _py = this.pyFloor + 0.8;
+                if (_px > this.pxFloor + 0.8 && _py > this.pyFloor + 0.8 && !xyPass) {
+                    _px = this.pxFloor + 0.8;
+                    _py = this.pyFloor + 0.8;
+                }
+                break;
+            case 3:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                break;
+            case 4:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[3];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[4];
+                if (_px > this.pxFloor + 0.8 && !xPass)
+                    _px = this.pxFloor + 0.8;
+                if (_py < this.pyFloor + 0.2 && !yPass)
                     _py = this.pyFloor + 0.2;
+                if (_px > this.pxFloor + 0.8 && _py < this.pyFloor + 0.2 && !xyPass) {
+                    _px = this.pxFloor + 0.8;
+                    _py = this.pyFloor + 0.2;
+                }
+                break;
+            case 5:
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                if (_py < this.pyFloor + 0.2 && !yPass)
+                    _py = this.pyFloor + 0.2;
+                break;
+            case 6:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                yPass = pass8Ref(this.pxFloor, this.pyFloor)[5];
+                xyPass = pass8Ref(this.pxFloor, this.pyFloor)[6];
+                if (_px < this.pxFloor + 0.2 && !xPass)
+                    _px = this.pxFloor + 0.2;
+                if (_py < this.pyFloor + 0.2 && !yPass)
+                    _py = this.pyFloor + 0.2;
+                if (_px < this.pxFloor + 0.2 && _py < this.pyFloor + 0.2 && !xyPass) {
+                    _px = this.pxFloor + 0.2;
+                    _py = this.pyFloor + 0.2;
+                }
+                break;
+            case 7:
+                xPass = pass8Ref(this.pxFloor, this.pyFloor)[7];
+                if (_px < this.pxFloor + 0.2 && !xPass)
+                    _px = this.pxFloor + 0.2;
+                break;
             }
 
             /* Update */
 
-            this.px = _px;
-            this.py = _py;
-            this.depth = this.px + this.py;
-            var pxFloor = Math.floor(this.px);
-            var pyFloor = Math.floor(this.py);
-            if (pxFloor !== this.pxFloor || pyFloor !== this.pyFloor) {
-                this.pxFloor = pxFloor;
-                this.pyFloor = pyFloor;
-                if (this.pathFind) this.pathFind();
-            }
+            this.px = Math.min(this.pxFloor + 1.5, Math.max(this.pxFloor - 0.5, _px));
+            this.py = Math.min(this.pyFloor + 1.5, Math.max(this.pyFloor - 0.5, _py));
+            this.pxFloor = Math.floor(this.px);
+            this.pyFloor = Math.floor(this.py);
             this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
         }
 
@@ -220,3 +276,7 @@ Actor.prototype.faceObject = function(x, y){
     else if (angle >= 13 * Math.PI / 8 && angle < 15 * Math.PI / 8)
         this.direction = 4;
 };
+
+Actor.prototype.think = function() {
+    throw new Error('Not Implemented');
+}

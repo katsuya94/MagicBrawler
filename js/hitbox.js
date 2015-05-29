@@ -1,30 +1,54 @@
-function HitBox(x, y, z, w, l, h, delay, ttl, damage) {
-    this.xl = x - w / 2;
-    this.yl = y - l / 2;
-    this.zl = z - h / 2;
-    this.xh = x + w / 2;
-    this.yh = y + l / 2;
-    this.zh = z + h / 2;
-    this.delay = delay;
-    this.ttl = ttl;
-    this.damage = damage;
+var hitboxes = [];
+
+function Hitbox(attack) {
+    this.delay = attack.delay;
+    this.ttl = attack.ttl;
+    this.damage = attack.damage;
+    hitboxes.push(this);
 }
 
-HitBox.prototype = Object.create(Object.prototype);
-HitBox.prototype.constructor = HitBox;
+Hitbox.prototype = Object.create(Object.prototype);
+Hitbox.prototype.constructor = Hitbox;
 
-HitBox.prototype.hit = function(actor) {
-    var hit = (this.delay <= 0) &&
-              (this.xl < actor.px) && (actor.px < this.xh) &&
-              (this.yl < actor.py) && (actor.py < this.yh) &&
-              (this.zl < actor.pz) && (actor.pz < this.zh);
-    if (hit) actor.hurt(this.damage);
+Hitbox.prototype.hit = function(actor) {
+    if (this.delay <= 0 && this.collide(actor))
+        actor.hurt(this.damage);
 };
 
-HitBox.prototype.update = function(dt) {
+Hitbox.prototype.collide = function(actor) {
+    throw new Error('Not Implemented');
+};
+
+Hitbox.prototype.update = function(dt) {
     this.delay -= dt;
     this.ttl -= dt;
     return this.ttl > 0;
 };
 
-var hitboxes = [];
+function HitArc(attack, x, y, z, minR, maxR, direction, angle, height) {
+    Hitbox.call(this, attack);
+    this.x = x;
+    this.y = y;
+    this.minZ = z - height / 2;
+    this.maxZ = z + height / 2;
+    this.minR = minR;
+    this.maxR = maxR;
+    this.minAngle = (da[direction] - angle / 2 + 2 * Math.PI) % (2 * Math.PI);
+    this.maxAngle = (da[direction] + angle / 2 + 2 * Math.PI) % (2 * Math.PI) || (2 * Math.PI);
+}
+
+HitArc.prototype = Object.create(Hitbox.prototype);
+HitArc.prototype.constructor = HitArc;
+
+HitArc.prototype.collide = function(actor) {
+    var x = actor.px - this.x;
+    var y = actor.py - this.y;
+    var angle = (Math.atan2(y, x) + 2 * Math.PI) % (2 * Math.PI);
+    if (this.minAngle < angle && angle < this.maxAngle) {
+        var r = Math.sqrt(x * x + y * y);
+        if (this.minR < r && r < this.maxR) {
+            if (this.minZ < actor.pz && actor.pz < this.maxZ)
+                actor.hurt(this.damage);
+        }
+    }
+};
