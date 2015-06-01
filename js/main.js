@@ -93,9 +93,11 @@ function onAssetsLoaded() {
 
         /* Update position */
 
-        player.updatePosition(dt);
+        player.updateGamePosition(dt);
+        player.updateScreenPosition('player');
         for (var i = 0; i < orcs.length; i++) {
-            orcs[i].updatePosition(dt);
+            orcs[i].updateGamePosition(dt);
+            orcs[i].updateScreenPosition('orc', player.px, player.py, player.pz);
         }
 
         /* Create scene graph */
@@ -106,6 +108,8 @@ function onAssetsLoaded() {
                     tiles[j][i][k].numBehind = tiles[j][i][k].permNumBehind;
                     tiles[j][i][k].ahead = tiles[j][i][k].permAhead.slice(0);
                     tiles[j][i][k].visited = false;
+                    tiles[j][i][k].x = (i - player.px) * 32 - (j - player.py) * 32 + 400;
+                    tiles[j][i][k].y = - (i - player.px) * 16 - (j - player.py) * 16  + 300 - (k - player.pz) * 32;
                 }
             }
         }

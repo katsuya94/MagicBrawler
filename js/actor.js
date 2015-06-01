@@ -105,7 +105,7 @@ Actor.prototype.attack = function() {
         this.loop = false;
         this.movementUpdate();
     }
-}
+};
 
 Actor.prototype.hurt = function(damage) {
     if (!this.invulnerable) {
@@ -121,9 +121,9 @@ Actor.prototype.hurt = function(damage) {
             this.movementUpdate();
         }
     }
-}
+};
 
-Actor.prototype.updatePosition = function(dt) {
+Actor.prototype.updateGamePosition = function(dt) {
     if (!this.dying) {
         if (!this.attacking && this.moving) {
             /* Calculate proposed position */
@@ -250,10 +250,21 @@ Actor.prototype.updatePosition = function(dt) {
     this.pz -= dt / 200;
     this.pz = Math.max(this.pzMin, this.pz);
 
-    /* Calculate pixel coordinates */
+};
 
-    this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
-    this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
+Actor.prototype.updateScreenPosition = function(type, playerPX, playerPY, playerPZ){
+    /* Calculate pixel coordinates */
+    switch(type){
+        case 'player':
+            this.x = 400 - 32;
+            this.y = 300 - 32 - 32;
+            break;
+        case 'orc':
+            this.x = (this.px - playerPX - 1.5) * 32 + (this.py - playerPY - 1.5) * -32 + 400 - 32;
+            this.y = (this.px - playerPX - 1.5) * -16 + (this.py - playerPY - 1.5) * -16 + (this.pz - playerPZ) * -32 + 300 - 112;
+            break;
+    }
+
 };
 
 Actor.prototype.faceObject = function(x, y){
