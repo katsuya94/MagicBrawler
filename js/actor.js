@@ -105,7 +105,7 @@ Actor.prototype.attack = function() {
         this.loop = false;
         this.movementUpdate();
     }
-}
+};
 
 Actor.prototype.hurt = function(damage) {
     if (!this.invulnerable) {
@@ -121,7 +121,7 @@ Actor.prototype.hurt = function(damage) {
             this.movementUpdate();
         }
     }
-}
+};
 
 Actor.prototype.updatePosition = function(dt) {
     if (!this.dying) {
@@ -250,7 +250,7 @@ Actor.prototype.updatePosition = function(dt) {
     this.pz -= dt / 200;
     this.pz = Math.max(this.pzMin, this.pz);
 
-    /* Calculate pixel coordinates */
+    /* Screen Position */
 
     this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
     this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;

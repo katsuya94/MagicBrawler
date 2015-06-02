@@ -93,9 +93,8 @@ function onAssetsLoaded() {
         /* Update position */
 
         player.updatePosition(dt);
-        for (var i = 0; i < orcs.length; i++) {
+        for (var i = 0; i < orcs.length; i++)
             orcs[i].updatePosition(dt);
-        }
 
         /* Create scene graph */
 
@@ -139,17 +138,19 @@ function onAssetsLoaded() {
                 if (valid(i, j)) {
                     if (tiles[j][i][h])
                         add(tiles[j][i][h], actor);
-                    function recur(i, j) {
-                        if (valid(i, j)) {
-                            if (tiles[j][i][h + 1])
-                                add(actor, tiles[j][i][h + 1]);
-                            else {
-                                recur(i - 1, j);
-                                recur(i, j - 1);
+                    function recur(i, j, k) {
+                        if (k > 0) {
+                            if (valid(i, j)) {
+                                if (tiles[j][i][h + 1])
+                                    add(actor, tiles[j][i][h + 1]);
+                                else {
+                                    recur(i - 1, j, k - 1);
+                                    recur(i, j - 1, k - 1);
+                                }
                             }
                         }
                     }
-                    recur(i, j);
+                    recur(i, j, HEIGHT);
                 }
             }
 
@@ -214,6 +215,9 @@ function onAssetsLoaded() {
         }
 
         world.children.sort(function(a, b) { return a.depth - b.depth; });
+
+        world.x = -player.x + 400 - 64;
+        world.y = -player.y + 300 - 64;
 
         /* render */
 
