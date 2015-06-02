@@ -216,8 +216,8 @@ Actor.prototype.updatePosition = function(dt) {
 
             /* Update */
 
-            this.px = Math.min(this.pxFloor + 1.5, Math.max(this.pxFloor - 0.5, _px));
-            this.py = Math.min(this.pyFloor + 1.5, Math.max(this.pyFloor - 0.5, _py));
+            this.px = Math.min(this.px + 0.5, Math.max(this.px - 0.5, _px));
+            this.py = Math.min(this.py + 0.5, Math.max(this.py - 0.5, _py));
             this.pxFloor = Math.floor(this.px);
             this.pyFloor = Math.floor(this.py);
             this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
@@ -277,6 +277,12 @@ Actor.prototype.faceObject = function(x, y){
         this.direction = 4;
 };
 
-Actor.prototype.think = function() {
+Actor.prototype.think = function(dt) {
     throw new Error('Not Implemented');
+}
+
+Actor.prototype.distance = function(actor) {
+    var x = actor.px - this.px;
+    var y = actor.py - this.py;
+    return Math.sqrt(x * x + y * y);
 }

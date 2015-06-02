@@ -35,7 +35,7 @@ function onAssetsLoaded() {
     player.play();
     world.addChild(player);
 
-    window.setInterval(function() { spawnScheduled = true; }, 10000);
+    window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
@@ -73,10 +73,9 @@ function onAssetsLoaded() {
 
         /* Think */
 
-        player.think();
-
+        player.think(dt);
         for (var i = 0; i < orcs.length; i++)
-            orcs[i].think();
+            orcs[i].think(dt);
 
         /* Hitboxes */
 

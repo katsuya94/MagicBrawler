@@ -29,7 +29,7 @@ function Player() {
 Player.prototype = Object.create(Actor.prototype);
 Player.prototype.constructor = Orc;
 
-Player.prototype.think = function() {
+Player.prototype.think = function(dt) {
     if (playerMoveScheduled) {
         playerMoveScheduled = false;
         var x = 0;
