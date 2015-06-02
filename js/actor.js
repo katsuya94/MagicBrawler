@@ -123,7 +123,7 @@ Actor.prototype.hurt = function(damage) {
     }
 };
 
-Actor.prototype.updateGamePosition = function(dt) {
+Actor.prototype.updatePosition = function(dt) {
     if (!this.dying) {
         if (!this.attacking && this.moving) {
             /* Calculate proposed position */
@@ -216,8 +216,8 @@ Actor.prototype.updateGamePosition = function(dt) {
 
             /* Update */
 
-            this.px = Math.min(this.pxFloor + 1.5, Math.max(this.pxFloor - 0.5, _px));
-            this.py = Math.min(this.pyFloor + 1.5, Math.max(this.pyFloor - 0.5, _py));
+            this.px = Math.min(this.px + 0.5, Math.max(this.px - 0.5, _px));
+            this.py = Math.min(this.py + 0.5, Math.max(this.py - 0.5, _py));
             this.pxFloor = Math.floor(this.px);
             this.pyFloor = Math.floor(this.py);
             this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
@@ -250,21 +250,10 @@ Actor.prototype.updateGamePosition = function(dt) {
     this.pz -= dt / 200;
     this.pz = Math.max(this.pzMin, this.pz);
 
-};
+    /* Screen Position */
 
-Actor.prototype.updateScreenPosition = function(type, playerPX, playerPY, playerPZ){
-    /* Calculate pixel coordinates */
-    switch(type){
-        case 'player':
-            this.x = 400 - 32;
-            this.y = 300 - 32 - 32;
-            break;
-        case 'orc':
-            this.x = (this.px - playerPX - 1.5) * 32 + (this.py - playerPY - 1.5) * -32 + 400 - 32;
-            this.y = (this.px - playerPX - 1.5) * -16 + (this.py - playerPY - 1.5) * -16 + (this.pz - playerPZ) * -32 + 300 - 112;
-            break;
-    }
-
+    this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
+    this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
 };
 
 Actor.prototype.faceObject = function(x, y){
@@ -288,6 +277,12 @@ Actor.prototype.faceObject = function(x, y){
         this.direction = 4;
 };
 
-Actor.prototype.think = function() {
+Actor.prototype.think = function(dt) {
     throw new Error('Not Implemented');
+}
+
+Actor.prototype.distance = function(actor) {
+    var x = actor.px - this.px;
+    var y = actor.py - this.py;
+    return Math.sqrt(x * x + y * y);
 }

@@ -35,7 +35,7 @@ function onAssetsLoaded() {
     player.play();
     world.addChild(player);
 
-    window.setInterval(function() { spawnScheduled = true; }, 10000);
+    window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
 
     debug = new PIXI.Text('');
     stage.addChild(debug);
@@ -73,10 +73,9 @@ function onAssetsLoaded() {
 
         /* Think */
 
-        player.think();
-
+        player.think(dt);
         for (var i = 0; i < orcs.length; i++)
-            orcs[i].think();
+            orcs[i].think(dt);
 
         /* Hitboxes */
 
@@ -93,12 +92,9 @@ function onAssetsLoaded() {
 
         /* Update position */
 
-        player.updateGamePosition(dt);
-        player.updateScreenPosition('player');
-        for (var i = 0; i < orcs.length; i++) {
-            orcs[i].updateGamePosition(dt);
-            orcs[i].updateScreenPosition('orc', player.px, player.py, player.pz);
-        }
+        player.updatePosition(dt);
+        for (var i = 0; i < orcs.length; i++)
+            orcs[i].updatePosition(dt);
 
         /* Create scene graph */
 
@@ -108,8 +104,6 @@ function onAssetsLoaded() {
                     tiles[j][i][k].numBehind = tiles[j][i][k].permNumBehind;
                     tiles[j][i][k].ahead = tiles[j][i][k].permAhead.slice(0);
                     tiles[j][i][k].visited = false;
-                    tiles[j][i][k].x = (i - player.px) * 32 - (j - player.py) * 32 + 400;
-                    tiles[j][i][k].y = - (i - player.px) * 16 - (j - player.py) * 16  + 300 - (k - player.pz) * 32;
                 }
             }
         }
@@ -144,17 +138,19 @@ function onAssetsLoaded() {
                 if (valid(i, j)) {
                     if (tiles[j][i][h])
                         add(tiles[j][i][h], actor);
-                    function recur(i, j) {
-                        if (valid(i, j)) {
-                            if (tiles[j][i][h + 1])
-                                add(actor, tiles[j][i][h + 1]);
-                            else {
-                                recur(i - 1, j);
-                                recur(i, j - 1);
+                    function recur(i, j, k) {
+                        if (k > 0) {
+                            if (valid(i, j)) {
+                                if (tiles[j][i][h + 1])
+                                    add(actor, tiles[j][i][h + 1]);
+                                else {
+                                    recur(i - 1, j, k - 1);
+                                    recur(i, j - 1, k - 1);
+                                }
                             }
                         }
                     }
-                    recur(i, j);
+                    recur(i, j, HEIGHT);
                 }
             }
 
@@ -219,6 +215,9 @@ function onAssetsLoaded() {
         }
 
         world.children.sort(function(a, b) { return a.depth - b.depth; });
+
+        world.x = -player.x + 400 - 64;
+        world.y = -player.y + 300 - 64;
 
         /* render */
 
