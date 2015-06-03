@@ -68,6 +68,8 @@ function Actor(frame) {
     this.invulnerable = false;
 
     this.attackCooldown = 400;
+
+    this.newTile = false;
 }
 
 Actor.prototype = Object.create(CustomAnimation.prototype);
@@ -218,8 +220,13 @@ Actor.prototype.updatePosition = function(dt) {
 
             this.px = Math.min(this.px + 0.5, Math.max(this.px - 0.5, _px));
             this.py = Math.min(this.py + 0.5, Math.max(this.py - 0.5, _py));
-            this.pxFloor = Math.floor(this.px);
-            this.pyFloor = Math.floor(this.py);
+            var pxFloor = Math.floor(this.px);
+            var pyFloor = Math.floor(this.py);
+            if (this.pxFloor !== pxFloor || this.pyFloor !== pyFloor) {
+                this.newTile = true;
+                this.pxFloor = pxFloor;
+                this.pyFloor = pyFloor;
+            }
             this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
         }
 

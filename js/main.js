@@ -9,11 +9,15 @@ var debug;
 
 var spawnScheduled = false;
 
-function spawn() {
+function spawn(x, y) {
     var orc = new Orc();
-    orc.play();
-    world.addChild(orc);
     orcs.push(orc);
+    world.addChild(orc);
+    orc.px = x;
+    orc.py = y;
+    orc.play();
+    orc.direction = Math.floor(8 * Math.random());
+    orc.movementUpdate();
 }
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(onAssetsLoaded);
@@ -68,7 +72,11 @@ function onAssetsLoaded() {
 
         if (spawnScheduled) {
             spawnScheduled = false;
-            spawn();
+            var x = Math.floor(Math.random() * DIM);
+            var y = Math.floor(Math.random() * DIM);
+            var path = pathRef(x, y, player.pxFloor, player.pyFloor);
+            if (pathRef(x, y, player.pxFloor, player.pyFloor).direction)
+                spawn(x + 0.5, y + 0.5);
         }
 
         /* Think */

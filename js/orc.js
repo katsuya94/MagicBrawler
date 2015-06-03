@@ -39,22 +39,20 @@ Orc.prototype.think = function(dt) {
             this.moving = false;
             this.thinkTime = 3000;
             this.movementUpdate();
-        } else {
+        } else if (this.moving && this.newTile) {
+            this.newTile = false;
+            this.pathFind();
+        } if (!this.moving) {
             this.thinkTime -= dt;
             if (this.thinkTime <= 0) {
-                if (this.moving) {
-                    this.pathFind();
-                    this.thinkTime = 1000;
+                var x = Math.floor(this.px - 5 + 10 * Math.random());
+                var y = Math.floor(this.py - 5 + 10 * Math.random());
+                var path = pathRef(this.pxFloor, this.pyFloor, x, y);
+                if (path && typeof path.direction === 'number') {
+                    this.setDest(x, y);
                 } else {
-                    var x = Math.floor(this.px - 2 + 4 * Math.random());
-                    var y = Math.floor(this.py - 2 + 4 * Math.random());
-                    var path = pathRef(this.pxFloor, this.pyFloor, x, y);
-                    if (path && typeof path.direction === 'number') {
-                        this.setDest(x, y);
-                    } else {
-                        this.direction = Math.floor(8 * Math.random());
-                        this.movementUpdate();
-                    }
+                    this.direction = Math.floor(8 * Math.random());
+                    this.movementUpdate();
                 }
             }
         }
