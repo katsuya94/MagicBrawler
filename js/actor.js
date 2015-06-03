@@ -69,6 +69,7 @@ function Actor(frame, x, y) {
     this.invulnerable = false;
 
     this.attackCooldown = 400;
+    this.damage = 10;
 
     this.newTile = false;
 
@@ -107,7 +108,8 @@ Actor.prototype.attack = function() {
     if (!this.dying && !this.attacking) {
         this.attacking = true;
         this.attackTime = this.attackCooldown;
-        new HitArc({delay: 200, ttl: 400, damage: 10}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
+        var damage = this.damage;
+        new HitArc({delay: 200, ttl: 400, damage: damage}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
         this.loop = false;
         this.movementUpdate();
     }

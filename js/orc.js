@@ -8,6 +8,8 @@ function Orc(x, y) {
 
     this.animationSpeed = 0.15;
     this.attackCooldown = 1000;
+    this.health = 50;
+    this.damage = 5;
 
     this.mode = 0;
     this.thinkTime = 3000;
@@ -28,7 +30,8 @@ Orc.prototype.setDest = function(x, y) {
 }
 
 Orc.prototype.pathFind = function() {
-    this.direction = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor).direction;
+    var path = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor);
+    this.direction = (path && path.direction) || this.direction;
     this.movementUpdate();
 }
 
@@ -60,19 +63,22 @@ Orc.prototype.think = function(dt) {
         }
         break;
     case 1: // Chase
-        var d = distance(this.px, this.py, player.px, player.py);
-        if (d < 1.5) {
-            if (!this.attacking) {
+        if (!this.attacking) {
+            var d = distance(this.px, this.py, player.px, player.py);
+            if (d < 1.5) {
                 this.face(player.px, player.py);
                 this.attack();
+            } else if (d > 10) {
+                this.mode = 0;
+            } else if (player.newTile) {
+                this.setDest(player.px, player.py);
+            } else if (this.newTile) {
+                this.newTile = false;
+                this.pathFind();
+            } else if (!this.moving) {
+                this.moving = true;
+                this.setDest(player.px, player.py);
             }
-        } else if (d > 10) {
-            this.mode = 0;
-        } else if (player.newTile) {
-            this.setDest(player.px, player.py);
-        } else if (this.moving && this.newTile) {
-            this.newTile = false;
-            this.pathFind();
         }
     }
 }

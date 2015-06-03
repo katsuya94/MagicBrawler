@@ -66,7 +66,8 @@ Player.prototype.think = function(dt) {
 
         player.moving = !(x === 0 && y === 0);
 
-        this.movementUpdate();
+        if (!this.attacking)
+            this.movementUpdate();
     }
     if (playerAttackScheduled) {
         playerAttackScheduled = false;
