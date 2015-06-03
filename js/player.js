@@ -22,8 +22,8 @@ var playerAttackScheduler = function() { playerAttackScheduled = true; };
 
 klX.press = playerAttackScheduler;
 
-function Player() {
-    Actor.call(this, 'player');
+function Player(x, y) {
+    Actor.call(this, 'player', x, y);
 }
 
 Player.prototype = Object.create(Actor.prototype);

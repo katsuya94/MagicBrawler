@@ -1,5 +1,5 @@
-function Orc() {
-    Actor.call(this, 'orc');
+function Orc(x, y) {
+    Actor.call(this, 'orc', x, y);
 
     this.xDest = this.px;
     this.yDest = this.py;

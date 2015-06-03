@@ -1,4 +1,4 @@
-function Actor(frame) {
+function Actor(frame, x, y) {
     var frames = [];
     for (var id = 0; id < 256; id++)
         frames.push(PIXI.Texture.fromFrame(frame + id + '.png'));
@@ -45,7 +45,7 @@ function Actor(frame) {
 
     this.animationSpeed = 0.2;
 
-    this.direction = 0;
+    this.direction = Math.floor(8 * Math.random());
 
     this.moving = false;
     this.movingAnimation = false;
@@ -56,12 +56,12 @@ function Actor(frame) {
     this.dying = false;
     this.timeDead = 0;
 
-    this.px = 0.5;
-    this.pxFloor = 0;
-    this.py = 0.5;
-    this.pyFloor = 0;
-    this.pz = 0;
-    this.pzMin = 0;
+    this.px = x;
+    this.pxFloor = Math.floor(x);
+    this.py = y;
+    this.pyFloor = Math.floor(y);
+    this.pzMin = heightAt(this.px, this.py, this.pxFloor, this.pyFloor);
+    this.pz = this.pzMin;
     this.vz = 0;
 
     this.health = 100;
@@ -71,6 +71,9 @@ function Actor(frame) {
     this.attackCooldown = 400;
 
     this.newTile = false;
+
+    this.play();
+    this.movementUpdate();
 }
 
 Actor.prototype = Object.create(CustomAnimation.prototype);

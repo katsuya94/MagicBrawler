@@ -3,7 +3,7 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
 var world;
-var scale = 1;
+var scale = 1.0;
 var player;
 var orcs = [];
 var debug;
@@ -15,14 +15,9 @@ function spawn() {
     var y = Math.floor(Math.random() * DIM);
     var path = pathRef(x, y, player.pxFloor, player.pyFloor);
     if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-        var orc = new Orc();
+        var orc = new Orc(x + 0.5, y + 0.5);
         orcs.push(orc);
         world.addChild(orc);
-        orc.px = x + 0.5;
-        orc.py = y + 0.5;
-        orc.play();
-        orc.direction = Math.floor(8 * Math.random());
-        orc.movementUpdate();
     }
 }
 
@@ -41,8 +36,7 @@ function onAssetsLoaded() {
                 if (tiles[j][i][k])
                     world.addChild(tiles[j][i][k]);
 
-    player = new Player();
-    player.play();
+    player = new Player(Math.floor(Math.random() * DIM) + 0.5, Math.floor(Math.random() * DIM) + 0.5);
     world.addChild(player);
 
     window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
