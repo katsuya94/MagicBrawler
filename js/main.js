@@ -42,8 +42,33 @@ PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.js
 function testIntro() {
     stage = new PIXI.Container();
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
+    var magicBoxes = [];
+    var magicLogos = [];
+    var magicTexts = [];
+
+    for (var i = 0; i < 5; i++){
+        magicTexts[i] = new PIXI.Text('');
+        magicTexts[i].x = 100 + i * 40;
+        magicTexts[i].y = i%2 == 1 ? 275 : 355;
+        magicTexts[i].setStyle({font:'20px Arial'});
+        stage.addChild(magicTexts[i]);
+
+        magicBoxes[i] = new PIXI.Graphics();
+        magicBoxes[i].beginFill(0xC2C2BA, 0.7);
+        magicBoxes[i].lineStyle(4, 0xC2C2BA, 1);
+        magicBoxes[i].drawRoundedRect(100 + i * 40, i%2 == 1 ? 300 : 380, 50, 50, 3);
+        stage.addChild(magicBoxes[i]);
+
+        // magicLogos[i] = PIXI.Sprite.fromImage('../img/icons/');
+    }
+    magicTexts[0].setText('Fire');
+    magicTexts[1].setText('Water');
+    magicTexts[2].setText('Earth');
+    magicTexts[3].setText('Air');
+    magicTexts[4].setText('Life');
+
     logo.x = 170;
-    logo.y = 100;
+    logo.y = 70;
     stage.addChild(logo);
 
     animate();
