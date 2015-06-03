@@ -3,6 +3,7 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
 var world;
+var scale = 1;
 var player;
 var orcs = [];
 var debug;
@@ -224,7 +225,8 @@ function onAssetsLoaded() {
 
         world.children.sort(function(a, b) { return a.depth - b.depth; });
 
-        var scale = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
+        var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
+        scale += dt * (target - scale) / 100;
         world.scale.x = scale;
         world.scale.y = scale;
         world.x = (-player.x * scale + 400 - 64);
