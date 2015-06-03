@@ -121,53 +121,25 @@ function onAssetsLoaded() {
         function actorDepth(actor) {
             var i = actor.pxFloor;
             var j = actor.pyFloor;
-            var h = tiles[j][i].length - 1;
+            var cap = tiles[j][i].length - 1;
 
             actor.ahead = [];
             actor.numBehind = 0;
             actor.visited = false;
 
-            add(tiles[j][i][h], actor);
+            add(tiles[j][i][cap - 1], actor);
+            add(actor,tiles[j][i][cap]);
 
-            var behindDiagonal = actor.px + actor.py > i + j + 1;
+            var rampAdjusted = cap - (rampRef(i, j) >= 0) - 1;
 
-            function splitColumnDiagonal(i, j) {
-                if (valid(i, j)) {
-                    if (tiles[j][i][h])
-                        add(tiles[j][i][h], actor);
-                    if (behindDiagonal) {
-                        if (tiles[j][i][h + 1])
-                            add(actor, tiles[j][i][h + 1]);
-                    } else {
-                        add(tiles[j][i][tiles[j][i].length - 1], actor);
-                    }
+            function over(i, j) {
+                if (valid(i, j) && tiles[j][i][rampAdjusted]) {
+                    add(tiles[j][i][rampAdjusted], actor);
                 }
             }
 
-            function splitColumn(i, j) {
-                if (valid(i, j)) {
-                    if (tiles[j][i][h])
-                        add(tiles[j][i][h], actor);
-                    function recur(i, j, k) {
-                        if (k > 0) {
-                            if (valid(i, j)) {
-                                if (tiles[j][i][h + 1])
-                                    add(actor, tiles[j][i][h + 1]);
-                                else {
-                                    recur(i - 1, j, k - 1);
-                                    recur(i, j - 1, k - 1);
-                                }
-                            }
-                        }
-                    }
-                    recur(i, j, HEIGHT);
-                }
-            }
-
-            splitColumnDiagonal(i - 1, j + 1);
-            splitColumnDiagonal(i + 1, j - 1);
-            splitColumn(i - 1, j);
-            splitColumn(i, j - 1);
+            over(i - 1, j);
+            over(i, j - 1);
         }
 
         actorDepth(player);

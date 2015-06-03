@@ -1,4 +1,4 @@
-var DIM = 18;
+var DIM = 54;
 var HEIGHT = 4;
 var numChunks = 8;
 
@@ -302,6 +302,10 @@ function mapLayers() {
                     tiles[j][i][k] = tile;
                 }
             }
+            var cap = new PIXI.Container();
+            cap.permNumBehind = 0;
+            cap.permAhead = [];
+            tiles[j][i][k] = cap;
             // var shadowId = shadowMap[j][i];
             // if (shadowId >= 0) {
             //     var shadow = PIXI.Sprite.fromFrame('terrain' + shadowId + '.png');
