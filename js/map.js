@@ -131,15 +131,15 @@ var chunks = [
 
 
 
-var shadowMap = [[-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1]];
+var sceneryChunk = [[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1,100, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1]];
 
 var CHUNKS = DIM / 9;
 var chunkList = [];
@@ -156,14 +156,16 @@ var rampMap = [];
 var passMap = [];
 var pass8Map = [];
 var tileMap = [];
+var sceneryMap = [];
 
 for (var i = 0; i < DIM; i++) {
     tileMap.push([]);
+    sceneryMap.push([]);
     tiles.push([]);
     for (var j = 0; j < DIM; j++){
         tileMap[i][j] = chunkList[Math.floor(i / 9)][Math.floor(j / 9)][i % 9][j % 9];
+        sceneryMap[i][j] = sceneryChunk[i % 9][j % 9];
         tiles[tiles.length - 1].push([]);
-
     }
 
     heightMap.push([]);
@@ -306,12 +308,15 @@ function mapLayers() {
             cap.permNumBehind = 0;
             cap.permAhead = [];
             tiles[j][i][k] = cap;
-            // var shadowId = shadowMap[j][i];
-            // if (shadowId >= 0) {
-            //     var shadow = PIXI.Sprite.fromFrame('terrain' + shadowId + '.png');
-            //     shadow.alpha = 0.5;
-            //     tiles[j][i][k - 1].addChild(shadow);
-            // }
+            var sceneryId = sceneryMap[j][i];
+            if (sceneryId >= 20 && sceneryId < 34) {
+                var shadow = PIXI.Sprite.fromFrame('terrain' + sceneryId + '.png');
+                shadow.alpha = 0.5;
+                tiles[j][i][k - 1].addChild(shadow);
+            } else if (sceneryId >= 0) {
+                var scenery = PIXI.Sprite.fromFrame('terrain' + sceneryId + '.png');
+                tiles[j][i][k - 1].addChild(scenery);
+            }
         }
     }
     for (var i = 0; i < DIM; i++) {
