@@ -37,6 +37,25 @@ function spawn() {
 }
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(onAssetsLoaded);
+// PIXI.loader.load(testIntro);
+
+function testIntro() {
+    stage = new PIXI.Container();
+    var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
+    logo.x = 170;
+    logo.y = 100;
+    stage.addChild(logo);
+
+    animate();
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        // render the root container
+        renderer.render(stage);
+    }
+}
 
 function onAssetsLoaded() {
     stage = new PIXI.Container();
@@ -283,7 +302,7 @@ function onAssetsLoaded() {
         /* Change health bar */
         healthbar.clear();
         healthbar.beginFill(0xF5252C, 0.7);
-        healthbar.drawRect(155, 15, player.health, 10);
+        healthbar.drawRect(155, 15, 100 * player.health / player.maxHealth, 10);
 
         /* render */
 
