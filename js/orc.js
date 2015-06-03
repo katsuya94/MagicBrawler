@@ -28,7 +28,7 @@ Orc.prototype.setDest = function(x, y) {
 }
 
 Orc.prototype.pathFind = function() {
-    this.direction = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor).next;
+    this.direction = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor).direction;
     this.movementUpdate();
 }
 
@@ -49,7 +49,7 @@ Orc.prototype.think = function(dt) {
                     var x = Math.floor(this.px - 2 + 4 * Math.random());
                     var y = Math.floor(this.py - 2 + 4 * Math.random());
                     var path = pathRef(this.pxFloor, this.pyFloor, x, y);
-                    if (path && typeof path.next === 'number') {
+                    if (path && typeof path.direction === 'number') {
                         this.setDest(x, y);
                     } else {
                         this.direction = Math.floor(8 * Math.random());

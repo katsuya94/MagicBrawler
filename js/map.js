@@ -1,4 +1,4 @@
-var DIM = 18;
+var DIM = 36;
 var HEIGHT = 4;
 var numChunks = 8;
 
@@ -272,7 +272,7 @@ function mapLayers() {
     for (var i = 0; i < DIM; i++) {
         for (var j = 0; j < DIM; j++) {
             var k;
-            for (k = 0; k < 3; k++) {
+            for (k = 0; k < HEIGHT; k++) {
                 var id = tileMap[j][i][k] || -1;
                 if (id < 0) {
                     break;
@@ -308,14 +308,14 @@ function mapLayers() {
 }
 
 function heightRef(x, y) {
-    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
+    if (!valid(x, y))
         return undefined;
     else
         return heightMap[y][x];
 }
 
 function rampRef(x, y) {
-    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
+    if (!valid(x, y))
         return undefined;
     else
         return rampMap[y][x];
@@ -393,14 +393,14 @@ for (var i = 0; i < DIM; i++) {
 }
 
 function passRef(x, y) {
-    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
+    if (!valid(x, y))
         return undefined;
     else
         return passMap[y][x];
 }
 
 function pass8Ref(x, y) {
-    if (x < 0 || x >= DIM || y < 0 || y >= DIM)
+    if (!valid(x, y))
         return undefined;
     else
         return pass8Map[y][x];
@@ -421,7 +421,7 @@ for (var i = 0; i < DIM; i++) {
     }
 }
 
-/* Floyd-Warshall */
+/* Dijkstra */
 
 var pathMap = [];
 
@@ -432,7 +432,7 @@ for (var i = 0; i < DIM; i++) {
         for (var k = 0; k < DIM; k++) {
             var dRow = []
             for (var l = 0; l < DIM; l++) {
-                dRow.push({ distance: Infinity, next: undefined });
+                dRow.push({x: l, y: k, distance: Infinity, direction: undefined, index: -1});
             }
             sCell.push(dRow);
         }
@@ -441,70 +441,163 @@ for (var i = 0; i < DIM; i++) {
     pathMap.push(sRow);
 }
 
-for (var i = 0; i < DIM; i++) {
-    for (var j = 0; j < DIM; j++) {
-        pathMap[j][i][j][i].distance = 0;
-        pathMap[j][i][j][i].next = null;
-    }
-}
+for (var si = 0; si < DIM; si++) {
+    for (var sj = 0; sj < DIM; sj++) {
+        var heap = [];
 
-for (var i = 0; i < DIM; i++) {
-    for (var j = 0; j < DIM; j++) {
-        var pass8 = pass8Ref(i, j);
-        if (pass8[0]) {
-            pathMap[j][i][j + 1][i - 1].distance = invsqrt2;
-            pathMap[j][i][j + 1][i - 1].next = 0;
+        function parent(index) {
+            return Math.floor((index - 1) / 2);
         }
-        if (pass8[1]) {
-            pathMap[j][i][j + 1][i].distance = 1;
-            pathMap[j][i][j + 1][i].next = 1;
-        }
-        if (pass8[2]) {
-            pathMap[j][i][j + 1][i + 1].distance = invsqrt2;
-            pathMap[j][i][j + 1][i + 1].next = 2;
-        }
-        if (pass8[3]) {
-            pathMap[j][i][j][i + 1].distance = 1;
-            pathMap[j][i][j][i + 1].next = 3;
-        }
-        if (pass8[4]) {
-            pathMap[j][i][j - 1][i + 1].distance = invsqrt2;
-            pathMap[j][i][j - 1][i + 1].next = 4;
-        }
-        if (pass8[5]) {
-            pathMap[j][i][j - 1][i].distance = 1;
-            pathMap[j][i][j - 1][i].next = 5;
-        }
-        if (pass8[6]) {
-            pathMap[j][i][j - 1][i - 1].distance = invsqrt2;
-            pathMap[j][i][j - 1][i - 1].next = 6;
-        }
-        if (pass8[7]) {
-            pathMap[j][i][j][i - 1].distance = 1;
-            pathMap[j][i][j][i - 1].next = 7;
-        }
-    }
-}
 
-for (var ki = 0; ki < DIM; ki++) {
-    for (var kj = 0; kj < DIM; kj++) {
-        for (var ii = 0; ii < DIM; ii++) {
-            for (var ij = 0; ij < DIM; ij++) {
-                for (var ji = 0; ji < DIM; ji++) {
-                    for (var jj = 0; jj < DIM; jj++) {
-                        if (pathMap[ij][ii][kj][ki].distance + pathMap[kj][ki][jj][ji].distance < pathMap[ij][ii][jj][ji].distance) {
-                            pathMap[ij][ii][jj][ji].distance = pathMap[ij][ii][kj][ki].distance + pathMap[kj][ki][jj][ji].distance;
-                            pathMap[ij][ii][jj][ji].next = pathMap[ij][ii][kj][ki].next;
-                        }
+        function left(index) {
+            return index * 2 + 1;
+        }
+
+        function right(index) {
+            return index * 2 + 2;
+        }
+
+        function set(index, value) {
+            value.index = index;
+            heap[index] = value;
+        }
+
+        function swap(indexA, indexB) {
+            var temp = heap[indexA];
+            set(indexA, heap[indexB]);
+            set(indexB, temp);
+            return temp
+        }
+
+        function up(index) {
+            if (index > 0 && heap[index].distance < heap[parent(index)].distance) {
+                swap(index, parent(index));
+                up(parent(index));
+            }
+        }
+
+        function down(index) {
+            if (left(index) < heap.length) {
+                if (heap[left(index)].distance < heap[index].distance) {
+                    if (right(index) >= heap.length || heap[left(index)].distance < heap[right(index)].distance) {
+                        swap(index, left(index));
+                        down(left(index));
+                    } else {
+                        swap(index, right(index));
+                        down(right(index));
                     }
+                } else if (right(index) < heap.length && heap[right(index)].distance < heap[index].distance) {
+                    swap(index, right(index));
+                    down(right(index));
                 }
             }
+        }
+
+        function dequeue() {
+            var min = swap(0, heap.length - 1);
+            min.index = -1;
+            heap.pop();
+            down(0);
+            return min;
+        }
+
+        for (var di = 0; di < DIM; di++) {
+            for (var dj = 0; dj < DIM; dj++) {
+                pathMap[sj][si][dj][di].index = heap.length;
+                heap.push(pathMap[sj][si][dj][di]);
+            }
+        }
+
+        pathMap[sj][si][sj][si].distance = 0;
+        up(pathMap[sj][si][sj][si].index);
+        dequeue();
+
+        var pass8 = pass8Ref(si, sj);
+
+        if (pass8[0]) {
+            pathMap[sj][si][sj + 1][si - 1].distance = sqrt2;
+            pathMap[sj][si][sj + 1][si - 1].direction = 0;
+            up(pathMap[sj][si][sj + 1][si - 1].index);
+        }
+
+        if (pass8[1]) {
+            pathMap[sj][si][sj + 1][si].distance = 1;
+            pathMap[sj][si][sj + 1][si].direction = 1;
+            up(pathMap[sj][si][sj + 1][si].index);
+        }
+
+        if (pass8[2]) {
+            pathMap[sj][si][sj + 1][si + 1].distance = sqrt2;
+            pathMap[sj][si][sj + 1][si + 1].direction = 2;
+            up(pathMap[sj][si][sj + 1][si + 1].index);
+        }
+
+        if (pass8[3]) {
+            pathMap[sj][si][sj][si + 1].distance = 1;
+            pathMap[sj][si][sj][si + 1].direction = 3;
+            up(pathMap[sj][si][sj][si + 1].index);
+        }
+
+        if (pass8[4]) {
+            pathMap[sj][si][sj - 1][si + 1].distance = sqrt2;
+            pathMap[sj][si][sj - 1][si + 1].direction = 4;
+            up(pathMap[sj][si][sj - 1][si + 1].index);
+        }
+
+        if (pass8[5]) {
+            pathMap[sj][si][sj - 1][si].distance = 1;
+            pathMap[sj][si][sj - 1][si].direction = 5;
+            up(pathMap[sj][si][sj - 1][si].index);
+        }
+
+        if (pass8[6]) {
+            pathMap[sj][si][sj - 1][si - 1].distance = sqrt2;
+            pathMap[sj][si][sj - 1][si - 1].direction = 6;
+            up(pathMap[sj][si][sj - 1][si - 1].index);
+        }
+
+        if (pass8[7]) {
+            pathMap[sj][si][sj][si - 1].distance = 1;
+            pathMap[sj][si][sj][si - 1].direction = 7;
+            up(pathMap[sj][si][sj][si - 1].index);
+        }
+
+        while (heap.length) {
+            // if (si === 0 && sj === 0)
+            //     console.log(heap.map(function(node) {return node.x.toString() + ', ' + node.y.toString() + ', ' + node.distance.toString() + ', ' + node.index.toString();}));
+            var node = dequeue();
+            var pass8 = pass8Ref(node.x, node.y);
+
+            function edge(successor, d) {
+                if (successor.index >= 0 && pathMap[sj][si][node.y][node.x].distance + d < successor.distance) {
+                    successor.distance = pathMap[sj][si][node.y][node.x].distance + d;
+                    successor.direction = node.direction;
+                    up(successor.index);
+                }
+            }
+
+            if (pass8[0])
+                edge(pathMap[sj][si][node.y + 1][node.x - 1], sqrt2);
+            if (pass8[1])
+                edge(pathMap[sj][si][node.y + 1][node.x], 1);
+            if (pass8[2])
+                edge(pathMap[sj][si][node.y + 1][node.x + 1], sqrt2);
+            if (pass8[3])
+                edge(pathMap[sj][si][node.y][node.x + 1], 1);
+            if (pass8[4])
+                edge(pathMap[sj][si][node.y - 1][node.x + 1], sqrt2);
+            if (pass8[5])
+                edge(pathMap[sj][si][node.y - 1][node.x], 1);
+            if (pass8[6])
+                edge(pathMap[sj][si][node.y - 1][node.x - 1], sqrt2);
+            if (pass8[7])
+                edge(pathMap[sj][si][node.y][node.x - 1], 1);
         }
     }
 }
 
 function pathRef(sx, sy, dx, dy) {
-    if (sx < 0 || sx >= DIM || sy < 0 || sy >= DIM || dx < 0 || dx >= DIM || dy < 0 || dy >= DIM)
+    if (!valid(sx, sy) || !valid(dx, dy))
         return undefined;
     else
         return pathMap[sy][sx][dy][dx];
