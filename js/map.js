@@ -219,7 +219,7 @@ for(i = 0; i < DIM; i++) {
         case 56:
             rampMap[i][j] = 4;
             break;
-        case 38:
+        case 48:
             rampMap[i][j] = 5;
             break;
         case 44:
