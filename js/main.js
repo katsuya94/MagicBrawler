@@ -3,7 +3,7 @@ document.getElementById('wrapper').appendChild(renderer.view);
 
 var stage;
 var world;
-var scale = 1.0;
+var scale = 0.75;
 var player;
 var orcs = [];
 var debug;

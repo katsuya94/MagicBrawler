@@ -130,6 +130,8 @@ Actor.prototype.hurt = function(damage) {
 };
 
 Actor.prototype.updatePosition = function(dt) {
+    this.newTile = false;
+
     if (!this.dying) {
         if (!this.attacking && this.moving) {
             /* Calculate proposed position */
@@ -271,7 +273,7 @@ Actor.prototype.updatePosition = function(dt) {
     this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
 };
 
-Actor.prototype.faceObject = function(x, y){
+Actor.prototype.face = function(x, y){
     var angle = (Math.atan2(y - this.py, x - this.px) + 2 * Math.PI) % (2 * Math.PI);
 
     if (angle < 1 * Math.PI / 8 || angle >= 15 * Math.PI / 8)
@@ -290,14 +292,15 @@ Actor.prototype.faceObject = function(x, y){
         this.direction = 5;
     else if (angle >= 13 * Math.PI / 8 && angle < 15 * Math.PI / 8)
         this.direction = 4;
+    this.movementUpdate();
 };
 
 Actor.prototype.think = function(dt) {
     throw new Error('Not Implemented');
-}
+};
 
 Actor.prototype.distance = function(actor) {
     var x = actor.px - this.px;
     var y = actor.py - this.py;
     return Math.sqrt(x * x + y * y);
-}
+};
