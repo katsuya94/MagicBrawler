@@ -224,8 +224,11 @@ function onAssetsLoaded() {
 
         world.children.sort(function(a, b) { return a.depth - b.depth; });
 
-        world.x = -player.x + 400 - 64;
-        world.y = -player.y + 300 - 64;
+        var scale = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
+        world.scale.x = scale;
+        world.scale.y = scale;
+        world.x = (-player.x * scale + 400 - 64);
+        world.y = (-player.y * scale + 300 - 64);
 
         /* render */
 

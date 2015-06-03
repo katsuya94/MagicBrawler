@@ -62,6 +62,7 @@ function Actor(frame) {
     this.pyFloor = 0;
     this.pz = 0;
     this.pzMin = 0;
+    this.vz = 0;
 
     this.health = 100;
 
@@ -254,8 +255,12 @@ Actor.prototype.updatePosition = function(dt) {
 
     /* Gravity */
 
-    this.pz -= dt / 200;
-    this.pz = Math.max(this.pzMin, this.pz);
+    this.vz -= dt / 10000;
+    this.pz += dt * this.vz;
+    if (this.pz < this.pzMin) {
+        this.pz = this.pzMin;
+        this.vz = 0;
+    }
 
     /* Screen Position */
 
