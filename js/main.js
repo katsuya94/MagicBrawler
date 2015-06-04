@@ -62,6 +62,7 @@ function spawn() {
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(showStartPage);
 
 function showStartPage() {
+
     stage = new PIXI.Container();
 
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
@@ -233,13 +234,22 @@ function showStartPage() {
             // render the root container
             renderer.render(stage);
         } else {
-            stage.removeChildren();
+            startGameText.text = 'Waiting for Map...';
+            startGameText.style = {font: 'bold 20px Arial'};
+            stage.addChild(startGameText);
+            renderer.render(stage);
             ticker.remove(updateStartPage);
-            gameStart();
+
+            setTimeout(function(){
+                    generateMap();
+                    stage.removeChildren();
+                    gameStart();
+                }, 0);
         }
 
     };
     ticker.add(updateStartPage);
+
 }
 
 function gameStart() {
@@ -249,7 +259,6 @@ function gameStart() {
     stage.addChild(world);
 
     mapLayers();
-    setupMap();
     for (var i = 0; i < DIM; i++)
         for (var j = 0; j < DIM; j++)
             for (var k = 0; k < HEIGHT; k++)
@@ -552,7 +561,6 @@ function showHighScores() {
     stage.addChild(restartText);
 
     stage.click = function(){
-        console.log('CLICKING');
         gameOver = false;
         gameStarted = false;
         chosenElements = [false, false];
@@ -561,6 +569,7 @@ function showHighScores() {
              world.removeChild(orcs[i]);
              orcs = [];
         }
+        // document.location.reload(true);
     };
 
     updateHighScorePage = function() {
@@ -570,7 +579,6 @@ function showHighScores() {
             ticker.remove(updateHighScorePage);
             stage.removeChildren();
             showStartPage();
-            generateMap();
         }
     };
     ticker.add(updateHighScorePage);

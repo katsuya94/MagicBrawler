@@ -24,6 +24,8 @@ klX.press = playerAttackScheduler;
 
 function Player(x, y) {
     Actor.call(this, 'player', x, y);
+
+    // this.health = 5;
 }
 
 Player.prototype = Object.create(Actor.prototype);
