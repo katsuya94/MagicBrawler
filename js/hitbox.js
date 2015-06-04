@@ -46,7 +46,7 @@ HitArc.prototype.collide = function(actor) {
     var y = actor.py - this.y;
     var angle = (Math.atan2(y, x) + 2 * Math.PI) % (2 * Math.PI);
     var angleCollide;
-    if (switched)
+    if (this.switched)
         angleCollide = this.minAngle < angle || angle < this.maxAngle;
     else
         angleCollide = this.minAngle < angle && angle < this.maxAngle;
