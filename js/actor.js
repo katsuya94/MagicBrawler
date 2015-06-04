@@ -65,6 +65,7 @@ function Actor(frame, x, y) {
     this.vz = 0;
 
     this.health = 100;
+    this.maxHealth = this.health;
 
     this.invulnerable = false;
 
