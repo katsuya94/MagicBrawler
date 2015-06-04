@@ -25,6 +25,7 @@ var magic3;
 var magicText3;
 
 /* Start Page Elements */
+var resetButton;
 var gameStarted = false;
 var magicBoxes = [];
 var magicLogos = [];
@@ -36,6 +37,7 @@ var chosenElementBoxes = [];
 var chosenElementIcons = [];
 var chosenElementTexts = [];
 var chosenElements = [false, false];
+var chosenCreated = [false, false];
 
 var startGameButton;
 var startGameText;
@@ -68,17 +70,24 @@ function testIntro() {
     elementText.y = 240;
     stage.addChild(elementText);
 
-    startGameButton = new PIXI.Graphics();
-    startGameButton.beginFill(0xC42333, 0.5);
-    startGameButton.lineStyle(4, 0xF5B3B9, 1);
-    startGameButton.drawRoundedRect(400, 450, 300, 50, 5);
-    stage.addChild(startGameButton);
 
-    startGameText = new PIXI.Text('Select an element to continue', {font: '20px Arial'});
-    startGameText.x = 410;
-    startGameText.y = 455;
-    startGameText.alpha = 0.8;
-    stage.addChild(startGameText);
+    resetButton = function(){
+        stage.removeChild(startGameButton);
+        stage.removeChild(startGameText);
+        startGameButton = new PIXI.Graphics();
+        startGameButton.beginFill(0xC42333, 0.5);
+        startGameButton.lineStyle(4, 0xF5B3B9, 1);
+        startGameButton.drawRoundedRect(400, 450, 300, 50, 5);
+        stage.addChild(startGameButton);
+
+        startGameText = new PIXI.Text('Select an element to continue', {font: '20px Arial'});
+        startGameText.x = 410;
+        startGameText.y = 455;
+        startGameText.alpha = 0.8;
+        stage.addChild(startGameText);
+    };
+    resetButton();
+
 
 
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
@@ -178,18 +187,20 @@ function testIntro() {
 
     function animate() {
         for (var i = 0; i < 2; i++){
-            if(chosenElements[i]){
+            if(chosenElements[i] && !chosenCreated[i]){
                 chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
                 chosenElementIcons[i].x = 580;
                 chosenElementIcons[i].y = 300 + i * 75;
                 chosenElementIcons[i].interactive = true;
                 chosenElementIcons[i].number = i;
+
                 chosenElementIcons[i].click = function(e) {
-                            if(chosenElements[e.target.number]){
-                                chosenElements[e.target.number] = false;
-                                stage.removeChild(e.target);
-                            }
-                        };
+                    chosenElements[e.target.number] = false;
+                    chosenCreated[e.target.number] = false;
+                    stage.removeChild(e.target);
+                    resetButton();
+                };
+                chosenCreated[i] = true;
                 stage.addChild(chosenElementIcons[i]);
             }
         }
