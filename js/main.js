@@ -61,7 +61,11 @@ function positionElements() {
     elements[inactive].text.text = 'V';
 }
 
-PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(showStartPage);
+PIXI.loader.add('./img/player.json')
+           .add('./img/terrain.json')
+           .add('./img/orc.json')
+           .add('./img/fx/ring.json')
+           .load(showStartPage);
 
 function showStartPage() {
     stage = new PIXI.Container();
