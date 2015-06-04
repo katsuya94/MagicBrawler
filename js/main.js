@@ -249,6 +249,7 @@ function gameStart() {
     stage.addChild(world);
 
     mapLayers();
+    setupMap();
     for (var i = 0; i < DIM; i++)
         for (var j = 0; j < DIM; j++)
             for (var k = 0; k < HEIGHT; k++)
@@ -569,6 +570,7 @@ function showHighScores() {
             ticker.remove(updateHighScorePage);
             stage.removeChildren();
             showStartPage();
+            generateMap();
         }
     };
     ticker.add(updateHighScorePage);
