@@ -8,6 +8,7 @@ var player;
 var orcs = [];
 var debug;
 
+/* GUI Elements */
 var GUI;
 var healthText;
 var healthbar;
@@ -23,6 +24,21 @@ var magicBox3;
 var magic3;
 var magicText3;
 
+var fireIcon = PIXI.Texture.fromImage('../img/icons/fire_icon.png');
+var waterIcon = PIXI.Texture.fromImage('../img/icons/water_icon.png');
+
+/* Start Page Elements */
+var magicBoxes = [];
+var magicLogos = [];
+var magicTexts = [];
+
+var chosenElementBoxes = [];
+var chosenElementIcons = [];
+var chosenElements = [false, false];
+
+var startGameButton;
+var startGameText;
+
 var spawnScheduled = false;
 
 function spawn() {
@@ -36,21 +52,55 @@ function spawn() {
     }
 }
 
-PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(onAssetsLoaded);
+PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(testIntro);
 // PIXI.loader.load(testIntro);
 
 function testIntro() {
     stage = new PIXI.Container();
+
+
+
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
-    var magicBoxes = [];
-    var magicLogos = [];
-    var magicTexts = [];
+    logo.x = 170;
+    logo.y = 70;
+    stage.addChild(logo);
+
+    var elementText = new PIXI.Text('Choose your elements', {font:'30px Arial'});
+    elementText.x = 80;
+    elementText.y = 240;
+    stage.addChild(elementText);
+
+    startGameButton = new PIXI.Graphics();
+    startGameButton.beginFill(0xC42333, 0.5);
+    startGameButton.lineStyle(4, 0xF5B3B9, 1);
+    startGameButton.drawRoundedRect(400, 450, 300, 50, 5);
+    stage.addChild(startGameButton);
+
+    startGameText = new PIXI.Text('Select an element to continue', {font: '20px Arial'});
+    startGameText.x = 410;
+    startGameText.y = 455;
+    startGameText.alpha = 0.8;
+    stage.addChild(startGameText);
+
+
+    magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
+    magicLogos[0].type = 'fire';
+    magicLogos[1] = PIXI.Sprite.fromImage('../img/icons/water_icon.png');
+    magicLogos[1].type = 'water';
+    magicLogos[2] = PIXI.Sprite.fromImage('../img/icons/earth_icon.png');
+    magicLogos[2].type = 'earth';
+    magicLogos[3] = PIXI.Sprite.fromImage('../img/icons/air_icon.png');
+    magicLogos[3].type = 'air';
+    magicLogos[4] = PIXI.Sprite.fromImage('../img/icons/life_icon.png');
+    magicLogos[4].type = 'life';
+
+
 
     for (var i = 0; i < 5; i++){
         magicTexts[i] = new PIXI.Text('');
         magicTexts[i].x = 100 + i * 40;
         magicTexts[i].y = i%2 == 1 ? 275 : 355;
-        magicTexts[i].setStyle({font:'20px Arial'});
+        magicTexts[i].style = {font:'20px Arial'};
         stage.addChild(magicTexts[i]);
 
         magicBoxes[i] = new PIXI.Graphics();
@@ -59,21 +109,72 @@ function testIntro() {
         magicBoxes[i].drawRoundedRect(100 + i * 40, i%2 == 1 ? 300 : 380, 50, 50, 3);
         stage.addChild(magicBoxes[i]);
 
-        // magicLogos[i] = PIXI.Sprite.fromImage('../img/icons/');
-    }
-    magicTexts[0].setText('Fire');
-    magicTexts[1].setText('Water');
-    magicTexts[2].setText('Earth');
-    magicTexts[3].setText('Air');
-    magicTexts[4].setText('Life');
+        magicLogos[i].x = 100 + i * 40;
+        magicLogos[i].y = i%2 == 1 ? 300 : 380;
+        magicLogos[i].interactive = true;
+        magicLogos[i].click = function(e) {
+            if (!chosenElements[0]) {
+                chosenElements[0] = e.target.type;
+            } else if (!chosenElements[1]){
+                chosenElements[1] = e.target.type;
+            }
+        };
 
-    logo.x = 170;
-    logo.y = 70;
-    stage.addChild(logo);
+        stage.addChild(magicLogos[i]);
+    }
+    magicTexts[0].text = 'Fire';
+    magicTexts[1].text = 'Water';
+    magicTexts[2].text = 'Earth';
+    magicTexts[3].text = 'Air';
+    magicTexts[4].text = 'Life';
+
+    for (i = 0; i < 3; i++){
+        chosenElementBoxes[i] = new PIXI.Graphics();
+        chosenElementBoxes[i].beginFill(0xC2C2BA, 0.7);
+        chosenElementBoxes[i].lineStyle(4, 0xC2C2BA, 1);
+        chosenElementBoxes[i].drawRoundedRect(i == 2 ? 580 : 500, i == 2 ? 340 : 300 + i * 75, 50, 50, 3);
+        stage.addChild(chosenElementBoxes[i]);
+
+    }
+
+
 
     animate();
 
     function animate() {
+        for (var i = 0; i < 2; i++){
+            if(chosenElements[i]){
+                chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
+                chosenElementIcons[i].x = 500;
+                chosenElementIcons[i].y = 300 + i * 75;
+                chosenElementIcons[i].interactive = true;
+                chosenElementIcons[i].number = i;
+                chosenElementIcons[i].click = function(e) {
+                            if(chosenElements[e.target.number]){
+                                chosenElements[e.target.number] = false;
+                                stage.removeChild(e.target);
+                            }
+                        };
+                stage.addChild(chosenElementIcons[i]);
+            }
+        }
+
+        if(chosenElements[0] && chosenElements[1]){
+
+            startGameButton.clear();
+            startGameButton.beginFill(0x0AC900, 0.8);
+            startGameButton.lineStyle(4, 0x5AF752, 1);
+            startGameButton.drawRoundedRect(400, 450, 200, 50, 5);
+            stage.addChild(startGameButton);
+
+            startGameText.text = 'Start Brawling!';
+            startGameText.style = {font: 'bold 25px Arial'};
+            startGameText.x = 410;
+            startGameText.y = 455;
+            startGameText.alpha = 0.8;
+            stage.addChild(startGameText);
+
+        }
 
         requestAnimationFrame(animate);
 
