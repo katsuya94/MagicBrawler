@@ -103,7 +103,7 @@ Actor.prototype.movementUpdate = function() {
         this.attackingAnimation = false;
         this.playAnimation(5 * this.direction, 0);
     }
-}
+};
 
 Actor.prototype.attack = function() {
     if (!this.dying && !this.attacking) {

@@ -27,15 +27,18 @@ Orc.prototype.setDest = function(x, y) {
         this.moving = true;
         this.pathFind();
     }
-}
+};
 
 Orc.prototype.pathFind = function() {
     var path = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor);
     this.direction = (path && path.direction) || this.direction;
     this.movementUpdate();
-}
+};
 
 Orc.prototype.think = function(dt) {
+    if(player.dying){
+        this.mode = 0;
+    }
     switch (this.mode) {
     case 0: // Patrol
         if (distance(this.px, this.py, player.px, player.py) < 4) {

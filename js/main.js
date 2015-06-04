@@ -341,6 +341,11 @@ function onAssetsLoaded() {
             player.fadeTime -= dt;
             if (player.fadeTime <= 0)
                 world.removeChild(player);
+
+            var gameOverText = new PIXI.Text('Game Over', {font: '100px impact charcoal'});
+            gameOverText.x = 175;
+            gameOverText.y = 200;
+            stage.addChild(gameOverText);
         }
         for (var i = 0; i < orcs.length; i++) {
             if (orcs[i].dying) {
