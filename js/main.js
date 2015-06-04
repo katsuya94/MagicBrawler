@@ -423,6 +423,19 @@ function onAssetsLoaded() {
 
             over(i - 1, j);
             over(i, j - 1);
+
+            function front(i, j) {
+                if (valid(i, j)) {
+                    if (tiles[j][i][rampAdjusted]) {
+                        add(tiles[j][i][rampAdjusted], actor);
+                        if (tiles[j][i][rampAdjusted + 1])
+                            add(tiles[j][i][rampAdjusted + 1], actor);
+                    }
+                }
+            }
+
+            front(i + 1, j);
+            front(i, j + 1);
         }
 
         actorDepth(player);
