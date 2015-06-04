@@ -7,6 +7,9 @@ var scale = 0.75;
 var player;
 var orcs = [];
 var debug;
+var updateStartPage;
+var updateGame;
+var updateHighScorePage;
 
 /* GUI Elements */
 var GUI;
@@ -27,6 +30,7 @@ var magicText3;
 /* Start Page Elements */
 var resetButton;
 var gameStarted = false;
+var gameOver = false;
 var magicBoxes = [];
 var magicLogos = [];
 var magicTexts = [];
@@ -55,9 +59,9 @@ function spawn() {
     }
 }
 
-PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(testIntro);
+PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(showStartPage);
 
-function testIntro() {
+function showStartPage() {
     stage = new PIXI.Container();
 
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
@@ -183,9 +187,9 @@ function testIntro() {
         stage.addChild(chosenElementTexts[i]);
     }
 
-    animate();
 
-    function animate() {
+
+    updateStartPage = function() {
         for (var i = 0; i < 2; i++){
             if(chosenElements[i] && !chosenCreated[i]){
                 chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
@@ -226,18 +230,19 @@ function testIntro() {
 
         }
         if(!gameStarted){
-            requestAnimationFrame(animate);
             // render the root container
             renderer.render(stage);
         } else {
             stage.removeChildren();
-            onAssetsLoaded();
+            ticker.remove(updateStartPage);
+            gameStart();
         }
 
-    }
+    };
+    ticker.add(updateStartPage);
 }
 
-function onAssetsLoaded() {
+function gameStart() {
     stage = new PIXI.Container();
 
     world = new PIXI.Container();
@@ -339,7 +344,8 @@ function onAssetsLoaded() {
     //                  'hm ealth = ' + player.health;
     // }, 1000);
 
-    ticker.add(function () {
+
+    updateGame = function () {
         var dt = ticker.elapsedMS;
 
         /* Remove dead */
@@ -353,6 +359,21 @@ function onAssetsLoaded() {
             gameOverText.x = 175;
             gameOverText.y = 200;
             stage.addChild(gameOverText);
+            if(!gameOver){
+                gameOver = true;
+                window.setTimeout(function() {
+                    var continueText = new PIXI.Text('Click anywhere to continue', {font: '50px impact charcoal'});
+                    continueText.x = 150;
+                    continueText.y = 350;
+                    stage.addChild(continueText);
+                    stage.interactive = true;
+                    stage.hitArea = new PIXI.Rectangle(0, 0, 800, 600);
+                    stage.click = function(){
+                        ticker.remove(updateGame);
+                        showHighScores();
+                    };
+                }, 2000);
+            }
         }
         for (var i = 0; i < orcs.length; i++) {
             if (orcs[i].dying) {
@@ -512,7 +533,43 @@ function onAssetsLoaded() {
         healthbar.drawRect(155, 15, 100 * player.health / player.maxHealth, 10);
 
         /* render */
-
         renderer.render(stage);
-    });
+    };
+    ticker.add(updateGame);
+}
+
+function showHighScores() {
+    stage.removeChildren();
+    var highScoreText = new PIXI.Text('High Scores', {font: 'bold 60px Arial'});
+    highScoreText.x = 200;
+    highScoreText.y = 100;
+    stage.addChild(highScoreText);
+
+    var restartText = new PIXI.Text('Click anywhere to restart', {font: '30px impact charcoal'});
+    restartText.x = 225;
+    restartText.y = 450;
+    stage.addChild(restartText);
+
+    stage.click = function(){
+        console.log('CLICKING');
+        gameOver = false;
+        gameStarted = false;
+        chosenElements = [false, false];
+        chosenCreated = [false, false];
+        for (var i = 0; i < orcs.length; i++) {
+             world.removeChild(orcs[i]);
+             orcs = [];
+        }
+    };
+
+    updateHighScorePage = function() {
+        if(gameOver){
+            renderer.render(stage);
+        } else {
+            ticker.remove(updateHighScorePage);
+            stage.removeChildren();
+            showStartPage();
+        }
+    };
+    ticker.add(updateHighScorePage);
 }
