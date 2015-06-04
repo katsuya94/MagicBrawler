@@ -36,7 +36,14 @@ function onAssetsLoaded() {
                 if (tiles[j][i][k])
                     world.addChild(tiles[j][i][k]);
 
-    player = new Player(Math.floor(Math.random() * DIM) + 0.5, Math.floor(Math.random() * DIM) + 0.5);
+    var found = false;
+    while (!found) {
+        var x = Math.floor(Math.random() * DIM);
+        var y = Math.floor(Math.random() * DIM);
+        var pass = passRef(x, y);
+        found = pass[0] || pass[1] || pass[2] || pass[3];
+    }
+    player = new Player(x + 0.5, y + 0.5);
     world.addChild(player);
 
     window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
@@ -193,7 +200,7 @@ function onAssetsLoaded() {
         world.children.sort(function(a, b) { return a.depth - b.depth; });
 
         var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
-        scale += dt * (target - scale) / 100;
+        scale = Math.min(1.0, Math.max(0.0, scale + dt * (target - scale) / 100));
         world.scale.x = scale;
         world.scale.y = scale;
         world.x = (-player.x * scale + 400 - 64);
