@@ -10,19 +10,10 @@ var debug;
 
 /* GUI Elements */
 var GUI;
-var healthText;
-var healthbar;
+var healthBar;
 var healthBackground;
-
-var magicBox1;
-var magic1;
-var magicText1;
-var magicBox2;
-var magic2;
-var magicText2;
-var magicBox3;
-var magic3;
-var magicText3;
+var elementContainer;
+var elements;
 
 /* Start Page Elements */
 var resetButton;
@@ -55,6 +46,17 @@ function spawn() {
     }
 }
 
+function positionElements() {
+    var active = player.elementId;
+    var inactive = (active + 1) % 2;
+    elements[active].targetX = 0;
+    elements[active].targetScaleScalar = 1.0;
+    elements[active].text.text = 'C';
+    elements[inactive].targetX = 60;
+    elements[inactive].targetScaleScalar = 0.5;
+    elements[inactive].text.text = 'V';
+}
+
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(testIntro);
 
 function testIntro() {
@@ -69,7 +71,6 @@ function testIntro() {
     elementText.x = 80;
     elementText.y = 240;
     stage.addChild(elementText);
-
 
     resetButton = function(){
         stage.removeChild(startGameButton);
@@ -87,8 +88,6 @@ function testIntro() {
         stage.addChild(startGameText);
     };
     resetButton();
-
-
 
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
@@ -257,87 +256,67 @@ function onAssetsLoaded() {
         var pass = passRef(x, y);
         found = pass[0] || pass[1] || pass[2] || pass[3];
     }
-    player = new Player(x + 0.5, y + 0.5);
+    player = new Player(x + 0.5, y + 0.5, chosenElements);
     world.addChild(player);
 
     window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
 
-    //Initialize GUI
-    GUI = new PIXI.Container();
-    healthText = new PIXI.Text('Health:', {font: '30px Arial'});
-    healthText.x = 38;
-    healthText.y = 2;
-    GUI.addChild(healthText);
+    /* Initialize GUI */
 
-    healthBackground = new PIXI.Graphics();
-    healthBackground.beginFill(0xC2C2BA, 0.7);
-    healthBackground.lineStyle(4, 0xC2C2BA, 1);
-    healthBackground.drawRoundedRect(150, 10, 110, 20, 3);
-    GUI.addChild(healthBackground);
-
-    healthbar = new PIXI.Graphics();
-    GUI.addChild(healthbar);
-
-    magicBox1 = new PIXI.Graphics();
-    magicBox1.beginFill(0xC2C2BA, 0.7);
-    magicBox1.lineStyle(4, 0xC2C2BA, 1);
-    magicBox1.drawRoundedRect(300, 10, 50, 50, 3);
-    GUI.addChild(magicBox1);
-
-    magic1 = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[0] + '_icon.png');
-    magic1.x = 300;
-    magic1.y = 10;
-    magic1.alpha = 0.8;
-    GUI.addChild(magic1);
-
-    magicText1 = new PIXI.Text('1', {font: 'bold 15px Arial'});
-    magicText1.x = 303;
-    magicText1.y = 12;
-    GUI.addChild(magicText1);
-
-    magicBox2 = new PIXI.Graphics();
-    magicBox2.beginFill(0xC2C2BA, 0.7);
-    magicBox2.lineStyle(4, 0xC2C2BA, 1);
-    magicBox2.drawRoundedRect(370, 10, 50, 50, 3);
-    GUI.addChild(magicBox2);
-
-    magic2 = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[1] + '_icon.png');
-    magic2.x = 370;
-    magic2.y = 10;
-    magic2.alpha = 0.8;
-    GUI.addChild(magic2);
-
-    magicText2 = new PIXI.Text('2', {font: 'bold 15px Arial'});
-    magicText2.x = 373;
-    magicText2.y = 12;
-    GUI.addChild(magicText2);
-
-    /* Probably not going to implement
-    magicBox3 = new PIXI.Graphics();
-    magicBox3.beginFill(0xC2C2BA, 0.7);
-    magicBox3.lineStyle(4, 0xC2C2BA, 1);
-    magicBox3.drawRoundedRect(440, 10, 50, 50, 3);
-    GUI.addChild(magicBox3);
-
-    magic3 = PIXI.Sprite.fromImage('../img/icons/air_icon.png');
-    magic3.x = 440;
-    magic3.y = 10;
-    magic3.alpha = 0.8;
-    GUI.addChild(magic3);
-
-    magicText3 = new PIXI.Text('3', {font: 'bold 15px Arial'});
-    magicText3.x = 443;
-    magicText3.y = 12;
-    GUI.addChild(magicText3);
-    */
-
+    var GUI = new PIXI.Container();
+    GUI.alpha = 0.7;
     stage.addChild(GUI);
 
-    // window.setInterval(function() {
-    //     debug.text = 'FPS = ' + ticker.FPS.toFixed(0) + '; ' +
-    //                  'p = (' + player.px.toFixed(2) + ', ' + player.py.toFixed(2) + ', ' + player.pz.toFixed(2) + '); ' +
-    //                  'hm ealth = ' + player.health;
-    // }, 1000);
+    healthBackground = new PIXI.Graphics();
+    healthBackground.x = 10;
+    healthBackground.y = 10;
+    healthBackground.beginFill(0xC2C2BA, 1);
+    healthBackground.lineStyle(4, 0xC2C2BA, 1);
+    healthBackground.drawRoundedRect(0, 0, 200, 20, 3);
+    GUI.addChild(healthBackground);
+
+    healthBar = new PIXI.Graphics();
+    healthBackground.addChild(healthBar);
+
+    elementContainer = new PIXI.Container();
+    elementContainer.x = 220;
+    elementContainer.y = 10;
+    GUI.addChild(elementContainer);
+
+    function createElement(id) {
+        var background = new PIXI.Graphics();
+        background.beginFill(0xC2C2BA, 1);
+        background.lineStyle(4, 0xC2C2BA, 1);
+        background.drawRoundedRect(0, 0, 50, 50, 3);
+        var icon = PIXI.Sprite.fromImage('../img/icons/' + player.elements[id] + '_icon.png');
+        background.addChild(icon);
+        background.text = new PIXI.Text('', {font: 'bold 20px Arial'});
+        icon.addChild(background.text);
+        background.text.x = 40;
+        background.text.y = 40;
+        background.scaleScalar = 1.0;
+        return background;
+    }
+
+    elements = [createElement(0), createElement(1)];
+
+    elementContainer.addChild(elements[0]);
+    elementContainer.addChild(elements[1]);
+
+    positionElements();
+
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].x = elements[i].targetX;
+        elements[i].scaleScalar = elements[i].targetScaleScalar;
+    }
+
+    debug = new PIXI.Text('');
+    stage.addChild(debug);
+
+    window.setInterval(function() {
+        debug.text = 'FPS = ' + ticker.FPS.toFixed(0);
+        debug.x = 800 - debug.width;
+    }, 1000);
 
     ticker.add(function () {
         var dt = ticker.elapsedMS;
@@ -506,10 +485,18 @@ function onAssetsLoaded() {
         world.x = (-player.x * scale + 400 - 64);
         world.y = (-player.y * scale + 300 - 64);
 
-        /* Change health bar */
-        healthbar.clear();
-        healthbar.beginFill(0xF5252C, 0.7);
-        healthbar.drawRect(155, 15, 100 * player.health / player.maxHealth, 10);
+        /* Health bar */
+
+        healthBar.clear();
+        healthBar.beginFill(0xF5252C, 1);
+        healthBar.drawRect(2, 2, 196 * player.health / player.maxHealth, 16, 3);
+
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].x += dt * (elements[i].targetX - elements[i].x) / 100;
+            elements[i].scaleScalar += dt * (elements[i].targetScaleScalar - elements[i].scaleScalar) / 100;
+            elements[i].scale.x = elements[i].scaleScalar;
+            elements[i].scale.y = elements[i].scaleScalar;
+        }
 
         /* render */
 

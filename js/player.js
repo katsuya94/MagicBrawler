@@ -22,8 +22,17 @@ var playerAttackScheduler = function() { playerAttackScheduled = true; };
 
 klX.press = playerAttackScheduler;
 
-function Player(x, y) {
+var klC = new keyListener(67);
+
+var playerSwapScheduled = false;
+var playerSwapScheduler = function() { playerSwapScheduled = true; };
+
+klC.press = playerSwapScheduler
+
+function Player(x, y, elements) {
     Actor.call(this, 'player', x, y);
+    this.elements = elements;
+    this.elementId = 0;
 }
 
 Player.prototype = Object.create(Actor.prototype);
@@ -72,5 +81,10 @@ Player.prototype.think = function(dt) {
     if (playerAttackScheduled) {
         playerAttackScheduled = false;
         this.attack();
+    }
+    if (playerSwapScheduled) {
+        playerSwapScheduled = false;
+        this.elementId = (this.elementId + 1) % 2;
+        positionElements();
     }
 }
