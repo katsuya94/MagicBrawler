@@ -34,7 +34,8 @@ function HitArc(attack, x, y, z, minR, maxR, direction, angle, height) {
     this.minR = minR;
     this.maxR = maxR;
     this.minAngle = (da[direction] - angle / 2 + 2 * Math.PI) % (2 * Math.PI);
-    this.maxAngle = (da[direction] + angle / 2 + 2 * Math.PI) % (2 * Math.PI) || (2 * Math.PI);
+    this.maxAngle = (da[direction] + angle / 2 + 2 * Math.PI) % (2 * Math.PI);
+    this.switched = this.minAngle > this.maxAngle;
 }
 
 HitArc.prototype = Object.create(Hitbox.prototype);
@@ -44,7 +45,12 @@ HitArc.prototype.collide = function(actor) {
     var x = actor.px - this.x;
     var y = actor.py - this.y;
     var angle = (Math.atan2(y, x) + 2 * Math.PI) % (2 * Math.PI);
-    if (this.minAngle < angle && angle < this.maxAngle) {
+    var angleCollide;
+    if (switched)
+        angleCollide = this.minAngle < angle || angle < this.maxAngle;
+    else
+        angleCollide = this.minAngle < angle && angle < this.maxAngle;
+    if (angleCollide) {
         var r = Math.sqrt(x * x + y * y);
         if (this.minR < r && r < this.maxR) {
             if (this.minZ < actor.pz && actor.pz < this.maxZ)

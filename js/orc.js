@@ -12,7 +12,8 @@ function Orc(x, y) {
     this.damage = 5;
 
     this.mode = 0;
-    this.thinkTime = 3000;
+    this.idleTime = 3000;
+    this.thinkTime = this.idleTime;
 }
 
 Orc.prototype = Object.create(Actor.prototype);
@@ -36,16 +37,13 @@ Orc.prototype.pathFind = function() {
 };
 
 Orc.prototype.think = function(dt) {
-    if(player.dying){
-        this.mode = 0;
-    }
     switch (this.mode) {
     case 0: // Patrol
-        if (distance(this.px, this.py, player.px, player.py) < 4) {
+        if (!player.dying && distance(this.px, this.py, player.px, player.py) < 4) {
             this.mode = 1;
         } else if (this.moving && this.pxFloor === this.xDestFloor && this.pyFloor === this.yDestFloor) {
             this.moving = false;
-            this.thinkTime = 3000;
+            this.thinkTime = this.idleTime;
             this.movementUpdate();
         } else if (this.moving && this.newTile) {
             this.newTile = false;
@@ -68,7 +66,9 @@ Orc.prototype.think = function(dt) {
     case 1: // Chase
         if (!this.attacking) {
             var d = distance(this.px, this.py, player.px, player.py);
-            if (d < 1.5) {
+            if (player.dying){
+                this.mode = 0;
+            } else if (d < 1.5) {
                 this.face(player.px, player.py);
                 this.attack();
             } else if (d > 10) {
