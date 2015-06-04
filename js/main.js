@@ -24,16 +24,17 @@ var magicBox3;
 var magic3;
 var magicText3;
 
-var fireIcon = PIXI.Texture.fromImage('../img/icons/fire_icon.png');
-var waterIcon = PIXI.Texture.fromImage('../img/icons/water_icon.png');
-
 /* Start Page Elements */
+var gameStarted = false;
 var magicBoxes = [];
 var magicLogos = [];
 var magicTexts = [];
+var hoverTexts = [];
+var hoverTextBox;
 
 var chosenElementBoxes = [];
 var chosenElementIcons = [];
+var chosenElementTexts = [];
 var chosenElements = [false, false];
 
 var startGameButton;
@@ -53,12 +54,9 @@ function spawn() {
 }
 
 PIXI.loader.add('./img/player.json').add('./img/terrain.json').add('./img/orc.json').load(testIntro);
-// PIXI.loader.load(testIntro);
 
 function testIntro() {
     stage = new PIXI.Container();
-
-
 
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
     logo.x = 170;
@@ -85,14 +83,24 @@ function testIntro() {
 
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
+    magicLogos[0].textboxSize = [280, 50];
+    hoverTexts[0] = new PIXI.Text('A fireball that shoots in a straight line\n and explodes on impact', {font: 'bold 15px Arial'});
     magicLogos[1] = PIXI.Sprite.fromImage('../img/icons/water_icon.png');
     magicLogos[1].type = 'water';
+    magicLogos[1].textboxSize = [250, 50];
+    hoverTexts[1] = new PIXI.Text('Fire small water orbs that fly in \n multiple directions', {font: 'bold 15px Arial'});
     magicLogos[2] = PIXI.Sprite.fromImage('../img/icons/earth_icon.png');
     magicLogos[2].type = 'earth';
+    magicLogos[2].textboxSize = [260, 50];
+    hoverTexts[2] = new PIXI.Text('Summon rocks from all around you\n and knock enemies away', {font: 'bold 15px Arial'});
     magicLogos[3] = PIXI.Sprite.fromImage('../img/icons/air_icon.png');
     magicLogos[3].type = 'air';
+    magicLogos[3].textboxSize = [300, 50];
+    hoverTexts[3] = new PIXI.Text('Jump high into the air to evade enemies\n and make an escape', {font: 'bold 15px Arial'});
     magicLogos[4] = PIXI.Sprite.fromImage('../img/icons/life_icon.png');
     magicLogos[4].type = 'life';
+    magicLogos[4].textboxSize = [280, 50];
+    hoverTexts[4] = new PIXI.Text('Restore health using this magic spell\n which has limited uses', {font: 'bold 15px Arial'});
 
 
 
@@ -100,7 +108,7 @@ function testIntro() {
         magicTexts[i] = new PIXI.Text('');
         magicTexts[i].x = 100 + i * 40;
         magicTexts[i].y = i%2 == 1 ? 275 : 355;
-        magicTexts[i].style = {font:'20px Arial'};
+        magicTexts[i].style = {font:'20px Arial', fill: 'white'};
         stage.addChild(magicTexts[i]);
 
         magicBoxes[i] = new PIXI.Graphics();
@@ -111,6 +119,7 @@ function testIntro() {
 
         magicLogos[i].x = 100 + i * 40;
         magicLogos[i].y = i%2 == 1 ? 300 : 380;
+        magicLogos[i].number = i;
         magicLogos[i].interactive = true;
         magicLogos[i].click = function(e) {
             if (!chosenElements[0]) {
@@ -119,8 +128,32 @@ function testIntro() {
                 chosenElements[1] = e.target.type;
             }
         };
+        magicLogos[i].mouseover = function(e) {
+            var num = e.target.number;
+            hoverTextBox.beginFill(0xE9EAF2, 0.8);
+            hoverTextBox.lineStyle(4, 0xE9EAF2, 1);
+            hoverTextBox.drawRoundedRect(e.data.global.x, e.data.global.y, e.target.textboxSize[0], e.target.textboxSize[1], 4);
+            hoverTextBox.visible = true;
+            stage.addChild(hoverTextBox);
 
+            hoverTexts[num].x = e.data.global.x + 5;
+            hoverTexts[num].y = e.data.global.y + 5;
+            hoverTexts[num].visible = true;
+            stage.addChild(hoverTexts[num]);
+
+
+        };
+        magicLogos[i].mouseout = function(e) {
+            var num = e.target.number;
+            hoverTexts[num].visible = false;
+            hoverTextBox.clear();
+            hoverTextBox.visible = false;
+        };
         stage.addChild(magicLogos[i]);
+
+        hoverTextBox = new PIXI.Graphics();
+
+        hoverTexts[i].visible = false;
     }
     magicTexts[0].text = 'Fire';
     magicTexts[1].text = 'Water';
@@ -128,16 +161,18 @@ function testIntro() {
     magicTexts[3].text = 'Air';
     magicTexts[4].text = 'Life';
 
-    for (i = 0; i < 3; i++){
+    for (i = 0; i < 2; i++){
         chosenElementBoxes[i] = new PIXI.Graphics();
         chosenElementBoxes[i].beginFill(0xC2C2BA, 0.7);
         chosenElementBoxes[i].lineStyle(4, 0xC2C2BA, 1);
-        chosenElementBoxes[i].drawRoundedRect(i == 2 ? 580 : 500, i == 2 ? 340 : 300 + i * 75, 50, 50, 3);
+        chosenElementBoxes[i].drawRoundedRect(i == 2 ? 580 : 580, i == 2 ? 340 : 300 + i * 75, 50, 50, 3);
         stage.addChild(chosenElementBoxes[i]);
 
+        chosenElementTexts[i] = new PIXI.Text('Element ' + (i + 1) + ':', {font: '20px Arial'});
+        chosenElementTexts[i].x = 470;
+        chosenElementTexts[i].y = 310 + i * 75;
+        stage.addChild(chosenElementTexts[i]);
     }
-
-
 
     animate();
 
@@ -145,7 +180,7 @@ function testIntro() {
         for (var i = 0; i < 2; i++){
             if(chosenElements[i]){
                 chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
-                chosenElementIcons[i].x = 500;
+                chosenElementIcons[i].x = 580;
                 chosenElementIcons[i].y = 300 + i * 75;
                 chosenElementIcons[i].interactive = true;
                 chosenElementIcons[i].number = i;
@@ -165,6 +200,10 @@ function testIntro() {
             startGameButton.beginFill(0x0AC900, 0.8);
             startGameButton.lineStyle(4, 0x5AF752, 1);
             startGameButton.drawRoundedRect(400, 450, 200, 50, 5);
+            startGameButton.interactive = true;
+            startGameButton.click = function () {
+                gameStarted = true;
+            };
             stage.addChild(startGameButton);
 
             startGameText.text = 'Start Brawling!';
@@ -175,11 +214,15 @@ function testIntro() {
             stage.addChild(startGameText);
 
         }
+        if(!gameStarted){
+            requestAnimationFrame(animate);
+            // render the root container
+            renderer.render(stage);
+        } else {
+            stage.removeChildren();
+            onAssetsLoaded();
+        }
 
-        requestAnimationFrame(animate);
-
-        // render the root container
-        renderer.render(stage);
     }
 }
 
@@ -223,7 +266,7 @@ function onAssetsLoaded() {
     magicBox1.drawRoundedRect(300, 10, 50, 50, 3);
     GUI.addChild(magicBox1);
 
-    magic1 = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
+    magic1 = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[0] + '_icon.png');
     magic1.x = 300;
     magic1.y = 10;
     magic1.alpha = 0.8;
@@ -240,7 +283,7 @@ function onAssetsLoaded() {
     magicBox2.drawRoundedRect(370, 10, 50, 50, 3);
     GUI.addChild(magicBox2);
 
-    magic2 = PIXI.Sprite.fromImage('../img/icons/earth_icon.png');
+    magic2 = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[1] + '_icon.png');
     magic2.x = 370;
     magic2.y = 10;
     magic2.alpha = 0.8;
@@ -251,6 +294,7 @@ function onAssetsLoaded() {
     magicText2.y = 12;
     GUI.addChild(magicText2);
 
+    /* Probably not going to implement
     magicBox3 = new PIXI.Graphics();
     magicBox3.beginFill(0xC2C2BA, 0.7);
     magicBox3.lineStyle(4, 0xC2C2BA, 1);
@@ -267,13 +311,14 @@ function onAssetsLoaded() {
     magicText3.x = 443;
     magicText3.y = 12;
     GUI.addChild(magicText3);
+    */
 
     stage.addChild(GUI);
 
     // window.setInterval(function() {
     //     debug.text = 'FPS = ' + ticker.FPS.toFixed(0) + '; ' +
     //                  'p = (' + player.px.toFixed(2) + ', ' + player.py.toFixed(2) + ', ' + player.pz.toFixed(2) + '); ' +
-    //                  'health = ' + player.health;
+    //                  'hm ealth = ' + player.health;
     // }, 1000);
 
     ticker.add(function () {
