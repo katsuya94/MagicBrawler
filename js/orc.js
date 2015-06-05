@@ -133,7 +133,7 @@ Orc.prototype.think = function(dt) {
         break;
     case 1: // Chase
         if (!this.attacking) {
-            var d = distance(this.px, this.py, player.px, player.py);
+            var d = distance3d(this.px, this.py, this.pz, player.px, player.py, player.pz);
             if (player.dying){
                 this.mode = 0;
             } else if (d < 1.5) {

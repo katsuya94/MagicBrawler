@@ -11,8 +11,8 @@ var spreeTimer;
 function gameStart() {
     var scale = 0.75;
     var orcs = [];
-    var orcSpawnDistribution = [10, 2, 1, 1];
-    var startingOrcs = 5;
+    var orcSpawnDistribution = [10, 3, 2, 2];
+    var startingOrcs = 7;
 
     /* GUI Elements */
 
@@ -62,8 +62,8 @@ function gameStart() {
     //Spawn x orcs to start game
     for(i = 0; i < startingOrcs; i++)
         spawn();
-    var spawnOrcs = function() { if (orcs.length < 10 + 2 * difficultyLevel) spawnScheduled = true; };
-    window.setInterval(spawnOrcs, 10000);
+    var spawnOrcs = function() { if (orcs.length < 15 + 2 * difficultyLevel) spawnScheduled = true; };
+    window.setInterval(spawnOrcs, 8000);
 
     /* Initialize GUI */
 
@@ -125,7 +125,7 @@ function gameStart() {
                 if(score >= i * 500){
                     difficultyLevel = i + 1;
                     window.clearInterval(spawnOrcs);
-                    window.setInterval(spawnOrcs, 1000 - 100 * difficultyLevel);
+                    window.setInterval(spawnOrcs, 8000 - 500 * difficultyLevel);
                     for(var j = 0; j < orcSpawnDistribution.length; j++){
                         orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
                     }
