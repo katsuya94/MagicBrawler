@@ -9,7 +9,7 @@ function Orc(x, y, type, difficulty) {
 
     switch(type){
         case 0: //Default
-            this.animationSpeed = 0.15;
+            this.animationSpeed = 0.125;
             this.attackCooldown = 1000;
             this.health = 50;
             this.damage = 5;
@@ -19,7 +19,7 @@ function Orc(x, y, type, difficulty) {
             break;
 
         case 1: //BLUE Fast but less health
-            this.animationSpeed = 0.25;
+            this.animationSpeed = 0.225;
             this.attackCooldown = 500;
             this.health = 30;
             this.damage = 5;
@@ -43,7 +43,7 @@ function Orc(x, y, type, difficulty) {
             break;
 
         case 3: //GREEN can see longer distances?
-            this.animationSpeed = 0.15;
+            this.animationSpeed = 0.125;
             this.attackCooldown = 1000;
             this.health = 50;
             this.damage = 5;
@@ -51,7 +51,7 @@ function Orc(x, y, type, difficulty) {
             this.tint = 0x33F236;
             this.points = 175;
             this.sight = 6;
-            this.loseDistance = 9;
+            this.loseDistance = 12;
             break;
 
     }
@@ -138,7 +138,7 @@ Orc.prototype.think = function(dt) {
             } else if (d < 1.5) {
                 this.face(player.px, player.py);
                 this.attack();
-            } else if (d > (this.loseDistance ? this.loseDistance : 7)) {
+            } else if (d > (this.loseDistance ? this.loseDistance : 6)) {
                 this.mode = 0;
             } else if (player.newTile) {
                 this.setDest(player.px, player.py);
