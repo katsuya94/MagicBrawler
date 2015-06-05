@@ -45,6 +45,8 @@ function Player(x, y) {
     this.chargeEffect = new ChargeEffect();
     this.orbs = [];
     this.points = 0;
+    this.defaultAnimationSpeed = this.animationSpeed;
+    this.airDelay = -1;
 }
 
 Player.prototype = Object.create(Actor.prototype);
@@ -112,17 +114,23 @@ Player.prototype.think = function(dt) {
         } else {
             this.chargingTime -= dt
             if (this.chargingTime <= 0) {
-                this.chargingTime = 1500;
+                this.chargingTime = 1000;
                 this.orbs.push(new Orb(this.elements[this.elementId].type));
             }
         }
     } else if (!this.moving && !this.attacking && !this.casting && !this.swapPenalty && !this.dying && this.orbs.length < 5) {
         this.charging = true;
-        this.chargingTime = 1500;
+        this.chargingTime = 1000;
         this.chargeEffect.loop = false;
         this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
     }
+    if (this.airDelay > 0) {
+        this.airDelay -= dt;
+        if (this.airDelay <= 0)
+            this.animationSpeed = this.airAnimationSpeed;
+    }
+    this.animationSpeed += (this.defaultAnimationSpeed - this.animationSpeed) * dt / 1000;
 }
 
 Player.prototype.cast = function() {
@@ -148,6 +156,11 @@ Player.prototype.cast = function() {
                            player.px + vx, player.py + vy, player.pz, vx, vy,
                            {delay: 0, ttl: 200, damage: Math.floor(Math.exp(counts.water))});
             }
+        }
+
+        if (counts.air) {
+            this.airDelay = 800;
+            this.airAnimationSpeed = 0.2 * counts.air;
         }
     }
 }

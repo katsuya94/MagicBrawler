@@ -152,24 +152,17 @@ Actor.prototype.hurt = function(damage) {
         this.tint = (this.hurtColor ? this.hurtColor : 0xFF0000);
         this.tintTime = 200;
         this.health -= damage;
-        if (this.health <= 0) {
-            this.fadeTime = 5000;
-            this.dying = true;
-            this.loop = false;
-
-            //display points on dying
-            if(this.deathText){
-                this.deathText.x = this.x + 25;
-                this.deathText.y = this.y + 25;
-                this.deathText.text = Math.floor(this.points);
-                world.addChild(this.deathText);
-            }
-
-            score += this.points;
-            this.movementUpdate();
-        }
+        if (this.health <= 0)
+            this.die();
     }
 };
+
+Actor.prototype.die = function() {
+    this.fadeTime = 5000;
+    this.dying = true;
+    this.loop = false;
+    this.movementUpdate();
+}
 
 Actor.prototype.updatePosition = function(dt) {
     this.newTile = false;

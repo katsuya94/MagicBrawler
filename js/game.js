@@ -1,17 +1,17 @@
 var player;
 var world;
+var points;
 var score = 0;
 var difficultyLevel = 1;
+
+var spree = 0;
+var spreeTimer;
 
 function gameStart() {
     var scale = 0.75;
     var orcs = [];
     var orcSpawnDistribution = [10, 2, 1, 1];
     var startingOrcs = 5;
-
-
-
-
 
     /* GUI Elements */
 
@@ -25,8 +25,6 @@ function gameStart() {
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
             var orc = new Orc(x + 0.5, y + 0.5, randType, 1 + 0.1 * (difficultyLevel - 1));
             orcs.push(orc);
-            var points = new PIXI.Text('', {font: '20px bold arial'});
-            orc.deathText = points;
             world.addChild(orc);
         }
 
@@ -36,6 +34,10 @@ function gameStart() {
 
     world = new PIXI.Container();
     stage.addChild(world);
+
+    points = new PIXI.Text('', {font: '20px bold arial'});
+    points.visible = false;
+    world.addChild(points);
 
     mapLayers();
     for (var i = 0; i < DIM; i++)
@@ -134,9 +136,23 @@ function gameStart() {
         }
     };
 
-
     var updateGame = function () {
         var dt = ticker.elapsedMS;
+
+        /* Update points display */
+        if (points.visible) {
+            points.visibleTime -= dt;
+            if (points.visibleTime <= 0)
+                points.visible = false;
+        }
+
+        /* Update spree */
+
+        if (spree) {
+            spreeTimer -= dt;
+            if (spreeTimer <= 0)
+                spree = 0;
+        }
 
         /* Remove dead */
 
@@ -334,6 +350,8 @@ function gameStart() {
             }
         }
 
+        points.depth = depth;
+
         world.children.sort(function(a, b) {return a.depth - b.depth;});
 
         var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
@@ -358,7 +376,6 @@ function gameStart() {
 
         /* Increasing game difficulty */
         checkDifficulty();
-
 
         /* render */
 

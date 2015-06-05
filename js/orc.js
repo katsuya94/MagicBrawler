@@ -18,9 +18,9 @@ function Orc(x, y, type, difficulty) {
             this.sight = 5; //how far the orc can see
             break;
 
-        case 1://BLUE Fast but less health
-            this.animationSpeed = 0.18;
-            this.attackCooldown = 800;
+        case 1: //BLUE Fast but less health
+            this.animationSpeed = 0.25;
+            this.attackCooldown = 500;
             this.health = 30;
             this.damage = 5;
             this.defaultTint = 0x4650F0;
@@ -29,7 +29,7 @@ function Orc(x, y, type, difficulty) {
             this.sight = 4;
             break;
 
-        case 2://RED Slow but more health/damage
+        case 2: //RED Slow but more health/damage
             this.animationSpeed = 0.1;
             this.attackCooldown = 1200;
             this.health = 70;
@@ -85,6 +85,19 @@ Orc.prototype.pathFind = function() {
     var path = pathRef(this.pxFloor, this.pyFloor, this.xDestFloor, this.yDestFloor);
     this.direction = (path && path.direction) || this.direction;
     this.movementUpdate();
+};
+
+Orc.prototype.die = function() {
+    Actor.prototype.die.call(this);
+    spree += 1;
+    spreeTimer = 5000;
+    var multiplier = Math.pow(2, spree - 1);
+    score += this.points * multiplier;
+    points.x = this.x + 25;
+    points.y = this.y + 25;
+    points.text = '+' + Math.floor(this.points) + (multiplier > 1 ? (' x ' + multiplier) : '');
+    points.visible = true;
+    points.visibleTime = 2000;
 };
 
 Orc.prototype.think = function(dt) {
