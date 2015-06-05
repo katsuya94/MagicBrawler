@@ -25,8 +25,11 @@ function gameStart() {
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
             var orc = new Orc(x + 0.5, y + 0.5, randType, 1 + 0.1 * (difficultyLevel - 1));
             orcs.push(orc);
+            var points = new PIXI.Text('', {font: '20px bold arial'});
+            orc.deathText = points;
             world.addChild(orc);
         }
+
     }
 
     var stage = new PIXI.Container();
@@ -159,6 +162,8 @@ function gameStart() {
         for (var i = 0; i < orcs.length; i++) {
             if (orcs[i].dying) {
                 orcs[i].fadeTime -= dt;
+                if (orcs[i].fadeTime <= 4000)
+                    world.removeChild(orcs[i].deathText);
                 if (orcs[i].fadeTime <= 0)
                     world.removeChild(orcs[i]);
             }

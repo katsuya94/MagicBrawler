@@ -30,8 +30,10 @@ function showStartPage() {
     var stage = new PIXI.Container();
 
     var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
-    logo.x = 170;
-    logo.y = 70;
+    logo.x = 110;
+    logo.y = 40;
+    logo.scale.x = 1.2;
+    logo.scale.y = 1.2;
     stage.addChild(logo);
 
     // var elementText = new PIXI.Text('Choose your elements', {font:'30px Arial'});
@@ -216,6 +218,11 @@ function showHighScores() {
     highScoreText.y = 100;
     stage.addChild(highScoreText);
 
+    var yourScore = new PIXI.Text('Your score: ' + score, {font: 'bold 40px Arial'});
+    yourScore.x = 225;
+    yourScore.y = 200;
+    stage.addChild(yourScore);
+
     var restartText = new PIXI.Text('Click anywhere to restart', {font: '30px impact charcoal'});
     restartText.x = 225;
     restartText.y = 450;
@@ -228,6 +235,8 @@ function showHighScores() {
         gameStarted = false;
         chosenElements = [false, false];
         chosenCreated = [false, false];
+        score = 0;
+        difficultyLevel = 0;
     };
 
     function updateHighScorePage() {
