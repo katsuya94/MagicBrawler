@@ -36,6 +36,8 @@ function Effect(frame, specs, x, y, z) {
     this.pxFloor = Math.floor(this.px);
     this.pyFloor = Math.floor(this.py);
 
+    this.offset = new PIXI.Point(0, 0);
+
     this.loop = false;
     this.animationSpeed = 0.3;
 
@@ -61,8 +63,8 @@ Effect.prototype.filter = function(filter) {
 
 Effect.prototype.updatePosition = function(dt) {
     var pos = position(this.px - 1.5, this.py - 1.5, this.pz);
-    this.x = pos.x;
-    this.y = pos.y;
+    this.x = pos.x - 64 + this.offset.x;
+    this.y = pos.y - 112 + this.offset.y;
 };
 
 Effect.prototype.checkRemove = function() {
@@ -77,6 +79,7 @@ Effect.prototype.remove = function(i) {
 
 function ChargeEffect() {
     Effect.call(this, 'ring', [{first: 1, last: 16}, [15, 14, 15, 16], {first: 16, last: 1}], 0, 0, 0);
+    this.offset.y = 20;
 }
 
 ChargeEffect.prototype = Object.create(Effect.prototype);
@@ -85,9 +88,9 @@ ChargeEffect.prototype.constructor = ChargeEffect;
 ChargeEffect.prototype.updatePosition = function(dt) {
     this.px = player.px + Number.EPSILON;
     this.py = player.py + Number.EPSILON;
-    this.pz = player.pz - 0.7;
     this.pxFloor = Math.floor(this.px);
     this.pyFloor = Math.floor(this.py);
+    this.pz = player.pz;
     Effect.prototype.updatePosition.call(this, dt);
     if (!this.playing) {
         if (player.charging) {
@@ -100,4 +103,62 @@ ChargeEffect.prototype.updatePosition = function(dt) {
 
 ChargeEffect.prototype.checkRemove = function() {
     return true;
+};
+
+function Orb(type) {
+    PIXI.Graphics.call(this);
+
+    effects.push(this);
+    world.addChild(this);
+
+    var color = elementColors[type];
+    this.moveTo(0, 0);
+    this.beginFill(color.diffuse, 1);
+    this.lineStyle(1, color.highlight, 1);
+    this.drawCircle(0, 0, 3);
+
+    this.alpha = 0.8;
+
+    this.overDepth = 0;
+
+    this.live = true;
+    this.type = type;
+
+    this.angle = 2 * Math.PI * Math.random();
+    this.offset = 2 * Math.PI * Math.random();
+
+    this.angleFrequency = 0.5 + Math.random();
+    this.offsetFrequency = 0.5 + Math.random();
+
+    this.flip = Math.random() < 0.5;
+}
+
+Orb.prototype = Object.create(PIXI.Graphics.prototype);
+Orb.prototype.constructor = Orb;
+
+Orb.prototype.remove = Effect.prototype.remove;
+
+Orb.prototype.checkRemove = function() {
+    return this.live;
+};
+
+Orb.prototype.updatePosition = function(dt) {
+    this.angle = (this.angle + this.angleFrequency * dt / 750) % (2 * Math.PI);
+    this.offset = (this.offset + this.offsetFrequency * dt / 750) % (2 * Math.PI);
+
+    var angle;
+    if (this.flip)
+        angle = -this.angle;
+    else
+        angle = this.angle;
+
+    this.px = player.px + Math.cos(angle) / 2;
+    this.py = player.py + Math.sin(angle) / 2;
+    this.pxFloor = Math.floor(this.px);
+    this.pyFloor = Math.floor(this.py);
+    this.pz = player.pz + 0.5 + Math.sin(this.offset) / 4;
+
+    var pos = position(this.px, this.py, this.pz);
+    this.x = pos.x;
+    this.y = pos.y + 16;
 };

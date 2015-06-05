@@ -14,7 +14,7 @@ function gameStart() {
         var y = Math.floor(Math.random() * DIM);
         var path = pathRef(x, y, player.pxFloor, player.pyFloor);
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5, player);
+            var orc = new Orc(x + 0.5, y + 0.5);
             orcs.push(orc);
             world.addChild(orc);
         }
@@ -324,6 +324,7 @@ function gameStart() {
         }
 
         /* render */
+
         renderer.render(stage);
     };
     ticker.add(updateGame);

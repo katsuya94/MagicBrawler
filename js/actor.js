@@ -35,8 +35,20 @@ function Actor(frame, x, y) {
         animations.push(animation);
 
         animation = [];
-        for (var j = 0; j < 8; j++) {
+        for (var j = 0; j < 4; j++) {
             animation.push(frames[i * 32 + 24 + j]);
+        }
+        for (var j = 0; j < 2; j++) {
+            animation.push(frames[i * 32 + 24 + 3]);
+        }
+        for (var j = 4 - 1; j >= 0; j--) {
+            animation.push(frames[i * 32 + 24 + j]);
+        }
+        animations.push(animation);
+
+        animation = [];
+        for (var j = 0; j < 4; j++) {
+            animation.push(frames[i * 32 + 28 + j]);
         }
         animations.push(animation);
     }
@@ -52,6 +64,9 @@ function Actor(frame, x, y) {
 
     this.attacking = false;
     this.attackingAnimation = false;
+
+    this.casting = false;
+    this.castingAnimation = false;
 
     this.dying = false;
     this.timeDead = 0;
@@ -76,7 +91,7 @@ function Actor(frame, x, y) {
 
     this.play();
     this.movementUpdate();
-    
+
     this.overDepth = 1;
 }
 
@@ -85,30 +100,40 @@ Actor.prototype.constructor = Actor;
 
 Actor.prototype.movementUpdate = function() {
     if (this.dying) {
-        this.playAnimation(5 * this.direction + 3, 0);
+        this.playAnimation(6 * this.direction + 3, 0);
     } else if (this.attacking) {
         this.movingAnimation = false;
+        this.castingAnimation = false;
         if (this.attackingAnimation)
-            this.playAnimation(5 * this.direction + 2);
+            this.playAnimation(6 * this.direction + 2);
         else
-            this.playAnimation(5 * this.direction + 2, 0);
+            this.playAnimation(6 * this.direction + 2, 0);
         player.attackingAnimation = true;
+    } else if (this.casting) {
+        this.movingAnimation = false;
+        this.attackingAnimation = false;
+        if (this.castingAnimation)
+            this.playAnimation(6 * this.direction + 4);
+        else
+            this.playAnimation(6 * this.direction + 4, 0);
     } else if (this.moving) {
         this.attackingAnimation = false;
+        this.castingAnimation = false;
         if (this.movingAnimation)
-            this.playAnimation(5 * this.direction + 1);
+            this.playAnimation(6 * this.direction + 1);
         else
-            this.playAnimation(5 * this.direction + 1, 0);
+            this.playAnimation(6 * this.direction + 1, 0);
         this.movingAnimation = true;
     } else {
         this.movingAnimation = false;
         this.attackingAnimation = false;
-        this.playAnimation(5 * this.direction, 0);
+        this.castingAnimation = false;
+        this.playAnimation(6 * this.direction, 0);
     }
 };
 
 Actor.prototype.attack = function() {
-    if (!this.dying && !this.attacking) {
+    if (!this.dying && !this.attacking && !this.casting) {
         this.attacking = true;
         this.attackTime = this.attackCooldown;
         var damage = this.damage;
@@ -250,6 +275,15 @@ Actor.prototype.updatePosition = function(dt) {
             }
         }
 
+        if (this.casting) {
+            this.castTime -= dt;
+            if (this.castTime <= 0) {
+                this.casting = false;
+                this.loop = true;
+                this.movementUpdate();
+            }
+        }
+
         if (this.invulnerable) {
             this.invulnerableTime -= dt;
             if (this.invulnerableTime <= 0)
@@ -275,8 +309,8 @@ Actor.prototype.updatePosition = function(dt) {
     /* Screen Position */
 
     var pos = position(this.px - 1.5, this.py - 1.5, this.pz);
-    this.x = pos.x;
-    this.y = pos.y;
+    this.x = pos.x - 64;
+    this.y = pos.y - 112;
 };
 
 Actor.prototype.face = function(x, y){

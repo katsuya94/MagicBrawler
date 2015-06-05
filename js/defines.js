@@ -21,8 +21,8 @@ function distance(ax, ay, bx, by) {
 }
 
 function position(px, py, pz) {
-    return {x: px * 32 + py * -32 + 400 - 64,
-            y: px * -16 + py * -16 + pz * -32 + 300 - 112};
+    return {x: px * 32 + py * -32 + 400,
+            y: px * -16 + py * -16 + pz * -32 + 300};
 }
 
 var elementFilters = {
@@ -31,4 +31,12 @@ var elementFilters = {
     fire: {hue: 110, sat: 1.5},
     earth: {hue: 120, sat: -0.5},
     life: {hue: 45, sat: 1.0}
+};
+
+var elementColors = {
+    water: {diffuse: 0x0000FF, highlight: 0xFFFFFF},
+    air: {diffuse: 0xFFFFFF, highlight: 0xCCCCCC},
+    fire: {diffuse: 0xFF0000, highlight: 0xFFCC00},
+    earth: {diffuse: 0x996600, highlight: 0xCC9966},
+    life: {diffuse: 0xFF00FF, highlight: 0xCC00CC}
 };

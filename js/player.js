@@ -29,6 +29,13 @@ var playerSwapScheduler = function() { playerSwapScheduled = true; };
 
 klV.press = playerSwapScheduler
 
+var klC = new keyListener(67);
+
+var playerCastScheduled = false;
+var playerCastScheduler = function() { playerCastScheduled = true; };
+
+klC.press = playerCastScheduler;
+
 function Player(x, y) {
     Actor.call(this, 'player', x, y);
     this.elements = [];
@@ -36,6 +43,7 @@ function Player(x, y) {
     this.charging = false;
     this.swapPenalty = false;
     this.chargeEffect = new ChargeEffect();
+    this.orbs = [];
 }
 
 Player.prototype = Object.create(Actor.prototype);
@@ -78,7 +86,7 @@ Player.prototype.think = function(dt) {
 
         player.moving = !(x === 0 && y === 0);
 
-        if (!this.attacking)
+        if (!this.attacking && !this.casting)
             this.movementUpdate();
     }
     if (playerAttackScheduled) {
@@ -91,22 +99,44 @@ Player.prototype.think = function(dt) {
         this.elementId = (this.elementId + 1) % 2;
         this.positionElements();
     }
+    if (playerCastScheduled) {
+        playerCastScheduled = false;
+        this.cast();
+    }
     if (this.charging) {
-        if (this.moving || this.attacking || this.swapPenalty || this.dying) {
+        if (this.moving || this.attacking || this.casting || this.swapPenalty || this.dying || this.orbs.length >= 5) {
             this.charging = false;
             this.chargeEffect.loop = false;
             this.chargeEffect.playAnimation(2, this.chargeEffect._animations[2].indexOf(this.chargeEffect._texture));
         } else {
             this.chargingTime -= dt
             if (this.chargingTime <= 0) {
-                //do stuff
+                this.chargingTime = 3000;
+                this.orbs.push(new Orb(this.elements[this.elementId].type));
             }
         }
-    } else if (!this.moving && !this.attacking && !this.swapPenalty && !this.dying) {
+    } else if (!this.moving && !this.attacking && !this.casting && !this.swapPenalty && !this.dying && this.orbs.length < 5) {
         this.charging = true;
+        this.chargingTime = 3000;
         this.chargeEffect.loop = false;
         this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
+    }
+}
+
+Player.prototype.cast = function() {
+    if (!this.dying && !this.attacking) {
+        this.casting = true;
+        this.castTime = 800;
+        this.loop = false;
+        this.movementUpdate();
+        var counts = {water: 0, air: 0, fire: 0, earth: 0, life:0};
+        while (this.orbs.length) {
+            var orb = this.orbs.pop();
+            counts[orb.type] += 1;
+            orb.live = false;
+        }
+        console.log(counts);
     }
 }
 
