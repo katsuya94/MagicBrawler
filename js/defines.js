@@ -20,6 +20,10 @@ function distance(ax, ay, bx, by) {
 	return Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
 }
 
+function distance3d(ax, ay, az, bx, by, bz) {
+    return Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2) + Math.pow(az - bz, 2));
+}
+
 function position(px, py, pz) {
     return {x: px * 32 + py * -32 + 400,
             y: px * -16 + py * -16 + pz * -32 + 300};
