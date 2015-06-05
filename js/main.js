@@ -82,7 +82,8 @@ function showStartPage() {
 
     instructionsHoverBox = new PIXI.Graphics();
     instructionsHoverText = new PIXI.Text('Use the arrow keys to move around\n' +
-                                          'C - Cast your charged orbs\n' +
+                                          'X - Use melee attack\n' +
+                                          'C - Cast all of your charged orbs\n' +
                                           'V - Switch which element of orb to charge\n' +
                                           'Charge orbs by standing still\n' +
                                           'Try to kill as many orcs as possible before dying', {font: '15px Arial'});
@@ -90,12 +91,12 @@ function showStartPage() {
     instructionsButton.mouseover = function(e) {
         instructionsHoverBox.beginFill(0xE9EAF2, 0.8);
         instructionsHoverBox.lineStyle(4, 0xE9EAF2, 1);
-        instructionsHoverBox.drawRoundedRect(e.data.global.x - 330, e.data.global.y - 100, 330, 100, 4);
+        instructionsHoverBox.drawRoundedRect(e.data.global.x - 330, e.data.global.y - 125, 330, 125, 4);
         instructionsHoverBox.visible = true;
         stage.addChild(instructionsHoverBox);
 
         instructionsHoverText.x = e.data.global.x - 330 + 5;
-        instructionsHoverText.y = e.data.global.y - 100 + 5;
+        instructionsHoverText.y = e.data.global.y - 125 + 5;
         instructionsHoverText.visible = true;
         stage.addChild(instructionsHoverText);
     };
