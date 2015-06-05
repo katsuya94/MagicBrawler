@@ -76,6 +76,8 @@ function Actor(frame, x, y) {
 
     this.play();
     this.movementUpdate();
+    
+    this.overDepth = 1;
 }
 
 Actor.prototype = Object.create(CustomAnimation.prototype);
@@ -272,8 +274,9 @@ Actor.prototype.updatePosition = function(dt) {
 
     /* Screen Position */
 
-    this.x = (this.px - 1.5) * 32 + (this.py - 1.5) * -32 + 400 - 64;
-    this.y = (this.px - 1.5) * -16 + (this.py - 1.5) * -16 + this.pz * -32 + 300 - 112;
+    var pos = position(this.px - 1.5, this.py - 1.5, this.pz);
+    this.x = pos.x;
+    this.y = pos.y;
 };
 
 Actor.prototype.face = function(x, y){

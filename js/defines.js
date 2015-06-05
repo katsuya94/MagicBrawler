@@ -1,7 +1,6 @@
 var sqrt2 = Math.sqrt(2);
 var invsqrt2 = 1 / sqrt2;
 
-
 var dx = [-invsqrt2, 0, invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1];
 var dy = [invsqrt2, 1, invsqrt2, 0, -invsqrt2, -1, -invsqrt2, 0];
 
@@ -19,4 +18,9 @@ function normalize(x, y) {
 
 function distance(ax, ay, bx, by) {
 	return Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
+}
+
+function position(px, py, pz) {
+    return {x: px * 32 + py * -32 + 400 - 64,
+            y: px * -16 + py * -16 + pz * -32 + 300 - 112};
 }

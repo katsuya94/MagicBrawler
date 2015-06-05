@@ -34,6 +34,7 @@ function Player(x, y) {
     this.elements = [];
     this.elementId = 0;
     this.charging = false;
+    this.chargeEffect = new ChargeEffect();
 }
 
 Player.prototype = Object.create(Actor.prototype);
@@ -89,13 +90,20 @@ Player.prototype.think = function(dt) {
         this.positionElements();
     }
     if (this.charging) {
-        this.chargingTime -= dt
-        if (this.moving) {
+        if (this.moving || this.dying) {
             this.charging = false;
+            this.chargeEffect.loop = false;
+            this.chargeEffect.playAnimation(2, this.chargeEffect._animations[2].indexOf(this.chargeEffect._texture));
+        } else {
+            this.chargingTime -= dt
+            if (this.chargingTime <= 0) {
+                //do stuff
+            }
         }
-    }
-    if (!this.moving && !this.charging) {
-        this.charge();
+    } else if (!this.moving && !this.dying) {
+        this.charging = true;
+        this.chargeEffect.loop = false;
+        this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
     }
 }
 
@@ -108,11 +116,4 @@ Player.prototype.positionElements = function() {
     this.elements[inactive].targetX = 60;
     this.elements[inactive].targetScaleScalar = 0.5;
     this.elements[inactive].text.text = 'V';
-}
-
-Player.prototype.charge = function() {
-    this.charging = true;
-    this.chargingTime = 2000;
-    this.chargeEffect = new Effect('ring', 0, 16);
-    world.addChild(this.chargeEffect);
 }

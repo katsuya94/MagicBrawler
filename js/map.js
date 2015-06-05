@@ -543,6 +543,7 @@ function pathRef(sx, sy, dx, dy) {
     else
         return pathMap[sy][sx][dy][dx];
 }
+
 function setupMap(){
     for (var i = 0; i < DIM; i++) {
         for (var j = 0; j < DIM; j++) {
@@ -612,7 +613,6 @@ function setupMap(){
     }
 
     /* Dijkstra */
-
 
     for (var i = 0; i < DIM; i++) {
         var sRow = [];

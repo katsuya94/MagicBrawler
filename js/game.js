@@ -1,5 +1,5 @@
-var world;
 var player;
+var world;
 
 function gameStart() {
     var scale = 0.75;
@@ -14,7 +14,7 @@ function gameStart() {
         var y = Math.floor(Math.random() * DIM);
         var path = pathRef(x, y, player.pxFloor, player.pyFloor);
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5);
+            var orc = new Orc(x + 0.5, y + 0.5, player);
             orcs.push(orc);
             world.addChild(orc);
         }
@@ -168,6 +168,17 @@ function gameStart() {
         for (var i = 0; i < orcs.length; i++)
             orcs[i].updatePosition(dt);
 
+        /* Effects */
+
+        for (var i = 0; i < effects.length; i++) {
+            if (effects[i].checkRemove()) {
+                effects[i].updatePosition(dt);
+            } else {
+                effects[i].remove(i);
+                i--;
+            }
+        }
+
         /* Create scene graph */
 
         for (var i = 0; i < DIM; i++) {
@@ -180,48 +191,60 @@ function gameStart() {
             }
         }
 
-        function actorDepth(actor) {
-            var i = actor.pxFloor;
-            var j = actor.pyFloor;
+        function entityDepth(entity) {
+            var i = entity.pxFloor;
+            var j = entity.pyFloor;
+
+            if (!valid(i, j))
+                return;
+
             var cap = tiles[j][i].length - 1;
 
-            actor.ahead = [];
-            actor.numBehind = 0;
-            actor.visited = false;
+            entity.ahead = [];
+            entity.numBehind = 0;
+            entity.visited = false;
 
-            add(tiles[j][i][cap - 1], actor);
-            add(actor,tiles[j][i][cap]);
+            add(tiles[j][i][cap - 1], entity);
+            add(entity, tiles[j][i][cap]);
 
             var rampAdjusted = cap - (rampRef(i, j) >= 0) - 1;
 
-            function over(i, j) {
-                if (valid(i, j) && tiles[j][i][rampAdjusted]) {
-                    add(tiles[j][i][rampAdjusted], actor);
-                }
-            }
-
-            over(i - 1, j);
-            over(i, j - 1);
-
-            function front(i, j) {
-                if (valid(i, j)) {
-                    if (tiles[j][i][rampAdjusted]) {
-                        add(tiles[j][i][rampAdjusted], actor);
-                        if (tiles[j][i][rampAdjusted + 1])
-                            add(tiles[j][i][rampAdjusted + 1], actor);
+            function over(i, j, k) {
+                if (k > 0) {
+                    if (valid(i - 1, j) && tiles[j][i - 1][rampAdjusted]) {
+                        add(tiles[j][i - 1][rampAdjusted], entity);
+                        over(i - 1, j, k - 1)
+                    }
+                    if (valid(i, j - 1) && tiles[j - 1][i][rampAdjusted]) {
+                        add(tiles[j - 1][i][rampAdjusted], entity);
+                        over(i, j - 1, k - 1)
                     }
                 }
             }
 
-            front(i + 1, j);
-            front(i, j + 1);
+            over(i, j, entity.overDepth);
+
+            // function front(i, j) {
+            //     if (valid(i, j)) {
+            //         if (tiles[j][i][rampAdjusted]) {
+            //             add(tiles[j][i][rampAdjusted], actor);
+            //             if (tiles[j][i][rampAdjusted + 1])
+            //                 add(tiles[j][i][rampAdjusted + 1], actor);
+            //         }
+            //     }
+            // }
+
+            // front(i + 1, j);
+            // front(i, j + 1);
         }
 
-        actorDepth(player);
+        entityDepth(player);
         for (var i = 0; i < orcs.length; i++)
-            actorDepth(orcs[i]);
+            entityDepth(orcs[i]);
+        for (var i = 0; i < effects.length; i++)
+            entityDepth(effects[i]);
 
-        function actorActor(a, b) {
+        function entityEntity(a, b) {
             if (a.px + a.py > b.px + b.py)
                 add(a, b);
             else
@@ -229,11 +252,18 @@ function gameStart() {
         }
 
         for (var i = 0; i < orcs.length; i++)
-            actorActor(player, orcs[i]);
+            entityEntity(player, orcs[i]);
+        for (var i = 0; i < effects.length; i++)
+            entityEntity(player, effects[i]);
         for (var i = 0; i < orcs.length; i++) {
             for (var j = i + 1; j < orcs.length; j++)
-                actorActor(orcs[i], orcs[j]);
+                entityEntity(orcs[i], orcs[j]);
+            for (var j = 0; j < effects.length; j++)
+                entityEntity(orcs[i], effects[j]);
         }
+        for (var i = 0; i < effects.length; i++)
+            for (var j = i + 1; j < effects.length; j++)
+                entityEntity(effects[i], effects[j]);
 
         // function dfs(node, path) {
         //     var newpath = path.slice(0);
@@ -271,7 +301,7 @@ function gameStart() {
             }
         }
 
-        world.children.sort(function(a, b) { return a.depth - b.depth; });
+        world.children.sort(function(a, b) {return a.depth - b.depth;});
 
         var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
         scale = Math.min(1.0, Math.max(0.0, scale + dt * (target - scale) / 100));

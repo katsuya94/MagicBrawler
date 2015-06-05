@@ -224,10 +224,6 @@ function showHighScores() {
         gameStarted = false;
         chosenElements = [false, false];
         chosenCreated = [false, false];
-        for (var i = 0; i < orcs.length; i++) {
-             world.removeChild(orcs[i]);
-             orcs = [];
-        }
     };
 
     function updateHighScorePage() {
