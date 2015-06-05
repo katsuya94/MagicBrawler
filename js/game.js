@@ -1,9 +1,12 @@
 var player;
 var world;
+var score = 0;
 
 function gameStart() {
     var scale = 0.75;
     var orcs = [];
+    var orcSpawnDistribution = [10, 3, 2, 2];
+    var startingOrcs = 5;
 
     /* GUI Elements */
 
@@ -13,8 +16,9 @@ function gameStart() {
         var x = Math.floor(Math.random() * DIM);
         var y = Math.floor(Math.random() * DIM);
         var path = pathRef(x, y, player.pxFloor, player.pyFloor);
+        var randType = selectFromDistribution(orcSpawnDistribution);
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5, player);
+            var orc = new Orc(x + 0.5, y + 0.5, randType);
             orcs.push(orc);
             world.addChild(orc);
         }
@@ -41,6 +45,9 @@ function gameStart() {
     }
     player = new Player(x + 0.5, y + 0.5, chosenElements);
     world.addChild(player);
+    //Spawn x orcs to start game
+    for(i = 0; i < startingOrcs; i++)
+        spawn();
 
     window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
 
@@ -99,7 +106,7 @@ function gameStart() {
     stage.addChild(debug);
 
     window.setInterval(function() {
-        debug.text = 'FPS = ' + ticker.FPS.toFixed(0);
+        debug.text = 'Score = ' + score + '\nFPS = ' + ticker.FPS.toFixed(0);
         debug.x = 800 - debug.width;
     }, 1000);
 
@@ -314,7 +321,7 @@ function gameStart() {
 
         healthBar.clear();
         healthBar.beginFill(0xF5252C, 1);
-        healthBar.drawRect(2, 2, 196 * player.health / player.maxHealth, 16, 3);
+        healthBar.drawRect(2, 2, 196 * Math.max(player.health, 0) / player.maxHealth, 16, 3);
 
         for (var i = 0; i < player.elements.length; i++) {
             player.elements[i].x += dt * (player.elements[i].targetX - player.elements[i].x) / 100;

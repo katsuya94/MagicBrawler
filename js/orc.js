@@ -1,15 +1,61 @@
-function Orc(x, y) {
+function Orc(x, y, type) {
     Actor.call(this, 'orc', x, y);
 
     this.xDest = this.px;
     this.yDest = this.py;
     this.xDestFloor = this.pxFloor;
     this.yDestFloor = this.pyFloor;
+    this.orcType = type;
 
-    this.animationSpeed = 0.15;
-    this.attackCooldown = 1000;
-    this.health = 50;
-    this.damage = 5;
+    switch(type){
+        case 0: //Default
+            this.animationSpeed = 0.15;
+            this.attackCooldown = 1000;
+            this.health = 50;
+            this.damage = 5;
+            this.defaultTint = 0xFFFFFF;
+            this.points = 100; //points gotten for killing
+            this.sight = 5; //how far the orc can see
+            break;
+
+        case 1://BLUE Fast but less health
+            this.animationSpeed = 0.18;
+            this.attackCooldown = 800;
+            this.health = 30;
+            this.damage = 5;
+            this.defaultTint = 0x4650F0;
+            this.tint = 0x4650F0;
+            this.points = 150;
+            this.sight = 4;
+            break;
+
+        case 2://RED Slow but more health/damage
+            this.animationSpeed = 0.1;
+            this.attackCooldown = 1200;
+            this.health = 70;
+            this.damage = 8;
+            this.defaultTint = 0xD40644;
+            this.tint = 0xD40644;
+            this.hurtColor = 0x4650F0;
+            this.points = 200;
+            this.sight = 4;
+            // this.scale.x = this.scale.y = 1.2;
+            break;
+
+        case 3: //GREEN can see longer distances?
+            this.animationSpeed = 0.15;
+            this.attackCooldown = 1000;
+            this.health = 50;
+            this.damage = 5;
+            this.defaultTint = 0x33F236;
+            this.tint = 0x33F236;
+            this.points = 175;
+            this.sight = 6;
+            this.loseDistance = 9;
+            break;
+
+    }
+
 
     this.mode = 0;
     this.idleTime = 3000;
@@ -39,7 +85,7 @@ Orc.prototype.pathFind = function() {
 Orc.prototype.think = function(dt) {
     switch (this.mode) {
     case 0: // Patrol
-        if (!player.dying && distance(this.px, this.py, player.px, player.py) < 4) {
+        if (!player.dying && distance(this.px, this.py, player.px, player.py) < this.sight) {
             this.mode = 1;
         } else if (this.moving && this.pxFloor === this.xDestFloor && this.pyFloor === this.yDestFloor) {
             this.moving = false;
@@ -71,7 +117,7 @@ Orc.prototype.think = function(dt) {
             } else if (d < 1.5) {
                 this.face(player.px, player.py);
                 this.attack();
-            } else if (d > 10) {
+            } else if (d > (this.loseDistance ? this.loseDistance : 7)) {
                 this.mode = 0;
             } else if (player.newTile) {
                 this.setDest(player.px, player.py);
@@ -84,4 +130,4 @@ Orc.prototype.think = function(dt) {
             }
         }
     }
-}
+};

@@ -76,7 +76,7 @@ function Actor(frame, x, y) {
 
     this.play();
     this.movementUpdate();
-    
+
     this.overDepth = 1;
 }
 
@@ -122,13 +122,14 @@ Actor.prototype.hurt = function(damage) {
     if (!this.invulnerable) {
         this.invulnerable = true;
         this.invulnerableTime = 200;
-        this.tint = 0xFF0000;
+        this.tint = (this.hurtColor ? this.hurtColor : 0xFF0000);
         this.tintTime = 200;
         this.health -= damage;
         if (this.health <= 0) {
             this.fadeTime = 5000;
             this.dying = true;
             this.loop = false;
+            score += this.points;
             this.movementUpdate();
         }
     }
@@ -260,7 +261,7 @@ Actor.prototype.updatePosition = function(dt) {
     if (this.tint !== 0xFFFFFF) {
         this.tintTime -= dt;
         if (this.tintTime <= 0)
-            this.tint = 0xFFFFFF;
+            this.tint = this.defaultTint;
     }
 
     /* Gravity */
@@ -274,7 +275,7 @@ Actor.prototype.updatePosition = function(dt) {
 
     /* Screen Position */
 
-    var pos = position(this.px - 1.5, this.py - 1.5, this.pz);
+    var pos = position(this.px - 1.5, this.py - 1.5 , this.pz);
     this.x = pos.x;
     this.y = pos.y;
 };
