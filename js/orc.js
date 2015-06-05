@@ -99,6 +99,9 @@ Orc.prototype.die = function() {
     points.text = '+' + Math.floor(this.points) + (multiplier > 1 ? (' x ' + multiplier) : '');
     points.visible = true;
     points.visibleTime = 2000;
+    if (Math.random() < 0.25) {
+        player.health = Math.min(player.health + 10, player.maxHealth);
+    }
 };
 
 Orc.prototype.think = function(dt) {
