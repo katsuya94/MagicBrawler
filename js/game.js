@@ -141,9 +141,10 @@ function gameStart() {
         /* Update points display */
         if (points.showing) {
             points.showingTime -= dt;
-            if (points.showingTime <= 0)
+            if (points.showingTime <= 0) {
                 points.x = -1000;
                 points.y = -1000;
+            }
         }
 
         /* Update spree */
