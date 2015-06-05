@@ -93,7 +93,7 @@ function showStartPage() {
         var angle = i * 2 * Math.PI / 5
         var x = 200 + 100 * Math.cos(angle);
         var y = 350 + 100 * Math.sin(angle);
-        magicBoxes[i].drawRoundedRect(x, y, 50, 50, 3);
+        magicBoxes[i].drawCircle(x + 25, y + 25, 30);
         stage.addChild(magicBoxes[i]);
 
         magicLogos[i].x = x;
