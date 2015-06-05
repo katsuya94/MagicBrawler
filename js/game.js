@@ -195,14 +195,14 @@ function gameStart() {
             var i = entity.pxFloor;
             var j = entity.pyFloor;
 
+            entity.ahead = [];
+            entity.numBehind = 0;
+            entity.visited = false;
+
             if (!valid(i, j))
                 return;
 
             var cap = tiles[j][i].length - 1;
-
-            entity.ahead = [];
-            entity.numBehind = 0;
-            entity.visited = false;
 
             add(tiles[j][i][cap - 1], entity);
             add(entity, tiles[j][i][cap]);

@@ -22,18 +22,19 @@ var playerAttackScheduler = function() { playerAttackScheduled = true; };
 
 klX.press = playerAttackScheduler;
 
-var klC = new keyListener(67);
+var klV = new keyListener(86);
 
 var playerSwapScheduled = false;
 var playerSwapScheduler = function() { playerSwapScheduled = true; };
 
-klC.press = playerSwapScheduler
+klV.press = playerSwapScheduler
 
 function Player(x, y) {
     Actor.call(this, 'player', x, y);
     this.elements = [];
     this.elementId = 0;
     this.charging = false;
+    this.swapPenalty = false;
     this.chargeEffect = new ChargeEffect();
 }
 
@@ -86,11 +87,12 @@ Player.prototype.think = function(dt) {
     }
     if (playerSwapScheduled) {
         playerSwapScheduled = false;
+        this.swapPenalty = true;
         this.elementId = (this.elementId + 1) % 2;
         this.positionElements();
     }
     if (this.charging) {
-        if (this.moving || this.dying) {
+        if (this.moving || this.attacking || this.swapPenalty || this.dying) {
             this.charging = false;
             this.chargeEffect.loop = false;
             this.chargeEffect.playAnimation(2, this.chargeEffect._animations[2].indexOf(this.chargeEffect._texture));
@@ -100,7 +102,7 @@ Player.prototype.think = function(dt) {
                 //do stuff
             }
         }
-    } else if (!this.moving && !this.dying) {
+    } else if (!this.moving && !this.attacking && !this.swapPenalty && !this.dying) {
         this.charging = true;
         this.chargeEffect.loop = false;
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));

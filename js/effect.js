@@ -37,7 +37,9 @@ function Effect(frame, specs, x, y, z) {
     this.pyFloor = Math.floor(this.py);
 
     this.loop = false;
-    this.animationSpeed = 0.2;
+    this.animationSpeed = 0.3;
+
+    this.alpha = 0.8;
 
     this.overDepth = 2;
 
@@ -76,13 +78,16 @@ ChargeEffect.prototype.constructor = ChargeEffect;
 ChargeEffect.prototype.updatePosition = function(dt) {
     this.px = player.px + Number.EPSILON;
     this.py = player.py + Number.EPSILON;
-    this.pz = player.pz - 0.5;
+    this.pz = player.pz - 0.7;
     this.pxFloor = Math.floor(this.px);
     this.pyFloor = Math.floor(this.py);
     Effect.prototype.updatePosition.call(this, dt);
-    if (!this.playing && player.charging) {
-        this.loop = true;
-        this.playAnimation(1, 0);
+    if (!this.playing) {
+        if (player.charging) {
+            this.loop = true;
+            this.playAnimation(1, 0);
+        }
+        player.swapPenalty = false;
     }
 };
 
