@@ -1,4 +1,4 @@
-var DIM = 45;
+var DIM = 36;
 var HEIGHT = 5;
 var numChunks = 10;
 
