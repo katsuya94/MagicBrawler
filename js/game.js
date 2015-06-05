@@ -20,17 +20,18 @@ function gameStart() {
     var spawnScheduled = false;
 
     function spawn() {
-        if (orcs.length < startingOrcs + difficultyLevel * 6);
-        var x = Math.floor(Math.random() * DIM);
-        var y = Math.floor(Math.random() * DIM);
-        var path = pathRef(x, y, player.pxFloor, player.pyFloor);
-        var randType = selectFromDistribution(orcSpawnDistribution);
-        if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5, randType, 2 - Math.pow(0.9, difficultyLevel));
-            orcs.push(orc);
-            world.addChild(orc);
+        if (orcs.length < startingOrcs + difficultyLevel * 6) {
+            var x = Math.floor(Math.random() * DIM);
+            var y = Math.floor(Math.random() * DIM);
+            var path = pathRef(x, y, player.pxFloor, player.pyFloor);
+            var randType = selectFromDistribution(orcSpawnDistribution);
+            if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
+                var orc = new Orc(x + 0.5, y + 0.5, randType, 2 - Math.pow(0.9, difficultyLevel));
+                orcs.push(orc);
+                world.addChild(orc);
+            }
         }
-
+        console.log(orcs);
     }
 
     var stage = new PIXI.Container();
@@ -121,16 +122,14 @@ function gameStart() {
     var debug = new PIXI.Text('');
     stage.addChild(debug);
 
-    var checkDifficulty = function() {
-        if (difficultyLevel == i) {
-            if (score >= (i + 1) * 500){
-                difficultyLevel = i + 1;
-                if (orcInterval)
-                    window.clearInterval(orcInterval);
-                orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(difficultyLevel, 0.5));
-                for (var j = 0; j < orcSpawnDistribution.length; j++) {
-                    orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
-                }
+    var function checkDifficulty() {
+        if (score >= (i + 1) * 500){
+            difficultyLevel = i + 1;
+            if (orcInterval)
+                window.clearInterval(orcInterval);
+            orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(difficultyLevel, 0.5));
+            for (var j = 0; j < orcSpawnDistribution.length; j++) {
+                orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
             }
         }
     };
