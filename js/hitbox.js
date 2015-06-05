@@ -58,3 +58,25 @@ HitArc.prototype.collide = function(actor) {
         }
     }
 };
+
+function HitCylinder(attack, x, y, z, r, height) {
+    Hitbox.call(this, attack);
+    this.x = x;
+    this.y = y;
+    this.minZ = z - height / 2;
+    this.maxZ = z + height / 2;
+    this.r = r
+}
+
+HitCylinder.prototype = Object.create(Hitbox.prototype);
+HitCylinder.prototype.constructor = HitCylinder;
+
+HitCylinder.prototype.collide = function(actor) {
+    var x = actor.px - this.x;
+    var y = actor.py - this.y;
+    var r = Math.sqrt(x * x + y * y);
+    if (r < this.r) {
+        if (this.minZ < actor.pz && actor.pz < this.maxZ)
+            actor.hurt(this.damage);
+    }
+};

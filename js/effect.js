@@ -105,6 +105,25 @@ ChargeEffect.prototype.checkRemove = function() {
     return true;
 };
 
+function Bullet(frame, spec, x, y, z, vx, vy, attack) {
+    Effect.call(this, frame, [spec], x, y, z);
+    this.vx = vx;
+    this.vy = vy;
+    this.attack = attack;
+}
+
+Bullet.prototype = Object.create(Effect.prototype);
+Bullet.prototype.constructor = Bullet;
+
+Bullet.prototype.updatePosition = function(dt) {
+    this.px += this.vx * dt / 250;
+    this.py += this.vy * dt / 250;
+    this.pxFloor = Math.floor(this.px);
+    this.pyFloor = Math.floor(this.py);
+    new HitCylinder(this.attack, this.px, this.py, this.pz, 0.75, 2.0);
+    Effect.prototype.updatePosition.call(this, dt);
+};
+
 function Orb(type) {
     PIXI.Graphics.call(this);
 

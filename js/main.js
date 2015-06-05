@@ -24,6 +24,7 @@ PIXI.loader.add('./img/player.json')
            .add('./img/terrain.json')
            .add('./img/orc.json')
            .add('./img/fx/ring.json')
+           .add('./img/fx/water.json')
            .load(showStartPage);
 
 function showStartPage() {

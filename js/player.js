@@ -137,7 +137,18 @@ Player.prototype.cast = function() {
             counts[orb.type] += 1;
             orb.live = false;
         }
-        console.log(counts);
+
+        if (counts.water) {
+            var aMin = da[this.direction] - Math.PI / 4;
+            for (var i = 0; i <= 1 + counts.water; i++) {
+                var a = aMin + (i / (1 + counts.water)) * Math.PI / 2;
+                var vx = Math.cos(a);
+                var vy = Math.sin(a);
+                new Bullet('water', {first: 2, last: 29},
+                           player.px + vx, player.py + vy, player.pz, vx, vy,
+                           {delay: 0, ttl: 200, damage: Math.floor(Math.exp(counts.water))});
+            }
+        }
     }
 }
 
