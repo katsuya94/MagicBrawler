@@ -196,7 +196,7 @@ Player.prototype.cast = function() {
         }
 
         if (counts.life) {
-            this.health = Math.min(this.health + Math.pow(1.8, counts.life), this.maxHealth);
+            this.health = Math.min(this.health + Math.pow(1.5, counts.life), this.maxHealth);
         }
     }
 }

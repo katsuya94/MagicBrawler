@@ -3,7 +3,8 @@ var shaker;
 var world;
 var points;
 var score = 0;
-var difficultyLevel = 1;
+var difficultyLevel = 0;
+var orcInterval;
 
 var spree = 0;
 var spreeTimer;
@@ -19,12 +20,13 @@ function gameStart() {
     var spawnScheduled = false;
 
     function spawn() {
+        if (orcs.length < startingOrcs + difficultyLevel * 6);
         var x = Math.floor(Math.random() * DIM);
         var y = Math.floor(Math.random() * DIM);
         var path = pathRef(x, y, player.pxFloor, player.pyFloor);
         var randType = selectFromDistribution(orcSpawnDistribution);
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5, randType, 1 + 0.1 * (difficultyLevel - 1));
+            var orc = new Orc(x + 0.5, y + 0.5, randType, 2 - Math.pow(0.9, difficultyLevel));
             orcs.push(orc);
             world.addChild(orc);
         }
@@ -40,7 +42,9 @@ function gameStart() {
     shaker.addChild(world);
 
     points = new PIXI.Text('', {font: '20px bold arial'});
-    points.visible = false;
+    points.showing = false;
+    points.x = -1000;
+    points.y = -1000;
     world.addChild(points);
 
     mapLayers();
@@ -62,8 +66,6 @@ function gameStart() {
     //Spawn x orcs to start game
     for(i = 0; i < startingOrcs; i++)
         spawn();
-    var spawnOrcs = function() { if (orcs.length < 15 + 2 * difficultyLevel) spawnScheduled = true; };
-    window.setInterval(spawnOrcs, 8000);
 
     /* Initialize GUI */
 
@@ -120,16 +122,14 @@ function gameStart() {
     stage.addChild(debug);
 
     var checkDifficulty = function() {
-        for (var i = 0; i < 10; i++){
-            if(difficultyLevel == i){
-                if(score >= i * 500){
-                    difficultyLevel = i + 1;
-                    window.clearInterval(spawnOrcs);
-                    window.setInterval(spawnOrcs, 8000 - 500 * difficultyLevel);
-                    for(var j = 0; j < orcSpawnDistribution.length; j++){
-                        orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
-                    }
-                    break;
+        if (difficultyLevel == i) {
+            if (score >= (i + 1) * 500){
+                difficultyLevel = i + 1;
+                if (orcInterval)
+                    window.clearInterval(orcInterval);
+                orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(difficultyLevel, 0.5));
+                for (var j = 0; j < orcSpawnDistribution.length; j++) {
+                    orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
                 }
             }
         }
@@ -139,10 +139,11 @@ function gameStart() {
         var dt = ticker.elapsedMS;
 
         /* Update points display */
-        if (points.visible) {
-            points.visibleTime -= dt;
-            if (points.visibleTime <= 0)
-                points.visible = false;
+        if (points.showing) {
+            points.showingTime -= dt;
+            if (points.showingTime <= 0)
+                points.x = -1000;
+                points.y = -1000;
         }
 
         /* Update spree */

@@ -59,8 +59,7 @@ function Orc(x, y, type, difficulty) {
     //modifiers for difficulty
     this.health *= difficulty;
     this.damage *= difficulty;
-    this.points += (difficulty - 1) * 100;
-    this.sight *= (difficulty * difficulty);
+    this.sight *= difficulty;
     this.animationSpeed *= Math.sqrt(difficulty);
 
     this.mode = 0;
@@ -97,8 +96,8 @@ Orc.prototype.die = function() {
     points.x = this.x + 25;
     points.y = this.y + 25;
     points.text = '+' + Math.floor(this.points) + (multiplier > 1 ? (' x ' + multiplier) : '');
-    points.visible = true;
-    points.visibleTime = 2000;
+    points.showing = true;
+    points.showingTime = 2000;
     if (Math.random() < 0.25) {
         player.health = Math.min(player.health + 10, player.maxHealth);
     }
