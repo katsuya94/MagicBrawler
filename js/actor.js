@@ -275,7 +275,7 @@ Actor.prototype.updatePosition = function(dt) {
 
     /* Screen Position */
 
-    var pos = position(this.px - 1.5, this.py - 1.5 , this.pz);
+    var pos = position(this.px - 1.5, this.py - 1.5, this.pz);
     this.x = pos.x;
     this.y = pos.y;
 };

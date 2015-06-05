@@ -37,6 +37,7 @@ function Player(x, y) {
     this.swapPenalty = false;
     this.chargeEffect = new ChargeEffect();
     this.defaultTint = 0xFFFFFF;
+    this.points = 0;
 }
 
 Player.prototype = Object.create(Actor.prototype);

@@ -1,12 +1,17 @@
 var player;
 var world;
 var score = 0;
+var difficultyLevel = 1;
 
 function gameStart() {
     var scale = 0.75;
     var orcs = [];
-    var orcSpawnDistribution = [10, 3, 2, 2];
+    var orcSpawnDistribution = [10, 2, 1, 1];
     var startingOrcs = 5;
+
+
+
+
 
     /* GUI Elements */
 
@@ -18,7 +23,7 @@ function gameStart() {
         var path = pathRef(x, y, player.pxFloor, player.pyFloor);
         var randType = selectFromDistribution(orcSpawnDistribution);
         if (path && path.direction && distance(x, y, player.px, player.py) > 10) {
-            var orc = new Orc(x + 0.5, y + 0.5, randType);
+            var orc = new Orc(x + 0.5, y + 0.5, randType, 1 + 0.1 * (difficultyLevel - 1));
             orcs.push(orc);
             world.addChild(orc);
         }
@@ -48,8 +53,8 @@ function gameStart() {
     //Spawn x orcs to start game
     for(i = 0; i < startingOrcs; i++)
         spawn();
-
-    window.setInterval(function() { if (orcs.length < 10) spawnScheduled = true; }, 10000);
+    var spawnOrcs = function() { if (orcs.length < 10 + 2 * difficultyLevel) spawnScheduled = true; };
+    window.setInterval(spawnOrcs, 10000);
 
     /* Initialize GUI */
 
@@ -109,6 +114,22 @@ function gameStart() {
         debug.text = 'Score = ' + score + '\nFPS = ' + ticker.FPS.toFixed(0);
         debug.x = 800 - debug.width;
     }, 1000);
+
+    var checkDifficulty = function() {
+        for (var i = 0; i < 10; i++){
+            if(difficultyLevel == i){
+                if(score >= i * 500){
+                    difficultyLevel = i + 1;
+                    window.clearInterval(spawnOrcs);
+                    window.setInterval(spawnOrcs, 1000 - 100 * difficultyLevel);
+                    for(var j = 0; j < orcSpawnDistribution.length; j++){
+                        orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
+                    }
+                    break;
+                }
+            }
+        }
+    };
 
 
     var updateGame = function () {
@@ -329,6 +350,10 @@ function gameStart() {
             player.elements[i].scale.x = player.elements[i].scaleScalar;
             player.elements[i].scale.y = player.elements[i].scaleScalar;
         }
+
+        /* Increasing game difficulty */
+        checkDifficulty();
+
 
         /* render */
         renderer.render(stage);

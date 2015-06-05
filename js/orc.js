@@ -1,4 +1,4 @@
-function Orc(x, y, type) {
+function Orc(x, y, type, difficulty) {
     Actor.call(this, 'orc', x, y);
 
     this.xDest = this.px;
@@ -56,6 +56,11 @@ function Orc(x, y, type) {
 
     }
 
+    //modifiers for difficulty
+    this.health *= difficulty;
+    this.damage *= difficulty;
+    this.points += (difficulty - 1) * 100;
+    this.animationSpeed *= Math.sqrt(difficulty);
 
     this.mode = 0;
     this.idleTime = 3000;
