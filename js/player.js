@@ -179,6 +179,23 @@ Player.prototype.cast = function() {
                         {delay: 0, ttl: 800, damage: (25 + Math.pow(2, counts.fire)) / 2, exclude: self});
         }
 
+        if (counts.earth) {
+            var maxR = 2 + counts.earth * 0.5
+            function shake(times) {
+                if (times) {
+                    shaker.x = Math.random() * (5 + counts.earth);
+                    shaker.y = Math.random() * (5 + counts.earth);
+                    window.setTimeout(function() {shake(times - 1)}, 100);
+                } else {
+                    shaker.x = 0;
+                    shaker.y = 0;
+                }
+            }
+            var times = 10 + counts.earth * 3;
+            shake(times);
+            new HitCylinder({delay: 0, ttl: times * 100, damage: Math.pow(2, counts.earth), exclude: self}, player.px, player.py, player.pzMin, maxR, 2);
+        }
+
         if (counts.life) {
             this.heal = Math.pow(1.8, counts.life);
         }

@@ -1,4 +1,5 @@
 var player;
+var shaker;
 var world;
 var points;
 var score = 0;
@@ -32,8 +33,11 @@ function gameStart() {
 
     var stage = new PIXI.Container();
 
+    shaker = new PIXI.Container();
+    stage.addChild(shaker);
+
     world = new PIXI.Container();
-    stage.addChild(world);
+    shaker.addChild(world);
 
     points = new PIXI.Text('', {font: '20px bold arial'});
     points.visible = false;
