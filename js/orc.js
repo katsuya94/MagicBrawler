@@ -31,9 +31,9 @@ function Orc(x, y, type, difficulty) {
 
         case 2: //RED Slow but more health/damage
             this.animationSpeed = 0.1;
-            this.attackCooldown = 1200;
+            this.attackCooldown = 1600;
             this.health = 70;
-            this.damage = 8;
+            this.damage = 15;
             this.defaultTint = 0xD40644;
             this.tint = 0xD40644;
             this.hurtColor = 0x4650F0;

@@ -71,6 +71,7 @@ function Actor(frame, x, y) {
     this.castingAnimation = false;
 
     this.dying = false;
+    this.dyingAnimation = false;
     this.timeDead = 0;
 
     this.px = x;
@@ -102,7 +103,10 @@ Actor.prototype.constructor = Actor;
 
 Actor.prototype.movementUpdate = function() {
     if (this.dying) {
-        this.playAnimation(6 * this.direction + 3, 0);
+        if (!this.dyingAnimation) {
+            this.dyingAnimation = true;
+            this.playAnimation(6 * this.direction + 3, 0);
+        }
     } else if (this.attacking) {
         this.movingAnimation = false;
         this.castingAnimation = false;

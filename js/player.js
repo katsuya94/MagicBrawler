@@ -45,6 +45,7 @@ function Player(x, y) {
     this.chargeEffect = new ChargeEffect();
     this.orbs = [];
     this.points = 0;
+    this.chargingTime = 2000;
     this.defaultAnimationSpeed = this.animationSpeed;
     this.airAnimationSpeed = this.defaultAnimationSpeed;
     this.airDelay = -1;
@@ -115,13 +116,12 @@ Player.prototype.think = function(dt) {
         } else {
             this.chargingTime -= dt
             if (this.chargingTime <= 0) {
-                this.chargingTime = 1000;
+                this.chargingTime = 2000;
                 this.orbs.push(new Orb(this.elements[this.elementId].type));
             }
         }
     } else if (!this.moving && !this.attacking && !this.casting && !this.swapPenalty && !this.dying && this.orbs.length < 5) {
         this.charging = true;
-        this.chargingTime = 1000;
         this.chargeEffect.loop = false;
         this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
@@ -150,15 +150,18 @@ Player.prototype.cast = function() {
             orb.live = false;
         }
 
+        var self = this;
+
         if (counts.water) {
             var aMin = da[this.direction] - Math.PI / 4;
             for (var i = 0; i <= 1 + counts.water; i++) {
                 var a = aMin + (i / (1 + counts.water)) * Math.PI / 2;
                 var vx = Math.cos(a);
                 var vy = Math.sin(a);
-                new Bullet('water', {first: 2, last: 29},
-                           player.px + vx, player.py + vy, player.pz, vx, vy,
-                           {delay: 0, ttl: 200, damage: Math.exp(counts.water)});
+                var bullet = new Bullet('water', {first: 1, last: 29},
+                                        player.px, player.py, player.pz, vx, vy,
+                                        {delay: 0, ttl: 200, damage: Math.pow(2, counts.water), exclude: self});
+                bullet.filter({hue: 0, sat: -0.5});
             }
         }
 
@@ -167,8 +170,16 @@ Player.prototype.cast = function() {
             this.airAnimationSpeed = 0.2 * counts.air;
         }
 
+        if (counts.fire) {
+            var vx = dx[this.direction];
+            var vy = dy[this.direction];
+            new Missile('fire', {first: 1, last: 29}, 'explosion', {first: 1, last: 29},
+                        player.px, player.py, player.pz, 2 * vx, 2 * vy, counts.fire / 2,
+                        {delay: 0, ttl: 200, damage: (25 + Math.pow(2, counts.fire)), exclude: self},
+                        {delay: 0, ttl: 800, damage: (25 + Math.pow(2, counts.fire)) / 2, exclude: self});
+        }
+
         if (counts.life) {
-            this.castDelay = 800;
             this.heal = Math.pow(1.8, counts.life);
         }
     }

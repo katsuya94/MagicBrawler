@@ -124,6 +124,32 @@ Bullet.prototype.updatePosition = function(dt) {
     Effect.prototype.updatePosition.call(this, dt);
 };
 
+function Missile(mFrame, mSpec, eFrame, eSpec, x, y, z, vx, vy, radius, mAttack, eAttack) {
+    Bullet.call(this, mFrame, mSpec, x, y, z, vx, vy, mAttack);
+    var scale = radius / 0.75;
+
+    var self = this;
+    function explode() {
+        self.hit = true;
+        var explosion = new Effect(eFrame, [eSpec], self.px, self.py, self.pz)
+        explosion.scale.x = scale;
+        explosion.scale.y = scale;
+        explosion.offset.x = 128 * (1 - scale) / 2;
+        explosion.offset.y = 128 * (0.5 - scale) / 2;
+        new HitCylinder(eAttack, self.px, self.py, self.pz, radius, 2.0);
+    }
+    this.attack.callback = explode;
+
+    this.hit = false;
+}
+
+Missile.prototype = Object.create(Bullet.prototype);
+Missile.prototype.constructor = Missile;
+
+Missile.prototype.checkRemove = function() {
+    return this.playing && !this.hit;
+};
+
 function Orb(type) {
     PIXI.Graphics.call(this);
 

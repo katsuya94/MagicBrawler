@@ -25,6 +25,9 @@ PIXI.loader.add('./img/player.json')
            .add('./img/orc.json')
            .add('./img/fx/ring.json')
            .add('./img/fx/water.json')
+           .add('./img/fx/fire.json')
+           .add('./img/fx/explosion.json')
+           .add('./img/fx/earth.json')
            .load(showStartPage);
 
 function showStartPage() {
