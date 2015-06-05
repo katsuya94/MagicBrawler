@@ -90,12 +90,12 @@ function showStartPage() {
     instructionsButton.mouseover = function(e) {
         instructionsHoverBox.beginFill(0xE9EAF2, 0.8);
         instructionsHoverBox.lineStyle(4, 0xE9EAF2, 1);
-        instructionsHoverBox.drawRoundedRect(e.data.global.x - 325, e.data.global.y - 150, 325, 150, 4);
+        instructionsHoverBox.drawRoundedRect(e.data.global.x - 350, e.data.global.y - 140, 350, 140, 4);
         instructionsHoverBox.visible = true;
         stage.addChild(instructionsHoverBox);
 
-        instructionsHoverText.x = e.data.global.x - 325 + 5;
-        instructionsHoverText.y = e.data.global.y - 150 + 5;
+        instructionsHoverText.x = e.data.global.x - 350 + 5;
+        instructionsHoverText.y = e.data.global.y - 140 + 5;
         instructionsHoverText.visible = true;
         stage.addChild(instructionsHoverText);
     };

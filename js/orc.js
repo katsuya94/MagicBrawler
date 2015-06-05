@@ -60,6 +60,7 @@ function Orc(x, y, type, difficulty) {
     this.health *= difficulty;
     this.damage *= difficulty;
     this.points += (difficulty - 1) * 100;
+    this.sight *= (difficulty * difficulty);
     this.animationSpeed *= Math.sqrt(difficulty);
 
     this.mode = 0;
