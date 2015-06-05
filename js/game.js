@@ -12,7 +12,7 @@ function gameStart() {
     var scale = 0.75;
     var orcs = [];
     var orcSpawnDistribution = [10, 3, 2, 2];
-    var startingOrcs = 7;
+    var startingOrcs = 12;
 
     /* GUI Elements */
 
