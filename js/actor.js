@@ -152,7 +152,7 @@ Actor.prototype.attack = function() {
 Actor.prototype.hurt = function(damage) {
     if (!this.invulnerable) {
         this.invulnerable = true;
-        this.invulnerableTime = 200;
+        this.invulnerableTime = 500;
         this.tint = (this.hurtColor ? this.hurtColor : 0xFF0000);
         this.tintTime = 200;
         this.health -= damage;

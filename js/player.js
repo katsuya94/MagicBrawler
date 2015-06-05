@@ -161,7 +161,7 @@ Player.prototype.cast = function() {
                 var bullet = new Bullet('water', {first: 1, last: 29},
                                         player.px, player.py, player.pz, vx, vy,
                                         {delay: 0, ttl: 200, damage: Math.pow(2, counts.water), exclude: self});
-                bullet.filter({hue: 0, sat: -0.5});
+                bullet.filter({hue: 0, sat: -0.75});
             }
         }
 
@@ -174,7 +174,7 @@ Player.prototype.cast = function() {
             var vx = dx[this.direction];
             var vy = dy[this.direction];
             new Missile('fire', {first: 1, last: 29}, 'explosion', {first: 1, last: 29},
-                        player.px, player.py, player.pz, 2 * vx, 2 * vy, counts.fire / 2,
+                        player.px, player.py, player.pz, 2 * vx, 2 * vy, 0.75 + (counts.fire - 1) * 0.25,
                         {delay: 0, ttl: 200, damage: (25 + Math.pow(2, counts.fire)), exclude: self},
                         {delay: 0, ttl: 800, damage: (25 + Math.pow(2, counts.fire)) / 2, exclude: self});
         }

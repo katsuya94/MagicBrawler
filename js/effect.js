@@ -135,7 +135,7 @@ function Missile(mFrame, mSpec, eFrame, eSpec, x, y, z, vx, vy, radius, mAttack,
         explosion.scale.x = scale;
         explosion.scale.y = scale;
         explosion.offset.x = 128 * (1 - scale) / 2;
-        explosion.offset.y = 128 * (0.5 - scale) / 2;
+        explosion.offset.y = 128 * (1 - scale) * 0.75;
         new HitCylinder(eAttack, self.px, self.py, self.pz, radius, 2.0);
     }
     this.attack.callback = explode;
