@@ -175,6 +175,8 @@ function Orb(type) {
     this.angleFrequency = 0.5 + Math.random();
     this.offsetFrequency = 0.5 + Math.random();
 
+    this.radius = 0.5;
+
     this.flip = Math.random() < 0.5;
 }
 
@@ -184,10 +186,14 @@ Orb.prototype.constructor = Orb;
 Orb.prototype.remove = Effect.prototype.remove;
 
 Orb.prototype.checkRemove = function() {
-    return this.live;
+    return this.radius > 0;
 };
 
 Orb.prototype.updatePosition = function(dt) {
+    if (!this.live) {
+        this.radius -= dt / 500;
+    }
+
     this.angle = (this.angle + this.angleFrequency * dt / 750) % (2 * Math.PI);
     this.offset = (this.offset + this.offsetFrequency * dt / 750) % (2 * Math.PI);
 
@@ -197,11 +203,11 @@ Orb.prototype.updatePosition = function(dt) {
     else
         angle = this.angle;
 
-    this.px = player.px + Math.cos(angle) / 2;
-    this.py = player.py + Math.sin(angle) / 2;
+    this.px = player.px + this.radius * Math.cos(angle) + (0.5 - this.radius);
+    this.py = player.py + this.radius * Math.sin(angle) + (0.5 - this.radius);
     this.pxFloor = Math.floor(this.px);
     this.pyFloor = Math.floor(this.py);
-    this.pz = player.pz + 0.5 + Math.sin(this.offset) / 4;
+    this.pz = player.pz + 0.5 + Math.sin(this.offset) / 4 - (0.5 - this.radius);
 
     var pos = position(this.px, this.py, this.pz);
     this.x = pos.x;

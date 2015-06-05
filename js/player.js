@@ -131,7 +131,6 @@ Player.prototype.think = function(dt) {
         if (this.castDelay <= 0) {
             this.animationSpeed = Math.max(this.animationSpeed, this.airAnimationSpeed);
             this.airAnimationSpeed = this.defaultAnimationSpeed;
-            this.health = Math.min(this.health + this.heal, this.maxHealth);
         }
     }
     this.animationSpeed += (this.defaultAnimationSpeed - this.animationSpeed) * dt / 1000;
@@ -197,7 +196,7 @@ Player.prototype.cast = function() {
         }
 
         if (counts.life) {
-            this.heal = Math.pow(1.8, counts.life);
+            this.health = Math.min(this.health + Math.pow(1.8, counts.life), this.maxHealth);
         }
     }
 }

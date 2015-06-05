@@ -65,7 +65,7 @@ function showStartPage() {
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
     magicLogos[0].textboxSize = [280, 50];
-    hoverTexts[0] = new PIXI.Text('A fireball that shoots in a straight line\n and explodes on impact', {font: 'bold 15px Arial'});
+    hoverTexts[0] = new PIXI.Text('Shoot a fireball in a straight line.\n Explodes on impact.', {font: 'bold 15px Arial'});
     magicLogos[1] = PIXI.Sprite.fromImage('../img/icons/water_icon.png');
     magicLogos[1].type = 'water';
     magicLogos[1].textboxSize = [250, 50];
