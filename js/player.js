@@ -45,7 +45,7 @@ function Player(x, y) {
     this.chargeEffect = new ChargeEffect();
     this.orbs = [];
     this.points = 0;
-    this.chargingTime = 2000;
+    this.chargingTime = 1000;
     this.defaultAnimationSpeed = this.animationSpeed;
     this.airAnimationSpeed = this.defaultAnimationSpeed;
     this.airDelay = -1;
@@ -116,7 +116,7 @@ Player.prototype.think = function(dt) {
         } else {
             this.chargingTime -= dt
             if (this.chargingTime <= 0) {
-                this.chargingTime = 2000;
+                this.chargingTime = 1000;
                 this.orbs.push(new Orb(this.elements[this.elementId].type));
             }
         }
