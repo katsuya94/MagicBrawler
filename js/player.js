@@ -112,13 +112,13 @@ Player.prototype.think = function(dt) {
         } else {
             this.chargingTime -= dt
             if (this.chargingTime <= 0) {
-                this.chargingTime = 3000;
+                this.chargingTime = 1500;
                 this.orbs.push(new Orb(this.elements[this.elementId].type));
             }
         }
     } else if (!this.moving && !this.attacking && !this.casting && !this.swapPenalty && !this.dying && this.orbs.length < 5) {
         this.charging = true;
-        this.chargingTime = 3000;
+        this.chargingTime = 1500;
         this.chargeEffect.loop = false;
         this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));

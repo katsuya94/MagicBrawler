@@ -166,7 +166,7 @@ Actor.prototype.updatePosition = function(dt) {
     this.newTile = false;
 
     if (!this.dying) {
-        if (!this.attacking && this.moving) {
+        if (!this.attacking && !this.casting && this.moving) {
             /* Calculate proposed position */
 
             var _px = this.px + dt * (this.animationSpeed / 0.2) * dx[this.direction] / 250;

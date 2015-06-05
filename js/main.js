@@ -1,4 +1,4 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor : 0x333366});
 document.getElementById('wrapper').appendChild(renderer.view);
 
 /* Start Page Elements */
@@ -7,7 +7,7 @@ var gameStarted = false;
 var gameOver = false;
 var magicBoxes = [];
 var magicLogos = [];
-var magicTexts = [];
+// var magicTexts = [];
 var hoverTexts = [];
 var hoverTextBox;
 
@@ -34,10 +34,10 @@ function showStartPage() {
     logo.y = 70;
     stage.addChild(logo);
 
-    var elementText = new PIXI.Text('Choose your elements', {font:'30px Arial'});
-    elementText.x = 80;
-    elementText.y = 240;
-    stage.addChild(elementText);
+    // var elementText = new PIXI.Text('Choose your elements', {font:'30px Arial'});
+    // elementText.x = 80;
+    // elementText.y = 240;
+    // stage.addChild(elementText);
 
     function resetButton(){
         stage.removeChild(startGameButton);
@@ -48,9 +48,9 @@ function showStartPage() {
         startGameButton.drawRoundedRect(400, 450, 300, 50, 5);
         stage.addChild(startGameButton);
 
-        startGameText = new PIXI.Text('Select an element to continue', {font: '20px Arial'});
-        startGameText.x = 410;
-        startGameText.y = 455;
+        startGameText = new PIXI.Text('Select Two Elements', {font: '25px Arial'});
+        startGameText.x = 400 + (300 - startGameText.width) / 2;
+        startGameText.y = 450 + (50 - startGameText.height) / 2;
         startGameText.alpha = 0.8;
         stage.addChild(startGameText);
     };
@@ -78,20 +78,23 @@ function showStartPage() {
     hoverTexts[4] = new PIXI.Text('Restore health using this magic spell\n which has limited uses', {font: 'bold 15px Arial'});
 
     for (var i = 0; i < 5; i++){
-        magicTexts[i] = new PIXI.Text('');
-        magicTexts[i].x = 100 + i * 40;
-        magicTexts[i].y = i%2 == 1 ? 275 : 355;
-        magicTexts[i].style = {font:'20px Arial', fill: 'white'};
-        stage.addChild(magicTexts[i]);
+        // magicTexts[i] = new PIXI.Text('');
+        // magicTexts[i].x = 100 + i * 40;
+        // magicTexts[i].y = i%2 == 1 ? 275 : 355;
+        // magicTexts[i].style = {font:'20px Arial', fill: 'white'};
+        // stage.addChild(magicTexts[i]);
 
         magicBoxes[i] = new PIXI.Graphics();
         magicBoxes[i].beginFill(0xC2C2BA, 0.7);
         magicBoxes[i].lineStyle(4, 0xC2C2BA, 1);
-        magicBoxes[i].drawRoundedRect(100 + i * 40, i%2 == 1 ? 300 : 380, 50, 50, 3);
+        var angle = i * 2 * Math.PI / 5
+        var x = 200 + 100 * Math.cos(angle);
+        var y = 350 + 100 * Math.sin(angle);
+        magicBoxes[i].drawRoundedRect(x, y, 50, 50, 3);
         stage.addChild(magicBoxes[i]);
 
-        magicLogos[i].x = 100 + i * 40;
-        magicLogos[i].y = i%2 == 1 ? 300 : 380;
+        magicLogos[i].x = x;
+        magicLogos[i].y = y;
         magicLogos[i].number = i;
         magicLogos[i].interactive = true;
         magicLogos[i].click = function(e) {
@@ -128,30 +131,31 @@ function showStartPage() {
 
         hoverTexts[i].visible = false;
     }
-    magicTexts[0].text = 'Fire';
-    magicTexts[1].text = 'Water';
-    magicTexts[2].text = 'Earth';
-    magicTexts[3].text = 'Air';
-    magicTexts[4].text = 'Life';
+
+    // magicTexts[0].text = 'Fire';
+    // magicTexts[1].text = 'Water';
+    // magicTexts[2].text = 'Earth';
+    // magicTexts[3].text = 'Air';
+    // magicTexts[4].text = 'Life';
 
     for (i = 0; i < 2; i++){
         chosenElementBoxes[i] = new PIXI.Graphics();
         chosenElementBoxes[i].beginFill(0xC2C2BA, 0.7);
         chosenElementBoxes[i].lineStyle(4, 0xC2C2BA, 1);
-        chosenElementBoxes[i].drawRoundedRect(i == 2 ? 580 : 580, i == 2 ? 340 : 300 + i * 75, 50, 50, 3);
+        chosenElementBoxes[i].drawRoundedRect(525, i == 2 ? 340 : 300 + i * 75, 50, 50, 3);
         stage.addChild(chosenElementBoxes[i]);
 
-        chosenElementTexts[i] = new PIXI.Text('Element ' + (i + 1) + ':', {font: '20px Arial'});
-        chosenElementTexts[i].x = 470;
-        chosenElementTexts[i].y = 310 + i * 75;
-        stage.addChild(chosenElementTexts[i]);
+        // chosenElementTexts[i] = new PIXI.Text('Element ' + (i + 1) + ':', {font: '20px Arial'});
+        // chosenElementTexts[i].x = 470;
+        // chosenElementTexts[i].y = 310 + i * 75;
+        // stage.addChild(chosenElementTexts[i]);
     }
 
     function updateStartPage() {
         for (var i = 0; i < 2; i++){
             if(chosenElements[i] && !chosenCreated[i]){
                 chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
-                chosenElementIcons[i].x = 580;
+                chosenElementIcons[i].x = 524;
                 chosenElementIcons[i].y = 300 + i * 75;
                 chosenElementIcons[i].interactive = true;
                 chosenElementIcons[i].number = i;
@@ -171,25 +175,25 @@ function showStartPage() {
             startGameButton.clear();
             startGameButton.beginFill(0x0AC900, 0.8);
             startGameButton.lineStyle(4, 0x5AF752, 1);
-            startGameButton.drawRoundedRect(400, 450, 200, 50, 5);
+            startGameButton.drawRoundedRect(400, 450, 300, 50, 5);
             startGameButton.interactive = true;
             startGameButton.click = function () {
                 gameStarted = true;
             };
             stage.addChild(startGameButton);
 
-            startGameText.text = 'Start Brawling!';
-            startGameText.style = {font: 'bold 25px Arial'};
-            startGameText.x = 410;
-            startGameText.y = 455;
+            startGameText.text = 'Start Brawling';
+            startGameText.x = 400 + (300 - startGameText.width) / 2;
+            startGameText.y = 450 + (50 - startGameText.height) / 2;
             startGameText.alpha = 0.8;
             stage.addChild(startGameText);
         }
         if(!gameStarted){
             renderer.render(stage);
         } else {
-            startGameText.text = 'Waiting for Map...';
-            startGameText.style = {font: 'bold 20px Arial'};
+            startGameText.text = 'Generating...';
+            startGameText.x = 400 + (300 - startGameText.width) / 2;
+            startGameText.y = 450 + (50 - startGameText.height) / 2;
             stage.addChild(startGameText);
             renderer.render(stage);
 
