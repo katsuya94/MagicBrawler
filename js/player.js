@@ -126,7 +126,7 @@ Player.prototype.think = function(dt) {
 }
 
 Player.prototype.cast = function() {
-    if (!this.dying && !this.attacking) {
+    if (!this.dying && !this.attacking && !this.casting) {
         this.casting = true;
         this.castTime = 800;
         this.loop = false;
