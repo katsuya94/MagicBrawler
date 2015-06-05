@@ -178,10 +178,11 @@ function gameStart() {
         for (var i = 0; i < orcs.length; i++) {
             if (orcs[i].dying) {
                 orcs[i].fadeTime -= dt;
-                if (orcs[i].fadeTime <= 4000)
-                    world.removeChild(orcs[i].deathText);
-                if (orcs[i].fadeTime <= 0)
+                if (orcs[i].fadeTime <= 0) {
                     world.removeChild(orcs[i]);
+                    orcs.splice(orcs.indexOf(orcs[i]), 1);
+                    i--;
+                }
             }
         }
 
