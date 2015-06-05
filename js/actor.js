@@ -156,6 +156,15 @@ Actor.prototype.hurt = function(damage) {
             this.fadeTime = 5000;
             this.dying = true;
             this.loop = false;
+
+            //display points on dying
+            if(this.deathText){
+                this.deathText.x = this.x + 25;
+                this.deathText.y = this.y + 25;
+                this.deathText.text = Math.floor(this.points);
+                world.addChild(this.deathText);
+            }
+
             score += this.points;
             this.movementUpdate();
         }
