@@ -45,12 +45,19 @@ function Effect(frame, specs, x, y, z) {
 
     this.play();
 
+    this.filters = [new PIXI.filters.ColorMatrixFilter()];
+
     effects.push(this);
     world.addChild(this);
 }
 
 Effect.prototype = Object.create(CustomAnimation.prototype);
 Effect.prototype.constructor = Effect;
+
+Effect.prototype.filter = function(filter) {
+    this.filters[0].hue(filter.hue);
+    this.filters[0].saturate(filter.sat, true);
+};
 
 Effect.prototype.updatePosition = function(dt) {
     var pos = position(this.px - 1.5, this.py - 1.5, this.pz);

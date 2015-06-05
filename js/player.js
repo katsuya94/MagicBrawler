@@ -105,6 +105,7 @@ Player.prototype.think = function(dt) {
     } else if (!this.moving && !this.attacking && !this.swapPenalty && !this.dying) {
         this.charging = true;
         this.chargeEffect.loop = false;
+        this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
     }
 }
@@ -114,7 +115,7 @@ Player.prototype.positionElements = function() {
     var inactive = (active + 1) % 2;
     this.elements[active].targetX = 0;
     this.elements[active].targetScaleScalar = 1.0;
-    this.elements[active].text.text = 'C';
+    this.elements[active].text.text = '';
     this.elements[inactive].targetX = 60;
     this.elements[inactive].targetScaleScalar = 0.5;
     this.elements[inactive].text.text = 'V';

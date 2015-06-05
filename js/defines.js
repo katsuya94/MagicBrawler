@@ -24,3 +24,11 @@ function position(px, py, pz) {
     return {x: px * 32 + py * -32 + 400 - 64,
             y: px * -16 + py * -16 + pz * -32 + 300 - 112};
 }
+
+var elementFilters = {
+    water: {hue: 320, sat: 1.0},
+    air: {hue: 0, sat: -1.0},
+    fire: {hue: 110, sat: 1.5},
+    earth: {hue: 120, sat: -0.5},
+    life: {hue: 45, sat: 1.0}
+};

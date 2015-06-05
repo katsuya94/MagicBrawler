@@ -73,7 +73,7 @@ function gameStart() {
         background.drawRoundedRect(0, 0, 50, 50, 3);
         var icon = PIXI.Sprite.fromImage('../img/icons/' + type + '_icon.png');
         background.addChild(icon);
-        background.text = new PIXI.Text('', {font: 'bold 20px Arial'});
+        background.text = new PIXI.Text('', {font: 'bold 30px Arial'});
         icon.addChild(background.text);
         background.text.x = 40;
         background.text.y = 40;
