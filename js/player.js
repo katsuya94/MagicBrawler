@@ -46,6 +46,7 @@ function Player(x, y) {
     this.orbs = [];
     this.points = 0;
     this.defaultAnimationSpeed = this.animationSpeed;
+    this.airAnimationSpeed = this.defaultAnimationSpeed;
     this.airDelay = -1;
 }
 
@@ -125,10 +126,13 @@ Player.prototype.think = function(dt) {
         this.chargeEffect.filter(elementFilters[this.elements[this.elementId].type]);
         this.chargeEffect.playAnimation(0, this.chargeEffect._animations[0].indexOf(this.chargeEffect._texture));
     }
-    if (this.airDelay > 0) {
-        this.airDelay -= dt;
-        if (this.airDelay <= 0)
-            this.animationSpeed = this.airAnimationSpeed;
+    if (this.castDelay > 0) {
+        this.castDelay -= dt;
+        if (this.castDelay <= 0) {
+            this.animationSpeed = Math.max(this.animationSpeed, this.airAnimationSpeed);
+            this.airAnimationSpeed = this.defaultAnimationSpeed;
+            this.health = Math.min(this.health + this.heal, this.maxHealth);
+        }
     }
     this.animationSpeed += (this.defaultAnimationSpeed - this.animationSpeed) * dt / 1000;
 }
@@ -139,7 +143,7 @@ Player.prototype.cast = function() {
         this.castTime = 800;
         this.loop = false;
         this.movementUpdate();
-        var counts = {water: 0, air: 0, fire: 0, earth: 0, life:0};
+        var counts = {water: 0, air: 0, fire: 0, earth: 0, life: 0};
         while (this.orbs.length) {
             var orb = this.orbs.pop();
             counts[orb.type] += 1;
@@ -154,13 +158,18 @@ Player.prototype.cast = function() {
                 var vy = Math.sin(a);
                 new Bullet('water', {first: 2, last: 29},
                            player.px + vx, player.py + vy, player.pz, vx, vy,
-                           {delay: 0, ttl: 200, damage: Math.floor(Math.exp(counts.water))});
+                           {delay: 0, ttl: 200, damage: Math.exp(counts.water)});
             }
         }
 
         if (counts.air) {
-            this.airDelay = 800;
+            this.castDelay = 800;
             this.airAnimationSpeed = 0.2 * counts.air;
+        }
+
+        if (counts.life) {
+            this.castDelay = 800;
+            this.heal = Math.pow(1.8, counts.life);
         }
     }
 }
