@@ -29,10 +29,11 @@ var playerSwapScheduler = function() { playerSwapScheduled = true; };
 
 klC.press = playerSwapScheduler
 
-function Player(x, y, elements) {
+function Player(x, y) {
     Actor.call(this, 'player', x, y);
-    this.elements = elements;
+    this.elements = [];
     this.elementId = 0;
+    this.charging = false;
 }
 
 Player.prototype = Object.create(Actor.prototype);
@@ -60,7 +61,7 @@ Player.prototype.think = function(dt) {
         } else if (x === 0) {
             if (y === -1) {
                 this.direction = 6;
-            }else if (y === 1) {
+            } else if (y === 1) {
                 player.direction = 2;
             }
         } else if (x === 1) {
@@ -85,6 +86,33 @@ Player.prototype.think = function(dt) {
     if (playerSwapScheduled) {
         playerSwapScheduled = false;
         this.elementId = (this.elementId + 1) % 2;
-        positionElements();
+        this.positionElements();
     }
+    if (this.charging) {
+        this.chargingTime -= dt
+        if (this.moving) {
+            this.charging = false;
+        }
+    }
+    if (!this.moving && !this.charging) {
+        this.charge();
+    }
+}
+
+Player.prototype.positionElements = function() {
+    var active = this.elementId;
+    var inactive = (active + 1) % 2;
+    this.elements[active].targetX = 0;
+    this.elements[active].targetScaleScalar = 1.0;
+    this.elements[active].text.text = 'C';
+    this.elements[inactive].targetX = 60;
+    this.elements[inactive].targetScaleScalar = 0.5;
+    this.elements[inactive].text.text = 'V';
+}
+
+Player.prototype.charge = function() {
+    this.charging = true;
+    this.chargingTime = 2000;
+    this.chargeEffect = new Effect('ring', 0, 16);
+    world.addChild(this.chargeEffect);
 }

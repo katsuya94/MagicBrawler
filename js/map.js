@@ -245,16 +245,17 @@ var chunks = [
 var sceneryChunk = [];
 
 var CHUNKS = DIM / 9;
-var chunkList = [];
-var tiles = [];
-var heightMap = [];
-var rampMap = [];
-var passMap = [];
-var pass8Map = [];
-var tileMap = [];
-var sceneryMap = [];
-var pathMap = [];
-//The frequency that the chunks will occur
+var chunkList;
+var tiles;
+var heightMap;
+var rampMap;
+var passMap;
+var pass8Map;
+var tileMap;
+var sceneryMap;
+var pathMap;
+
+// The frequency that the chunks will occur
 var distribution = [7, 9, 8, 10, 10, 7, 8, 8, 10, 12];
 
 var selectFromDistribution = function(distribution){ //Takes an array with integer values designating weight of states
@@ -275,7 +276,7 @@ var selectFromDistribution = function(distribution){ //Takes an array with integ
     return l;
 };
 
-var generateMap = function() {
+function generateMap() {
     chunkList = [];
     tiles = [];
     heightMap = [];
@@ -431,7 +432,7 @@ var generateMap = function() {
       }
     }
     setupMap();
-};
+}
 
 function add(a, b) {
     b.numBehind++;
