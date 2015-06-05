@@ -81,21 +81,21 @@ function showStartPage() {
     stage.addChild(instructionsText);
 
     instructionsHoverBox = new PIXI.Graphics();
-    instructionsHoverText = new PIXI.Text('Instructions:\nUse the arrow keys or WASD to move around\n' +
-        'Cast the selected spell with "C"\n' +
-        'Switch the magic you are using with "V"\n' +
-        'When you stand still, you recharge magic\n' +
-        'Try to kill as many orcs as possible before dying', {font: '15px Arial'});
+    instructionsHoverText = new PIXI.Text('Use the arrow keys to move around\n' +
+                                          'C - Cast your charged orbs\n' +
+                                          'V - Switch which element of orb to charge\n' +
+                                          'Charge orbs by standing still\n' +
+                                          'Try to kill as many orcs as possible before dying', {font: '15px Arial'});
 
     instructionsButton.mouseover = function(e) {
         instructionsHoverBox.beginFill(0xE9EAF2, 0.8);
         instructionsHoverBox.lineStyle(4, 0xE9EAF2, 1);
-        instructionsHoverBox.drawRoundedRect(e.data.global.x - 350, e.data.global.y - 140, 350, 140, 4);
+        instructionsHoverBox.drawRoundedRect(e.data.global.x - 330, e.data.global.y - 100, 330, 100, 4);
         instructionsHoverBox.visible = true;
         stage.addChild(instructionsHoverBox);
 
-        instructionsHoverText.x = e.data.global.x - 350 + 5;
-        instructionsHoverText.y = e.data.global.y - 140 + 5;
+        instructionsHoverText.x = e.data.global.x - 330 + 5;
+        instructionsHoverText.y = e.data.global.y - 100 + 5;
         instructionsHoverText.visible = true;
         stage.addChild(instructionsHoverText);
     };
@@ -107,24 +107,24 @@ function showStartPage() {
 
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
-    magicLogos[0].textboxSize = [280, 50];
-    hoverTexts[0] = new PIXI.Text('Shoot a fireball in a straight line.\n Explodes on impact.', {font: 'bold 15px Arial'});
+    magicLogos[0].textboxSize = [250, 50];
+    hoverTexts[0] = new PIXI.Text('Shoot a fireball in a straight\nline. Explodes on impact.', {font: 'bold 15px Arial'});
     magicLogos[1] = PIXI.Sprite.fromImage('../img/icons/water_icon.png');
     magicLogos[1].type = 'water';
     magicLogos[1].textboxSize = [250, 50];
-    hoverTexts[1] = new PIXI.Text('Fire small water orbs that fly in \n multiple directions', {font: 'bold 15px Arial'});
+    hoverTexts[1] = new PIXI.Text('Fire a wave of small water orbs\nin a small arc.', {font: 'bold 15px Arial'});
     magicLogos[2] = PIXI.Sprite.fromImage('../img/icons/earth_icon.png');
     magicLogos[2].type = 'earth';
-    magicLogos[2].textboxSize = [260, 50];
-    hoverTexts[2] = new PIXI.Text('Summon rocks from all around you\n and knock enemies away', {font: 'bold 15px Arial'});
+    magicLogos[2].textboxSize = [250, 50];
+    hoverTexts[2] = new PIXI.Text('Unleash an earthquake. Damage\nall nearby enemies.', {font: 'bold 15px Arial'});
     magicLogos[3] = PIXI.Sprite.fromImage('../img/icons/air_icon.png');
     magicLogos[3].type = 'air';
-    magicLogos[3].textboxSize = [300, 50];
-    hoverTexts[3] = new PIXI.Text('Jump high into the air to evade enemies\n and make an escape', {font: 'bold 15px Arial'});
+    magicLogos[3].textboxSize = [250, 50];
+    hoverTexts[3] = new PIXI.Text('Make an escape with a sudden\nburst of speed.', {font: 'bold 15px Arial'});
     magicLogos[4] = PIXI.Sprite.fromImage('../img/icons/life_icon.png');
     magicLogos[4].type = 'life';
-    magicLogos[4].textboxSize = [280, 50];
-    hoverTexts[4] = new PIXI.Text('Restore health using this magic spell\n which has limited uses', {font: 'bold 15px Arial'});
+    magicLogos[4].textboxSize = [250, 50];
+    hoverTexts[4] = new PIXI.Text('Instantly restore health. Save up\ncharges for a pinch.', {font: 'bold 15px Arial'});
 
     for (var i = 0; i < 5; i++){
         // magicTexts[i] = new PIXI.Text('');

@@ -119,11 +119,6 @@ function gameStart() {
     var debug = new PIXI.Text('');
     stage.addChild(debug);
 
-    window.setInterval(function() {
-        debug.text = 'Score = ' + score + '\nFPS = ' + ticker.FPS.toFixed(0);
-        debug.x = 800 - debug.width;
-    }, 1000);
-
     var checkDifficulty = function() {
         for (var i = 0; i < 10; i++){
             if(difficultyLevel == i){
@@ -370,6 +365,9 @@ function gameStart() {
         healthBar.clear();
         healthBar.beginFill(0xF5252C, 1);
         healthBar.drawRect(2, 2, 196 * Math.max(player.health, 0) / player.maxHealth, 16, 3);
+
+        debug.text = score.toString();
+        debug.x = 800 - debug.width - 10;
 
         for (var i = 0; i < player.elements.length; i++) {
             player.elements[i].x += dt * (player.elements[i].targetX - player.elements[i].x) / 100;

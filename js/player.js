@@ -166,7 +166,7 @@ Player.prototype.cast = function() {
 
         if (counts.air) {
             this.castDelay = 800;
-            this.airAnimationSpeed = 0.2 * counts.air;
+            this.airAnimationSpeed = 0.2 + 0.1 * counts.air;
         }
 
         if (counts.fire) {
