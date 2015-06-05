@@ -122,8 +122,8 @@ function gameStart() {
     var debug = new PIXI.Text('');
     stage.addChild(debug);
 
-    var function checkDifficulty() {
-        if (score >= (i + 1) * 500){
+    function checkDifficulty() {
+        if (score >= (difficultyLevel + 1) * 500){
             difficultyLevel = i + 1;
             if (orcInterval)
                 window.clearInterval(orcInterval);
