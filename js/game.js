@@ -127,7 +127,7 @@ function gameStart() {
             difficultyLevel = i + 1;
             if (orcInterval)
                 window.clearInterval(orcInterval);
-            orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(difficultyLevel, 0.5));
+            orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(1.5, difficultyLevel));
             for (var j = 0; j < orcSpawnDistribution.length; j++) {
                 orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
             }
