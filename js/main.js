@@ -20,6 +20,8 @@ var chosenCreated = [false, false];
 var startGameButton;
 var startGameText;
 
+var fireBaseScores = new Firebase('https://glowing-fire-4300.firebaseio.com/');
+
 PIXI.loader.add('./img/player.json')
            .add('./img/terrain.json')
            .add('./img/orc.json')
@@ -250,8 +252,40 @@ function showHighScores() {
             window.setTimeout(function() {
                 ticker.remove(updateHighScorePage);
                 showStartPage();
-            }, 0)
+            }, 0);
         }
-    };
+    }
     ticker.add(updateHighScorePage);
+    setTimeout(function(){
+        var scoreList = [];
+        var scoreListText = [];
+        var name = window.prompt("Enter your name", "name here");
+        fireBaseScores.push({name: name, score: score});
+
+        fireBaseScores.on('child_added', function(snapshot){
+            var newScores = snapshot.val();
+            scoreList.push({name: newScores.name,score: newScores.score});
+        });
+        fireBaseScores.once('value', function(){
+            scoreList.sort(function(a,b){
+                if(a.score > b.score){
+                    return -1;
+                } else if (a.score < b.score){
+                    return 1;
+                }
+                return 0;
+            });
+
+            for(var i = 0; i < 8; i++){
+                if(scoreList[i]){
+                    scoreListText[i] = new PIXI.Text((i + 1) + ': ' + scoreList[i].name + '       ' + scoreList[i].score , {font: '20px Arial'});
+                    scoreListText[i].x = 225;
+                    scoreListText[i].y = 250 + i * 25;
+                    stage.addChild(scoreListText[i]);
+                }
+            }
+        });
+
+
+    }, 0);
 }
