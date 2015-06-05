@@ -1,4 +1,4 @@
-var DIM = 36;
+var DIM = 27;
 var HEIGHT = 5;
 var numChunks = 10;
 
@@ -465,8 +465,10 @@ function generateMap() {
 }
 
 function add(a, b) {
-    b.numBehind++;
-    a.ahead.push(b);
+    if (a.visible && b.visible) {
+        b.numBehind++;
+        a.ahead.push(b);
+    }
 }
 
 function addPerm(a, b) {
@@ -502,13 +504,16 @@ function mapLayers() {
                 tiles[j][i][k - 1].addChild(shadow);
             } else if (sceneryId >= 0) {
                 var scenery = PIXI.Sprite.fromFrame('terrain' + sceneryId + '.png');
-                tiles[j][i][k-1].addChild(scenery);
+                tiles[j][i][k - 1].addChild(scenery);
             }
         }
     }
     for (var i = 0; i < DIM; i++) {
         for (var j = 0; j < DIM; j++) {
             for (var k = 0; k < tiles[j][i].length; k++) {
+                tiles[j][i][k].tx = i;
+                tiles[j][i][k].ty = j;
+                tiles[j][i][k].tz = k;
                 if (k > 0)
                     addPerm(tiles[j][i][k - 1], tiles[j][i][k]);
                 if (i + 1 < DIM && tiles[j][i + 1][k])

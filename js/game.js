@@ -232,14 +232,49 @@ function gameStart() {
             }
         }
 
+        /* Zooming */
+
+        var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
+        scale = Math.min(1.0, Math.max(0.0, scale + dt * (target - scale) / 100));
+        world.scale.x = scale;
+        world.scale.y = scale;
+        world.x = (-player.x * scale + 400 - 64);
+        world.y = (-player.y * scale + 300 - 64);
+
         /* Create scene graph */
+
+        function onScreen(entity) {
+            var x = world.x + entity.x * scale;
+            var y = world.y + entity.y * scale;
+            entity.visible = 100 < x && x < 700 && 100 < y && y < 500;
+            if (entity.visible) {
+                entity.ahead = [];
+                entity.numBehind = 0;
+                entity.visited = false;
+            }
+        }
+
+        onScreen(player);
+        for (var i = 0; i < orcs.length; i++)
+            onScreen(orcs[i]);
+        for (var i = 0; i < effects.length; i++)
+            onScreen(effects[i]);
 
         for (var i = 0; i < DIM; i++) {
             for (var j = 0; j < DIM; j++) {
                 for (var k = 0; k < tiles[j][i].length; k++) {
-                    tiles[j][i][k].numBehind = tiles[j][i][k].permNumBehind;
-                    tiles[j][i][k].ahead = tiles[j][i][k].permAhead.slice(0);
-                    tiles[j][i][k].visited = false;
+                    onScreen(tiles[j][i][k]);
+                }
+            }
+        }
+
+        for (var i = 0; i < DIM; i++) {
+            for (var j = 0; j < DIM; j++) {
+                for (var k = 0; k < tiles[j][i].length; k++) {
+                    if (tiles[j][i][k].visible) {
+                        for (var l = 0; l < tiles[j][i][k].permAhead.length; l++)
+                            add(tiles[j][i][k], tiles[j][i][k].permAhead[l]);
+                    }
                 }
             }
         }
@@ -247,10 +282,6 @@ function gameStart() {
         function entityDepth(entity) {
             var i = entity.pxFloor;
             var j = entity.pyFloor;
-
-            entity.ahead = [];
-            entity.numBehind = 0;
-            entity.visited = false;
 
             if (!valid(i, j))
                 return;
@@ -298,10 +329,12 @@ function gameStart() {
             entityDepth(effects[i]);
 
         function entityEntity(a, b) {
-            if (a.px + a.py > b.px + b.py)
-                add(a, b);
-            else
-                add(b, a);
+            if (a.visible && b.visible) {
+                if (a.px + a.py > b.px + b.py)
+                    add(a, b);
+                else
+                    add(b, a);
+            }
         }
 
         for (var i = 0; i < orcs.length; i++)
@@ -318,38 +351,42 @@ function gameStart() {
             for (var j = i + 1; j < effects.length; j++)
                 entityEntity(effects[i], effects[j]);
 
-        // function dfs(node, path) {
-        //     var newpath = path.slice(0);
-        //     newpath.push(node);
-        //     if (path.indexOf(node) >= 0) {
-        //         result = newpath;
-        //         console.log('cycle');
-        //         return true;
-        //     }
+        /* Topsort scene graph */
+
+        var roots = [tiles[DIM - 1][DIM - 1][0]];
+
+        // function dfs(node) {
+        //     if (!node.visible)
+        //         console.log('error');
         //     for (var i = 0; i < node.ahead.length; i++) {
-        //         if (dfs(node.ahead[i], newpath))
-        //             return true;
+        //         dfs(node.ahead[i]);
         //     }
         //     return false;
         // }
 
-        // dfs(tiles[DIM - 1][DIM - 1][0], []);
+        // for (var i = 0; i < roots.length; i++) {
+        //     dfs(roots[i]);
+        // }
 
-        /* Topsort scene graph */
-
-        var roots = [tiles[DIM - 1][DIM - 1][0]];
         var depth = 0;
 
         while (roots.length) {
             var root = roots.pop();
             if (!root.visited) {
                 root.visited = true;
-                root.depth = depth++;
-                for (var i = 0; i < root.ahead.length; i++) {
-                    var child = root.ahead[i];
-                    child.numBehind--;
-                    if (child.numBehind <= 0)
-                        roots.push(child);
+                if (!root.visible) {
+                    if (root.permAhead) {
+                        for (var i = 0; i < root.permAhead.length; i++)
+                            roots.push(root.ahead[i]);
+                    }
+                } else {
+                    root.depth = depth++;
+                    for (var i = 0; i < root.ahead.length; i++) {
+                        var child = root.ahead[i];
+                        child.numBehind--;
+                        if (child.numBehind <= 0)
+                            roots.push(child);
+                    }
                 }
             }
         }
@@ -358,14 +395,7 @@ function gameStart() {
 
         world.children.sort(function(a, b) {return a.depth - b.depth;});
 
-        var target = 0.75 + 0.25 * (1 - player.pz / HEIGHT);
-        scale = Math.min(1.0, Math.max(0.0, scale + dt * (target - scale) / 100));
-        world.scale.x = scale;
-        world.scale.y = scale;
-        world.x = (-player.x * scale + 400 - 64);
-        world.y = (-player.y * scale + 300 - 64);
-
-        /* Health bar */
+        /* GUI */
 
         healthBar.clear();
         healthBar.beginFill(0xF5252C, 1);
