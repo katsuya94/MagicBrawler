@@ -44,6 +44,7 @@ function Player(x, y) {
     this.swapPenalty = false;
     this.chargeEffect = new ChargeEffect();
     this.orbs = [];
+    this.points = 0;
 }
 
 Player.prototype = Object.create(Actor.prototype);

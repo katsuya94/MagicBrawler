@@ -55,6 +55,8 @@ function Actor(frame, x, y) {
 
     CustomAnimation.call(this, animations);
 
+    this.defaultTint = 0xFFFFFF;
+
     this.animationSpeed = 0.2;
 
     this.direction = Math.floor(8 * Math.random());
@@ -147,13 +149,14 @@ Actor.prototype.hurt = function(damage) {
     if (!this.invulnerable) {
         this.invulnerable = true;
         this.invulnerableTime = 200;
-        this.tint = 0xFF0000;
+        this.tint = (this.hurtColor ? this.hurtColor : 0xFF0000);
         this.tintTime = 200;
         this.health -= damage;
         if (this.health <= 0) {
             this.fadeTime = 5000;
             this.dying = true;
             this.loop = false;
+            score += this.points;
             this.movementUpdate();
         }
     }
@@ -294,7 +297,7 @@ Actor.prototype.updatePosition = function(dt) {
     if (this.tint !== 0xFFFFFF) {
         this.tintTime -= dt;
         if (this.tintTime <= 0)
-            this.tint = 0xFFFFFF;
+            this.tint = this.defaultTint;
     }
 
     /* Gravity */
