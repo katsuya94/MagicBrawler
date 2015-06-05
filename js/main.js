@@ -11,6 +11,9 @@ var magicLogos = [];
 var hoverTexts = [];
 var hoverTextBox;
 
+var instructionsHoverBox;
+var instructionsHoverText;
+
 var chosenElementBoxes = [];
 var chosenElementIcons = [];
 var chosenElementTexts = [];
@@ -63,6 +66,44 @@ function showStartPage() {
         stage.addChild(startGameText);
     };
     resetButton();
+
+    var instructionsButton = new PIXI.Graphics();
+    instructionsButton.beginFill(0xF29E02);
+    instructionsButton.lineStyle(4, 0xE9EAF2, 1);
+    instructionsButton.drawRoundedRect(600, 230, 150, 50, 5);
+    instructionsButton.interactive = true;
+    instructionsButton.hitArea = new PIXI.Rectangle(600, 230, 150, 50);
+    stage.addChild(instructionsButton);
+
+    var instructionsText = new PIXI.Text('Instructions', {font: '25px Arial'});
+    instructionsText.x = 610;
+    instructionsText.y = 240;
+    stage.addChild(instructionsText);
+
+    instructionsHoverBox = new PIXI.Graphics();
+    instructionsHoverText = new PIXI.Text('Instructions:\nUse the arrow keys or WASD to move around\n' +
+        'Cast the selected spell with "C"\n' +
+        'Switch the magic you are using with "V"\n' +
+        'When you stand still, you recharge magic\n' +
+        'Try to kill as many orcs as possible before dying', {font: '15px Arial'});
+
+    instructionsButton.mouseover = function(e) {
+        instructionsHoverBox.beginFill(0xE9EAF2, 0.8);
+        instructionsHoverBox.lineStyle(4, 0xE9EAF2, 1);
+        instructionsHoverBox.drawRoundedRect(e.data.global.x - 325, e.data.global.y - 150, 325, 150, 4);
+        instructionsHoverBox.visible = true;
+        stage.addChild(instructionsHoverBox);
+
+        instructionsHoverText.x = e.data.global.x - 325 + 5;
+        instructionsHoverText.y = e.data.global.y - 150 + 5;
+        instructionsHoverText.visible = true;
+        stage.addChild(instructionsHoverText);
+    };
+    instructionsButton.mouseout = function() {
+        instructionsHoverText.visible = false;
+        instructionsHoverBox.clear();
+        instructionsHoverBox.visible = false;
+    };
 
     magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
@@ -124,8 +165,6 @@ function showStartPage() {
             hoverTexts[num].y = e.data.global.y + 5;
             hoverTexts[num].visible = true;
             stage.addChild(hoverTexts[num]);
-
-
         };
         magicLogos[i].mouseout = function(e) {
             var num = e.target.number;
