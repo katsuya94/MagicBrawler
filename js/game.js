@@ -127,7 +127,7 @@ function gameStart() {
             difficultyLevel = Math.floor(score / 500);
             if (orcInterval)
                 window.clearInterval(orcInterval);
-            orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(1.5, difficultyLevel));
+            orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(1.2, difficultyLevel));
             for (var j = 0; j < orcSpawnDistribution.length; j++) {
                 orcSpawnDistribution[j] += 2; //Make it more likely for rare orcs to spawn
             }
@@ -162,6 +162,8 @@ function gameStart() {
             gameOverText.y = 200;
             stage.addChild(gameOverText);
             gameOver = true;
+            if (orcInterval)
+                window.clearInterval(orcInterval);
             window.setTimeout(function() {
                 var continueText = new PIXI.Text('Click anywhere to continue', {font: '50px impact charcoal'});
                 continueText.x = 150;
