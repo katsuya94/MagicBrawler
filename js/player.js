@@ -192,7 +192,7 @@ Player.prototype.cast = function() {
             }
             var times = 10 + counts.earth * 3;
             shake(times);
-            new HitCylinder({delay: 0, ttl: times * 100, damage: Math.pow(1.5, counts.earth), exclude: self}, player.px, player.py, player.pzMin, maxR, 2);
+            new HitCylinder({delay: 0, ttl: times * 100, damage: Math.pow(1.4, counts.earth), exclude: self}, player.px, player.py, player.pzMin, maxR, 2);
         }
 
         if (counts.life) {
