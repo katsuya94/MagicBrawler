@@ -143,7 +143,7 @@ Actor.prototype.attack = function() {
         this.attacking = true;
         this.attackTime = this.attackCooldown;
         var damage = this.damage;
-        new HitArc({delay: 200 * 0.2 / this.animationSpeed, ttl: 400, damage: damage}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
+        new HitArc({delay: 200 * 0.2 / this.animationSpeed, ttl: 400 * 0.2 / this.animationSpeed, damage: damage}, this.px, this.py, this.pz + 0.25, 0.25, 1.5, this.direction, Math.PI / 2, 1.5);
         this.loop = false;
         this.movementUpdate();
     }

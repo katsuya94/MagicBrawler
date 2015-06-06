@@ -9,7 +9,7 @@ function Orc(x, y, type, difficulty) {
 
     switch(type){
         case 0: //Default
-            this.animationSpeed = 0.125;
+            this.animationSpeed = 0.15
             this.attackCooldown = 1000;
             this.health = 50;
             this.damage = 5;
@@ -43,7 +43,7 @@ function Orc(x, y, type, difficulty) {
             break;
 
         case 3: //GREEN can see longer distances?
-            this.animationSpeed = 0.125;
+            this.animationSpeed = 0.15;
             this.attackCooldown = 1000;
             this.health = 50;
             this.damage = 5;
