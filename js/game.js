@@ -124,7 +124,7 @@ function gameStart() {
 
     function checkDifficulty() {
         if (score >= (difficultyLevel + 1) * 500){
-            difficultyLevel = i + 1;
+            difficultyLevel = Math.floor(score / 500);
             if (orcInterval)
                 window.clearInterval(orcInterval);
             orcInterval = window.setInterval(spawn, 2000 + 6000 / Math.pow(1.5, difficultyLevel));
