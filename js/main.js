@@ -38,7 +38,7 @@ PIXI.loader.add('./img/player.json')
 function showStartPage() {
     var stage = new PIXI.Container();
 
-    var logo = PIXI.Sprite.fromImage('../img/game_logo.png');
+    var logo = PIXI.Sprite.fromImage('./img/game_logo.png');
     logo.x = 110;
     logo.y = 40;
     logo.scale.x = 1.2;
@@ -106,23 +106,23 @@ function showStartPage() {
         instructionsHoverBox.visible = false;
     };
 
-    magicLogos[0] = PIXI.Sprite.fromImage('../img/icons/fire_icon.png');
+    magicLogos[0] = PIXI.Sprite.fromImage('./img/icons/fire_icon.png');
     magicLogos[0].type = 'fire';
     magicLogos[0].textboxSize = [250, 50];
     hoverTexts[0] = new PIXI.Text('Shoot a fireball in a straight\nline. Explodes on impact.', {font: 'bold 15px Arial'});
-    magicLogos[1] = PIXI.Sprite.fromImage('../img/icons/water_icon.png');
+    magicLogos[1] = PIXI.Sprite.fromImage('./img/icons/water_icon.png');
     magicLogos[1].type = 'water';
     magicLogos[1].textboxSize = [250, 50];
     hoverTexts[1] = new PIXI.Text('Fire a wave of small water orbs\nin a small arc.', {font: 'bold 15px Arial'});
-    magicLogos[2] = PIXI.Sprite.fromImage('../img/icons/earth_icon.png');
+    magicLogos[2] = PIXI.Sprite.fromImage('./img/icons/earth_icon.png');
     magicLogos[2].type = 'earth';
     magicLogos[2].textboxSize = [250, 50];
     hoverTexts[2] = new PIXI.Text('Unleash an earthquake. Damage\nall nearby enemies.', {font: 'bold 15px Arial'});
-    magicLogos[3] = PIXI.Sprite.fromImage('../img/icons/air_icon.png');
+    magicLogos[3] = PIXI.Sprite.fromImage('./img/icons/air_icon.png');
     magicLogos[3].type = 'air';
     magicLogos[3].textboxSize = [250, 50];
     hoverTexts[3] = new PIXI.Text('Make an escape with a sudden\nburst of speed.', {font: 'bold 15px Arial'});
-    magicLogos[4] = PIXI.Sprite.fromImage('../img/icons/life_icon.png');
+    magicLogos[4] = PIXI.Sprite.fromImage('./img/icons/life_icon.png');
     magicLogos[4].type = 'life';
     magicLogos[4].textboxSize = [250, 50];
     hoverTexts[4] = new PIXI.Text('Instantly restore health. Save up\ncharges for a pinch.', {font: 'bold 15px Arial'});
