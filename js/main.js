@@ -202,7 +202,7 @@ function showStartPage() {
     function updateStartPage() {
         for (var i = 0; i < 2; i++){
             if(chosenElements[i] && !chosenCreated[i]){
-                chosenElementIcons[i] = PIXI.Sprite.fromImage('../img/icons/' + chosenElements[i] + '_icon.png');
+                chosenElementIcons[i] = PIXI.Sprite.fromImage('./img/icons/' + chosenElements[i] + '_icon.png');
                 chosenElementIcons[i].x = 524;
                 chosenElementIcons[i].y = 300 + i * 75;
                 chosenElementIcons[i].interactive = true;
